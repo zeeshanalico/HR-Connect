@@ -1,0 +1,14 @@
+#card{
+
+padding: 5px !important;
+display: flex;
+justify-content: center;
+flex-direction: column;
+border: 1px solid black;
+width: 90%;
+background-color: rgb(233, 236, 239);
+border-radius: 22px;
+box-shadow: 10px 10px 20px black;
+
+ 
+}

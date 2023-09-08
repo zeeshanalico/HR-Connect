@@ -1,0 +1,21 @@
+.content{
+
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-around !important;
+font-size: large !important;
+}
+
+
+.rounded-input .round {
+  padding:10px;
+  border-radius:12px;
+  border: 1px solid black;
+  width: 330px;
+}
+
+.submit-button{
+
+width: 150px;
+
+}

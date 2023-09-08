@@ -1,0 +1,18 @@
+
+#back-arrow{
+
+position: absolute;
+top: 35px;
+left: 40px;
+font-size: large;
+
+}
+
+#wrapper{
+
+  height: 200px;
+  background-color: white; /* For browsers that do not support gradients */
+  background-image: linear-gradient(to bottom right, white, #0066cc);
+
+
+}
