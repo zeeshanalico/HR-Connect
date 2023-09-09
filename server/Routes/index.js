@@ -37,6 +37,16 @@ router.get('/getJobs', (req, res) => {
         }
     })
 })
+router.get('/getJobPositions', (req, res) => {
+    mysql.query('SELECT * FROM jobpositions', (err, results) => {
+        if (err) {
+            console.error('Error fetching job positions:', err);
+            res.json({ message: error.sqlMessage });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
 // delete job by hr 
 router.post('/deleteJob', (req, res) => {
@@ -108,15 +118,17 @@ router.post('/submitJobApplication', upload.single('cv_file'), (req, res) => {
             res.json({ message: 'Error saving file to server', error: err, success: false });
         } else {
             console.log('File saved to server successfully.');
-
-            // Now you can continue with your database insertion logic if needed
-
-            res.json({ success: true });
-            console.log("Successfully job application submitted");
+            mysql.query('insert into applications(applicant_name, email,city,cnic,cv_file,applying_date,phone_number,desired_salary,address,job_id) values (?,?,?,?,?,?,?,?,?,?);'[applicant_name, email, city, cnic, cv_file, current_date, phone_number, desired_salary, address, job_id], (error, result) => {
+                if (error) {
+                    res.json({ message: error.sqlMessage, error, success: false });
+                    console.log(error);
+                } else {
+                    res.json(result);
+                }
+            })
         }
     });
-    // const { applicant_name, email,phone_number,city,cnic}
-    mysql.query('insert into applications()')
+
 });
 //----------------------------------------------hiring/view job applications------------------------------------------------------------------------
 router.get('/getJobApplications', (req, res) => {
@@ -128,7 +140,63 @@ router.get('/getJobApplications', (req, res) => {
         }
     })
 })
+router.post('/rejectApplication', (req, res) => {
+    const { rejectedApplicationId } = req.body;
+    console.log(rejectedApplicationId);
+    mysql.query('delete from applications where application_id =?', [rejectedApplicationId], (error, result) => {
+        if (error) {
+            res.json({ message: error.sqlMessage, error, success: false });
+        } else {
+            res.json({ success: true });
+        }
+    })
+})
 
+router.post('/callForInterview', (req, res) => {
+    const { callForInterviewId } = req.body;
+    console.log(callForInterviewId);
+    mysql.query('update applications set status="interview" where application_id=?;', [callForInterviewId], (error, result) => {
+        if (error) {
+            res.json({ message: error.sqlMessage, error, success: false });
+        } else {
+            console.log("candidate called for interview");
+            res.json({ success: true });
+        }
+    })
+})
 
+// ------------------------------------------------------------Departments--------------------------------------------------------------------------------------------
+
+//// -----------------------------------------------------emplyees/addemployees---------------------------------------------------------------------------------------
+
+router.post('/registerEmployee', (req, res) => {
+    const { name, email, phone_number, city, address, zipcode, DOB, cnic, gender, emp_id, hire_date, salary, role, job_id, dep_id, login_email, login_password } = req.body;
+    persoonalInformation = [name, email, phone_number, city, address, zipcode, DOB, cnic, gender];
+    professionalInformation = [emp_id, hire_date, salary, role, job_id, dep_id, login_email, login_password];
+    console.table(persoonalInformation);
+    console.table(professionalInformation)
+    mysql.query(
+        'INSERT INTO PersonalInformation (name,email,phone_number,city,address,zipcode,DOB,cnic,gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', persoonalInformation,
+        (err, personalResults) => {
+            if (err) {
+                console.error('Error inserting personal data:', err);
+                res.json({ message: err.sqlMessage, success: false, error: 'Error inserting personal data' });
+            } else {
+                mysql.query(
+                    'INSERT INTO ProfessionalInformation (emp_id, hire_date, salary, role, job_id, dep_id, login_email, login_password) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)', professionalInformation,
+                    (err, result) => {
+                        if (err) {
+                            console.error('Error inserting professional data:', err);
+                            res.json({ message: err.sqlMessage, success: false, error: 'Error inserting professional data' });
+                        } else {
+
+                            res.json({ success: true, message: 'Data inserted successfully' });
+                        }
+                    }
+                );
+            }
+        }
+    );
+});
 
 module.exports = router;

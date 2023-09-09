@@ -1,32 +1,11 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import './../../../BasicStyle.css';
 import { BaseUrl } from './../../../../constants.js';
-
-// const sampleJobApplications = [
-//   {
-//     id: 1,
-//     name: 'John Doe',
-//     email: 'john.doe@example.com',
-//     phoneNumber: '123-456-7890',
-//     resume: 'Link to Resume 1',
-//     jobTitle: 'Web Developer',
-//     status: 'Pending',
-//   },
-//   {
-//     id: 2,
-//     name: 'Jane Smith',
-//     email: 'jane.smith@example.com',
-//     phoneNumber: '987-654-3210',
-//     resume: 'Link to Resume 2',
-//     jobTitle: 'Graphic Designer',
-//     status: 'Pending',
-//   },
-//   // Add more job applications as needed
-// ];
+import Toast from './../../../../UIModules/Toast/Toast.jsx'
 
 export default function ViewJobApplications() {
   const [jobApplications, setJobApplications] = useState([]);
@@ -45,45 +24,58 @@ export default function ViewJobApplications() {
     fetchData()
   }, []);
 
+  // const notify = () => Toast("Wow so easy!");
   // const [jobApplications, setJobApplications] = useState(sampleJobApplications);
   // const [selectedApplication, setSelectedApplication] = useState(null);
   // const [showResumeModal, setShowResumeModal] = useState(false);
-  // const [showInterviewModal, setShowInterviewModal] = useState(false);
-  // const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [applicationId, setApplicationId] = useState('');
+
 
   // const handleShowResume = (resumeLink) => {
   //   setSelectedApplication(resumeLink);
   //   setShowResumeModal(true);
   // };
 
-  // const handleCallForInterview = (applicationId) => {
-  //   // Update the status of the selected application to "Interview"
-  //   const updatedApplications = jobApplications.map((application) => {
-  //     if (application.id === applicationId) {
-  //       return { ...application, status: 'Interview' };
-  //     }
-  //     return application;
-  //   });
+  const handleCallForInterview = async () => {
+    console.log(applicationId);
 
-  //   setJobApplications(updatedApplications);
-  //   setShowInterviewModal(false);
-  // };
+    try {
+      const response = await axios.post(BaseUrl + '/callForInterview', { callForInterviewId: applicationId })
+      if (response.data.success) {
+        console.log("applicant Called for interview Successfully");
+        await fetchData();
+      }
+      else {
+        console.log("Error occured", response.data.message);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setShowInterviewModal(false);
+  };
 
-  // const handleRejectApplication = (applicationId) => {
-  //   // Update the status of the selected application to "Rejected"
-  //   const updatedApplications = jobApplications.map((application) => {
-  //     if (application.id === applicationId) {
-  //       return { ...application, status: 'Rejected' };
-  //     }
-  //     return application;
-  //   });
-
-  //   setJobApplications(updatedApplications);
-  //   setShowRejectModal(false);
-  // };
+  const handleRejectApplication = async () => {
+    // console.log(applicationId);
+    try {
+      const response = await axios.post(BaseUrl + '/rejectApplication', { rejectedApplicationId: applicationId })
+      if (response.data.success) {
+        console.log("application rejected successfully");
+        await fetchData();
+      }
+      else {
+        console.log("Error occured", response.data.message);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    setShowRejectModal(false);
+  };
 
   return (
     <div id="full-content" className="container mt-4">
+      {/* <ToastContainer /> */}
       <h2 className="mb-4">Job Applications</h2>
       <div id="content">
         <Table striped bordered hover responsive>
@@ -99,7 +91,7 @@ export default function ViewJobApplications() {
               <th>Action</th>
             </tr>
           </thead>
-           <tbody>
+          <tbody>
             {jobApplications.map((application) => (
               <tr key={application.application_id}>
                 <td>{application.applicant_name}</td>
@@ -108,7 +100,7 @@ export default function ViewJobApplications() {
                 <td>
                   <Button
                     variant="link"
-                    // onClick={() => handleShowResume(application.resume)}
+                  // onClick={() => handleShowResume(application.resume)}
                   >
                     View Resume
                   </Button>
@@ -116,34 +108,35 @@ export default function ViewJobApplications() {
                 <td>{application.title}</td>
                 <td>{application.status}</td>
                 <td>
-                {/*   {application.status === 'Pending' && (
+                  {application.status === 'Pending' && (
                     <>
                       <Button
                         variant="success"
                         size="sm"
                         onClick={() => {
-                          setSelectedApplication(application);
+                          setApplicationId(application.application_id)
                           setShowInterviewModal(true);
                         }}
                       >
                         Call for Interview
-                      </Button>{' '}
+                      </Button>
                       <Button
                         variant="danger"
                         size="sm"
                         onClick={() => {
-                          setSelectedApplication(application);
-                          setShowRejectModal(true);
+                          // setApplicationId(application.application_id)
+                          // setShowRejectModal(true);
+
                         }}
                       >
                         Reject
                       </Button>
                     </>
-                  )}*/}
-                </td> 
+                  )}
+                </td>
               </tr>
             ))}
-          </tbody> 
+          </tbody>
         </Table>
 
 
@@ -187,7 +180,7 @@ export default function ViewJobApplications() {
 
         {/* Call for Interview Modal */}
 
-        {/* <Modal
+        <Modal
           show={showInterviewModal}
           onHide={() => setShowInterviewModal(false)}
         >
@@ -206,18 +199,18 @@ export default function ViewJobApplications() {
             </Button>
             <Button
               variant="success"
-              onClick={() => handleCallForInterview(selectedApplication.id)}
+              onClick={() => handleCallForInterview()}
             >
               Call for Interview
             </Button>
           </Modal.Footer>
-        </Modal> */}
+        </Modal>
 
 
 
         {/* Reject Modal */}
 
-        {/* <Modal
+        <Modal
           show={showRejectModal}
           onHide={() => setShowRejectModal(false)}
         >
@@ -236,12 +229,12 @@ export default function ViewJobApplications() {
             </Button>
             <Button
               variant="danger"
-              onClick={() => handleRejectApplication(selectedApplication.id)}
+              onClick={() => handleRejectApplication()}
             >
               Reject
             </Button>
           </Modal.Footer>
-        </Modal> */}
+        </Modal>
       </div>
     </div>
   );

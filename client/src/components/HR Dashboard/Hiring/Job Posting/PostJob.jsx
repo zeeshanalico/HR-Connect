@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { responsivePropType } from 'react-bootstrap/esm/createUtilityClasses';
-import Toast from './../../../../UIModules/Toast.jsx'
 import '../../../BasicStyle.css';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'

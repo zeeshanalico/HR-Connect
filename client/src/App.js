@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import ContainerToast from './UIModules/Toast/ContainerToast'
 
 // Screens 
 import Landing from "./screens/Landing.jsx";
@@ -57,14 +57,12 @@ export default function App() {
           <Route path="/empdash" element={<EmployeeDashboardPage />} />
           <Route path="/applyPage/applyNow" element={<ApplyNow />} />
 
-
           {/* //Employee's side routes */}
           <Route path="/empdash/viewProfile" element={<ViewProfilePage />} />
           <Route path="/empdash/markAttendance" element={<MarkAttendancePage />} />
           <Route path="/empdash/AttendanceRecord" element={<AttendanceRecordPage />} />
           <Route path="/empdash/submitLeave" element={<SubmitLeavePage />} />
           <Route path="/empdash/leaveStatus" element={<LeaveStatusPage />} />
-
 
           {/* // HR's side routes */}
           <Route path="/hrdash/addEmployee" element={<AddEmployee />} />
@@ -75,13 +73,9 @@ export default function App() {
           <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />
           <Route path="/hrdash/viewApplications" element={<ViewApplicationsPage />} />
           <Route path="/hrdash/postJob" element={<PostJobPage />} />
-
-
-
-
-
         </Routes>
       </Router>
+      <ContainerToast/>
     </>
   );
 }
