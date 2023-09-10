@@ -268,9 +268,9 @@ router.post('/removeEmployee', (req, res) => {
 })
 
 
-// --------------------------------------------------------------------------emp/attendenc---------------------------------------------------------------------------------
+// --------------------------------------------------------------------------emp/attendence---------------------------------------------------------------------------------
 router.post('/getAttendencebyEmp', (req, res) => {
-    const { emp_id,todayDate } = req.body;
+    const { emp_id, todayDate } = req.body;
     mysql.query('select status from attendance where emp_id=? and attendance_date=?;', [emp_id, todayDate], (err, result) => {
         if (err) {
             res.json({ success: false, message: "error in fetching attendace status" })
@@ -298,78 +298,38 @@ router.put('/updateAttendance', async (req, res) => {
         }
     );
 });
+// --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
+router.post('/getEmpInfobyEmpId', (req, res) => {
+    const { emp_id } = req.body;
+    mysql.query('select * from employeeInformation ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;', [emp_id], (err, result) => {
+        if (err) {
+            res.json({ success: false, message: "error in fetching attendace status", err })
+        } else {
+            res.json(result)
+        }
+    });
+})
 
+router.put('/updateEmployeeInfo', async (req, res) => {
+    try {
+        const { emp_id, email, phone_number, city, address, zipcode } = req.body;
+        const updateQuery = `UPDATE employeeinformation SET email = ?, phone_number = ?, city = ?, address = ?, zipcode = ? WHERE emp_id = ?;`;
 
-// router.put('/updateAttendance', (req, res) => {
-//     const employeeId = req.body.employeeId;
-//     const status = req.body.status;
-//     const currentTime = new Date();
-
-//     if (currentTime.getHours() === 23 && currentTime.getMinutes() >= 59) {
-//         const attendanceData = {
-//             employee_id: employeeId,
-//             attendance_date: currentTime.toISOString().split('T')[0],
-//             status: status
-//         };
-
-//         // Insert a new attendance record
-//         mysql.query('INSERT INTO Attendance SET ?', attendanceData, (err, result) => {
-//             if (err) {
-//                 console.error('Error updating attendance: ', err);
-//                 res.status(500).json({ message: 'Internal server error.' });
-//                 return;
-//             }
-//             res.status(200).json({ message: 'Attendance updated successfully.' });
-//         });
-//     } else {
-//         // Reject the update if it's before 11:59 PM
-//         res.status(400).json({ message: 'Attendance update allowed after 11:59 PM.' });
-//     }
-// });
-
-
-
-
-// router.put('/updateAttendance', (req, res) => {
-//     const employeeId = req.body.emp_id;
-//     const status = req.body.status;
-//     const currentTime = new Date();
-//     const currentDate = currentTime.toISOString().split('T')[0];
-
-//     // Check if there's an existing attendance record for the employee for the current date
-//     mysql.query('SELECT * FROM Attendance WHERE employee_id = ? AND attendance_date = ?', [employeeId, currentDate], (err, rows) => {
-//         if (err) {
-//             console.error('Error checking attendance: ', err);
-//             res.status(500).json({ message: 'Internal server error.' });
-//             return;
-//         }
-
-//         if (rows.length === 0) {
-//             // No existing attendance record, insert a new one
-//             if (currentTime.getHours() === 23 && currentTime.getMinutes() >= 59) {
-//                 const attendanceData = {
-//                     employee_id: employeeId,
-//                     attendance_date: currentDate,
-//                     status: status
-//                 };
-
-//                 // Insert a new attendance record
-//                 mysql.query('INSERT INTO Attendance SET ?', attendanceData, (insertErr, result) => {
-//                     if (insertErr) {
-//                         console.error('Error updating attendance: ', insertErr);
-//                         res.status(500).json({ message: 'Internal server error.' });
-//                         return;
-//                     }
-//                     res.status(200).json({ message: 'Attendance updated successfully.' });
-//                 });
-//             } else {
-//                 res.status(400).json({ message: 'Attendance update allowed after 11:59 PM.' });
-//             }
-//         } else {
-//             // Existing attendance record found, reject the update
-//             res.json({ message: 'Attendance already updated for today.' });
-//         }
-//     });
-// });
-
+        mysql.query(
+            updateQuery,
+            [email, phone_number, city, address, zipcode, emp_id],
+            (error, results) => {
+                if (error) {
+                    console.error('Error updating employee information:', error);
+                    res.json({ success: false, message: 'Internal server error.' });
+                } else {
+                    res.json({ success: true, message: 'Employee information updated successfully.' });
+                }
+            }
+        );
+    } catch (error) {
+        console.error('Error updating employee information:', error);
+        res.json({ success: false, message: 'Internal server error.' });
+    }
+});
 module.exports = router;

@@ -4,9 +4,9 @@ import Modal from 'react-bootstrap/Modal';
 import '../../../BasicStyle.css';
 import './MarkAttendance.css';
 import Toast from '../../../../UIModules/Toast/Toast';
-import { BaseUrl } from '../../../../constants';
+import { BaseUrl,employeeId } from '../../../../constants';
 import axios from 'axios';
-const emp_id = 3;
+const emp_id = employeeId;
 export default function MarkAttendance() {
 
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
