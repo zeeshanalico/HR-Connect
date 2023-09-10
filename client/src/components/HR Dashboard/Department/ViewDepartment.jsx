@@ -1,134 +1,123 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BaseUrl } from '../../../constants';
 import '../BasicStyle.css';
 import { Modal, Button, Form } from 'react-bootstrap';
-
-const sampleDepartmentData = [
-    {
-      id: 1,
-      name: 'Sales',
-      employees: [
-        { id: 1, firstName: 'John', lastName: 'Doe' },
-        { id: 2, firstName: 'Jane', lastName: 'Smith' },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Marketing',
-      employees: [
-        { id: 3, firstName: 'Alice', lastName: 'Johnson' },
-        { id: 4, firstName: 'Bob', lastName: 'Williams' },
-      ],
-    },
-    {
-      id: 3,
-      name: 'Finance',
-      employees: [
-        { id: 5, firstName: 'Michael', lastName: 'Brown' },
-        { id: 6, firstName: 'Emily', lastName: 'Davis' },
-      ],
-    },
-    // ... Add more departments
-  ];
-
-
+import Toast from '../../../UIModules/Toast/Toast';
 const ViewDepartment = () => {
-  const [departmentList, setDepartmentList] = useState(sampleDepartmentData);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [departmentToRemove, setDepartmentToRemove] = useState(null);
+  const [departmentList, setDepartmentList] = useState([]);
+  // const [searchTerm, setSearchTerm] = useState('');
+  // const [showConfirmation, setShowConfirmation] = useState(false);
+  // const [departmentToRemove, setDepartmentToRemove] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newDepartmentName, setNewDepartmentName] = useState('');
-  const [newDepartmentEmployees, setNewDepartmentEmployees] = useState(0);
- 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getDepInfo');
+      setDepartmentList(response.data[0]);
+    } catch (error) {
+      console.error('Error fetching deplist :', error);
+      throw error;
+    }
   };
 
-  const handleShowConfirmation = (departmentId) => {
-    setDepartmentToRemove(departmentId);
-    setShowConfirmation(true);
+  useEffect(() => {
+    fetchData();
+  }, [])
+
+  const handleAddDepartment = (e) => {
+    setNewDepartmentName(e);
   };
 
-  const handleHideConfirmation = () => {
-    setDepartmentToRemove(null);
-    setShowConfirmation(false);
-  };
-
-  const handleRemoveDepartment = () => {
-    const updatedDepartments = departmentList.filter(department => department.id !== departmentToRemove);
-    setDepartmentList(updatedDepartments);
-    handleHideConfirmation();
-  };
-
-  const handleShowAddForm = () => {
-    setShowAddForm(true);
-  };
-
-  const handleHideAddForm = () => {
+  const submitHandler = async (event) => {
+    // event.preventDefault();
+    console.log(newDepartmentName);
+    try {
+      const response = await axios.post(BaseUrl + '/addDepartment', { newDepartmentName });
+      if (response.data.success) {
+        Toast(`Success ${response.data.success}, -  Message : ${response.data.message}`, 'info')
+      }
+    } catch (e) {
+      console.log(e);
+      Toast("Error : -", 'error')
+    }
+    await fetchData();
     setShowAddForm(false);
-    setNewDepartmentName('');
-    setNewDepartmentEmployees(0);
-  };
+    setNewDepartmentName("");
+  }
 
-  const handleAddDepartment = () => {
-    const newDepartment = {
-      id: departmentList.length + 1,
-      name: newDepartmentName,
-      employees: Array.from({ length: newDepartmentEmployees }, (_, index) => ({
-        id: index + 1,
-        firstName: `Employee ${index + 1}`,
-      })),
-    };
-    setDepartmentList([...departmentList, newDepartment]);
-    handleHideAddForm();
-  };
+  // const handleSearch = (e) => {
+  //   setSearchTerm(e.target.value);
+  // };
+
+  // const handleShowConfirmation = (departmentId) => {
+  //   setDepartmentToRemove(departmentId);
+  //   setShowConfirmation(true);
+  // };
+
+  // const handleHideConfirmation = () => {
+  //   setDepartmentToRemove(null);
+  //   setShowConfirmation(false);
+  // };
+
+  // const handleRemoveDepartment = () => {
+  //   const updatedDepartments = departmentList.filter(department => department.id !== departmentToRemove);
+  //   setDepartmentList(updatedDepartments);
+  //   handleHideConfirmation();
+  // };
+
+  // const handleShowAddForm = () => {
+  //   setShowAddForm(true);
+  // };
+
+  // const handleHideAddForm = () => {
+  //   setShowAddForm(false);
+  //   setNewDepartmentName('');
+  //   setNewDepartmentEmployees(0);
+  // };
 
 
 
-  const filteredDepartments = departmentList.filter(
-    department => department.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  // const filteredDepartments = departmentList.filter(
+  //   department => department.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // );   
 
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">View Departments</h2>
-<div id="content">
-      <div className="mb-3">
-        {/* Search input */}
-      </div>
+      <div id="content">
+        <div className="mb-3">
+          {/* Search input */}
+        </div>
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Number of Employees</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDepartments.map(department => (
-            <tr key={department.id}>
-              <td>{department.id}</td>
-              <td>{department.name}</td>
-              <td>{department.employees.length}</td>
-              <td>
-                <button className="btn btn-danger btn-sm" onClick={() => handleShowConfirmation(department.id)}>
-                  Remove
-                </button>
-              </td>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Number of Employees</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="mb-3">
-        <button className="btn btn-primary" onClick={handleShowAddForm}>
-          Add New Department
-        </button>
-      </div>
+          </thead>
+          <tbody>
+            {departmentList.map(department => (
+              <tr key={department.dep_id}>
+                <td>{department.dep_id}</td>
+                <td>{department.dep_name}</td>
+                <td>{department.total_employees}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="mb-3">
+          <button className="btn btn-primary" onClick={() => { setShowAddForm(true) }}>
+            Add New Department
+          </button>
+        </div>
 
-      {/* Confirmation Modal */}
+        {/* 
       <Modal show={showConfirmation} onHide={handleHideConfirmation}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Removal</Modal.Title>
@@ -144,43 +133,34 @@ const ViewDepartment = () => {
             Remove
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
 
-      <Modal show={showAddForm} onHide={handleHideAddForm}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Department</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Department Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={newDepartmentName}
-                onChange={(e) => setNewDepartmentName(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Number of Employees</Form.Label>
-              <Form.Control
-                type="number"
-                value={newDepartmentEmployees}
-                onChange={(e) => setNewDepartmentEmployees(parseInt(e.target.value))}
-              />
-            </Form.Group>
-          </Form>
+        <Modal show={showAddForm} onHide={() => { setShowAddForm(false) }}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New Department</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Department Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newDepartmentName}
+                  onChange={(e) => { handleAddDepartment(e.target.value) }}
+                />
+              </Form.Group>
+            </Form>
           </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleHideAddForm}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleAddDepartment}>
-            Add
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-    </div>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => { setShowAddForm(false) }}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={submitHandler}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     </div>
   );
 };

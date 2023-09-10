@@ -9,9 +9,10 @@ import ApplyNow from '../../../ApplyNow/ApplyNow';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';
 
 export default function EmployeeInfo() {
-  const [employeeInformation, setEmployeeInformation] = useState({job_id:null,dep_id:null});//post
+  const [employeeInformation, setEmployeeInformation] = useState({ job_id: null, dep_id: null });//post
   const [jobPositions, setJobPositions] = useState([]);//get
   const [dep, setDep] = useState([]);//get
+  const [roles, setRoles] = useState([]);//get
 
   const fetchData = async () => {
     try {
@@ -31,10 +32,20 @@ export default function EmployeeInfo() {
       throw error;
     }
   };
+  const fetchData2 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getRoles');
+      setRoles(response.data);
+    } catch (error) {
+      console.error('Error fetching roles :', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     fetchData();
     fetchData1();
+    fetchData2();
   }, [])
 
 
@@ -52,7 +63,7 @@ export default function EmployeeInfo() {
     console.log(employeeInformation);
     if (Object.keys(employeeInformation).length !== 17) {
       Toast("Please fill out all fields.", 'error');
-      return; 
+      return;
     }
     const hasEmptyAttributes = Object.values(employeeInformation).some((value) => value === null || value.trim() === '');
     if (hasEmptyAttributes) {
@@ -65,7 +76,7 @@ export default function EmployeeInfo() {
       if (response.data.success) {
         Toast("Employee Registered Succesfully!", 'info');
       } else {
-        Toast(`success:${response.data.success} /n An error occured in Employee Registration`, 'error');
+        Toast(`success:${response.data.success} ${<br/>} ${response.data.message}`, 'error');
       }
     } catch (error) {
       Toast("Error in submission:check console for furthrer Details ", 'error');
@@ -94,7 +105,7 @@ export default function EmployeeInfo() {
                     name="name"
                     value={employeeInformation.name}
                     onChange={handleChange}
-                    
+
 
                   />
                 </div>
@@ -108,7 +119,7 @@ export default function EmployeeInfo() {
                     name="email"
                     value={employeeInformation.email}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -121,7 +132,7 @@ export default function EmployeeInfo() {
                     name='phone_number'
                     value={employeeInformation.phone_number}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -134,7 +145,7 @@ export default function EmployeeInfo() {
                     name="city"
                     value={employeeInformation.city}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
               </div>
@@ -149,7 +160,7 @@ export default function EmployeeInfo() {
                     name="address"
                     value={employeeInformation.address}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -162,7 +173,7 @@ export default function EmployeeInfo() {
                     name="zipcode"
                     value={employeeInformation.zipcode}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -175,7 +186,7 @@ export default function EmployeeInfo() {
                     name='DOB'
                     value={employeeInformation.DOB}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -189,7 +200,7 @@ export default function EmployeeInfo() {
                     name='cnic'
                     value={employeeInformation.cnic}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
                 <div id="gender-input">
@@ -222,7 +233,7 @@ export default function EmployeeInfo() {
                     name='emp_id'
                     value={employeeInformation.emp_id}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
                 <div className="mb-3 rounded-input">
@@ -254,17 +265,20 @@ export default function EmployeeInfo() {
                     name='salary'
                     value={employeeInformation.salary}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
               </div>
 
               <div id="second-half">
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="DepartmentName" className="form-label">Role: </label>
-                  <select name="role" className="form-control round" onChange={handleChange} >
-                    <option value={'HR'}>HR</option>
-                    <option value={'Employee'}>Employee</option>
+                  <label htmlFor="emprole" className="form-label">Employee Role:</label>
+                  <select name="role_id" className="form-control round" value={employeeInformation.role_id} onChange={handleChange} >
+                    {roles.map((role) => (
+                      <option key={role.role_id} value={role.role_id}>
+                        {role.role_name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
@@ -276,7 +290,7 @@ export default function EmployeeInfo() {
                     name='login_email'
                     value={employeeInformation.login_email}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -289,7 +303,7 @@ export default function EmployeeInfo() {
                     name='login_password'
                     value={employeeInformation.login_password}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
 
@@ -302,7 +316,7 @@ export default function EmployeeInfo() {
                     name='hire_date'
                     value={employeeInformation.hire_date}
                     onChange={handleChange}
-                    
+
                   />
                 </div>
               </div>
