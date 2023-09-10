@@ -5,11 +5,13 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
+import { Dropdown } from 'react-bootstrap';
+
 
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
-  const [empId, setEmpId] = useState('')
+  const [empId, setEmpId] = useState('');
   // const [searchName, setSearchName] = useState('');
   // const [filterDepartment, setFilterDepartment] = useState('');
   // const [searchId, setSearchId] = useState('');
@@ -56,6 +58,19 @@ const ManageEmployee = () => {
     }
     setShowConfirmation(false)
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedEmployees = employees.slice(indexOfFirstItem, indexOfLastItem);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(employees.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
   // const handleConfirmRemove = () => {
   //   const updatedEmployees = employees.filter(employee => employee.id !== employeeToRemove);
@@ -109,6 +124,19 @@ const ManageEmployee = () => {
           onChange={(e) => setSearchId(e.target.value)}
         />
       </div> */}
+      <div className="mb-3">
+        <label htmlFor="itemsPerPage" className="form-label">Items Per Page:</label>
+        <Dropdown>
+          <Dropdown.Toggle variant="primary" id="itemsPerPageDropdown">
+            {itemsPerPage}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
+            <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
+            <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
 
       <table className="table">
         <thead>
@@ -124,7 +152,7 @@ const ManageEmployee = () => {
           </tr>
         </thead>
         <tbody>
-          {employees.map(employee => (
+          {displayedEmployees.map(employee => (
             <tr key={employee.emp_id}>
               <td>{employee.emp_id}</td>
               <td>{employee.name}</td>
@@ -174,6 +202,15 @@ const ManageEmployee = () => {
         </Modal.Footer>
       </Modal>
 
+      <ul className="pagination">
+        {pageNumbers.map(number => (
+          <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
+            <button className="page-link" onClick={() => setCurrentPage(number)}>
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
