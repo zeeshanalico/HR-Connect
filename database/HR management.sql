@@ -10,6 +10,13 @@ create table roles(
   `role_id` int NOT NULL AUTO_INCREMENT primary key,
   `role_name` varchar(50) DEFAULT NULL
 );
+create table leaverequest(
+	emp_id int primary key,
+	att_status ENUM('Pending', 'Rejected', 'Approved') DEFAULT 'Pending',
+	leave_date date,
+    reason text,
+    applying_date date   
+);
 
 CREATE TABLE `jobpositions` (
   `job_id` int NOT NULL AUTO_INCREMENT primary key,
@@ -68,11 +75,11 @@ CREATE TABLE Attendance (
   attendance_id INT AUTO_INCREMENT PRIMARY KEY,
   emp_id INT,
   attendance_date DATE,
-  status ENUM('Present', 'Absent', 'Late','Leave') NOT NULL,
+  status ENUM('Present', 'Late','Leave'),
   FOREIGN KEY (emp_id) REFERENCES employeeinformation(emp_id),
   UNIQUE KEY (emp_id, attendance_date)
 );
-
+select * from attendance; 
 insert into attendance(emp_id,attendance_date,status) values(3,'2023-9-9','present');
 
 -- CREATE TABLE LeaveRequests (
@@ -130,3 +137,18 @@ INSERT INTO employeeinformation (
     (10, 'Zainab Akhtar', 'zainab.akhtar@example.com', '4567890123', 'Quetta', '123 Cedar St', '86000', '1987-12-05', '9012345678901', 'Female', '2023-08-15', 57000.00, 'zainab_login', 'hashed_password', 2, 4, 10)
     ;
 select * from jobPositions;
+INSERT INTO employeeinformation (`emp_id`, `name`, `email`, `phone_number`, `city`, `address`, `zipcode`, `DOB`, `cnic`, `gender`, `hire_date`, `salary`, `login_email`, `login_password`, `role_id`, `job_id`, `dep_id`) VALUES
+  (71, 'William Lee', 'william.lee@example.com', '999-999-9999', 'Dallas', '404 Maple St', '75201', '1987-12-30', '78901-2345678-9', 'Male', '2022-07-30', 59000.00, 'william_login@example.com', 'password456', 1, 3, 1),
+  (18, 'Olivia Clark', 'olivia.clark@example.com', '111-222-3333', 'Seattle', '505 Cedar St', '98101', '1993-04-18', '89012-3456789-0', 'Female', '2022-08-18', 63000.00, 'olivia_login@example.com', 'password789', 2, 4, 2),
+  (91, 'David Miller', 'david.miller@example.com', '777-777-7777', 'Boston', '606 Pine St', '02101', '1986-09-08', '90123-4567890-1', 'Male', '2022-09-08', 60000.00, 'david_login@example.com', 'passwordabc', 1, 3, 1),
+  (110, 'Sophia Lewis', 'sophia.lewis@example.com', '444-555-6666', 'Denver', '707 Birch St', '80201', '1994-06-22', '01234-5678901-2', 'Female', '2022-10-22', 64000.00, 'sophia_login@example.com', 'passwordxyz', 2, 2, 2);
+
+
+
+
+INSERT INTO leaverequest (emp_id, att_status, leave_date, reason, applying_date)
+VALUES
+    (1, 'Leave', '2023-09-20', 'Vacation', '2023-09-10'),
+    (2, 'Leave', '2023-09-21', 'Family event', '2023-09-11'),
+    (5, 'Leave', '2023-09-22', 'Sick leave', '2023-09-12'),
+    (4, 'Leave', '2023-09-23', 'Personal reasons', '2023-09-13');

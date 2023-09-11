@@ -2,17 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { responsivePropType } from 'react-bootstrap/esm/createUtilityClasses';
 import '../../../BasicStyle.css';
+import FilterSearch from '../../../../UIModules/FilterSearch';
+import Filter from '../../../../UIModules/Filter';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
+import { Dropdown } from 'react-bootstrap';
+
 export default function PostJob() {
   const [showModal, setShowModal] = useState(false);
   const [jobDetails, setJobDetails] = useState([])
 
   const [alljobs, setAllJobs] = useState([]);//get
   const [confirmationModal, setConfirmationModal] = useState(false); // State for the confirmation modal
+  const [focus, setFocus] = useState(false);
+  console.log(focus);
 
   const [jobToRemove, setJobToRemove] = useState(null); // State to track the job to be removed
-
+  const [filteredResults, setFilteredResults] = useState([]);
+  console.log(filteredResults);
   const [dep, setDep] = useState([])
 
   const fetchData = async () => {
@@ -45,6 +52,9 @@ export default function PostJob() {
     setJobDetails((prevState) => {
       return { ...prevState, [name]: value };
     });
+  };
+  const handleFilter = (filteredData) => {
+    setFilteredResults(filteredData);
   };
   // -------------------------------------------submit data ------------------------------------------------------------
   const handleSubmit = async (e) => {
@@ -91,6 +101,17 @@ export default function PostJob() {
     setJobToRemove(null);
   }
 
+  // pagination and itemsperpage
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedJobs = alljobs.slice(indexOfFirstItem, indexOfLastItem);
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(alljobs.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div id="full-content">
       <h2 className='mb-4'>Post a New Job</h2>
@@ -100,7 +121,7 @@ export default function PostJob() {
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Form onSubmit={handleSubmit}>
             <Modal.Header closeButton>
-              <Modal.Title>Post a New Job</Modal.Title>
+              <Modal.Title >Post a New Job</Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
@@ -179,7 +200,26 @@ export default function PostJob() {
         </Modal>
 
         {/* Display the list of posted jobs */}
-        <h2 className='mb-4'>Posted Jobs</h2>
+        <h2 className='mb-4 mr-4'>Posted Jobs<Button className="float-right" style={{ width: '130px', alignSelf: 'center' }} variant="primary" onClick={() => setShowModal(true)}>
+          Post a New Job
+        </Button></h2>
+        <div className="d-flex justify-content-end align-items-center mb-3">
+          <FilterSearch style={{ width: '300px' }} data={alljobs} onFilter={handleFilter} className="float-right" onFocus={() => { setFocus(true) }} />
+          <label htmlFor="itemsPerPage" className="form-label me-2">
+            Items Per Page : &ensp;
+          </label>
+          <Dropdown>
+            <Dropdown.Toggle className='mr-4' variant="info" id="itemsPerPageDropdown" style={{ width: '70px' }}>
+              {itemsPerPage}
+            </Dropdown.Toggle>
+            <Dropdown.Menu style={{ minWidth: '70px' }}>
+              <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(50)}>50</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
         <table className="table">
           <thead>
             <tr>
@@ -193,29 +233,57 @@ export default function PostJob() {
             </tr>
           </thead>
           <tbody>
-            {alljobs.map((job) => (
-              <tr key={job.job_id}>
-                <td>{job.title}</td>
-                <td>{job.dep_name}</td>
-                <td>{job.experience}</td>
-                <td>{job.date_posted.slice(0, 10)}</td>
-                <td>{job.expiry_date.slice(0, 10)}</td>
-                <td>{job?.status}</td>
-                <td>
-                  <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>
-                    Remove
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {focus ? (
+              filteredResults.map((job) => (
+                <tr key={job.job_id}>
+                  <td>{job.title}</td>
+                  <td>{job.dep_name}</td>
+                  <td>{job.experience}</td>
+                  <td>{job.date_posted.slice(0, 10)}</td>
+                  <td>{job.expiry_date.slice(0, 10)}</td>
+                  <td>{job?.status}</td>
+                  <td>
+                    <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              displayedJobs.map((job) => (
+                <tr key={job.job_id}>
+                  <td>{job.title}</td>
+                  <td>{job.dep_name}</td>
+                  <td>{job.experience}</td>
+                  <td>{job.date_posted.slice(0, 10)}</td>
+                  <td>{job.expiry_date.slice(0, 10)}</td>
+                  <td>{job?.status}</td>
+                  <td>
+                    <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-        <Button className="mt-4" style={{ width: '150px', alignSelf: 'center' }} variant="primary" onClick={() => setShowModal(true)}>
-          Post a New Job
-        </Button>
+        <div className="d-flex justify-content-center">
+          <ul className='pagination'>
+            {pageNumbers.map(number => (
+              <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => setCurrentPage(number)}>
+                  {number}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+
 
         {/* Confirmation Modal */}
-        <Modal show={confirmationModal} onHide={() => { setConfirmationModal(false) }}>
+        <Modal show={confirmationModal} onHide={() => { setConfirmationModal(false) }} >
           <Modal.Header closeButton>
             <Modal.Title>Confirm Removal</Modal.Title>
           </Modal.Header>

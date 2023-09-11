@@ -6,9 +6,16 @@ import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
 import { Dropdown } from 'react-bootstrap';
+import FilterSearch from '../../../../UIModules/FilterSearch';
 
 
 const ManageEmployee = () => {
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [focus, setFocus] = useState(false);
+
+  const handleFilter = (filteredData) => {
+    setFilteredResults(filteredData);
+  };
 
   const [employees, setEmployees] = useState([]);
   const [empId, setEmpId] = useState('');
@@ -59,14 +66,12 @@ const ManageEmployee = () => {
     setShowConfirmation(false)
   };
 
+  // pagination and itemsperpage
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
-
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const displayedEmployees = employees.slice(indexOfFirstItem, indexOfLastItem);
-
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(employees.length / itemsPerPage); i++) {
     pageNumbers.push(i);
@@ -85,7 +90,7 @@ const ManageEmployee = () => {
   // };
 
   return (
-    <div id="full-content" className="container mt-4">
+    <div id="full-content" className="container mt-3">
       <h2 className="mb-4">Manage Employee</h2>
       {/* <div id="content">
         <div className="mb-3">
@@ -108,7 +113,7 @@ const ManageEmployee = () => {
             value={filterDepartment}
             onChange={(e) => setFilterDepartment(e.target.value)}
           >
-            <option value="">All</option>
+          <option value="">All</option>
             <option value="Engineering">Engineering</option>
             <option value="HR">HR</option>
           </select>
@@ -124,19 +129,28 @@ const ManageEmployee = () => {
           onChange={(e) => setSearchId(e.target.value)}
         />
       </div> */}
-      <div className="mb-3">
-        <label htmlFor="itemsPerPage" className="form-label">Items Per Page:</label>
-        <Dropdown>
-          <Dropdown.Toggle variant="primary" id="itemsPerPageDropdown">
-            {itemsPerPage}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
-            <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
-            <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+      <div className="content">
+        <div className="d-flex justify-content-start mb-3">
+          <FilterSearch style={{ width: '300px' }} data={employees} onFilter={handleFilter} className="float-right" onFocus={() => { setFocus(true) }} />
+          <label htmlFor="itemsPerPage" className="form-label me-2">
+            Items Per Page:
+          </label>
+          <Dropdown>
+            <Dropdown.Toggle variant="info" id="itemsPerPageDropdown" style={{ width: '70px' }}>
+              {itemsPerPage}
+            </Dropdown.Toggle>
+            <Dropdown.Menu style={{ minWidth: '70px', left: 'auto', right: '0' }}>
+              <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(50)}>50</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </div>
+
+
+
 
       <table className="table">
         <thead>
@@ -152,7 +166,7 @@ const ManageEmployee = () => {
           </tr>
         </thead>
         <tbody>
-          {displayedEmployees.map(employee => (
+          {focus ? (filteredResults.map(employee => (
             <tr key={employee.emp_id}>
               <td>{employee.emp_id}</td>
               <td>{employee.name}</td>
@@ -175,7 +189,30 @@ const ManageEmployee = () => {
                 </button>
               </td>
             </tr>
-          ))}
+          ))) : (displayedEmployees.map(employee => (
+            <tr key={employee.emp_id}>
+              <td>{employee.emp_id}</td>
+              <td>{employee.name}</td>
+              <td>{employee.email}</td>
+              <td>{employee.phone_number}</td>
+              <td>{employee.job_name}</td>
+              <td>{employee.dep_name}</td>
+              <td>{employee.gender}</td>
+              <td>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => {
+                    setEmpId(employee.emp_id)
+                    setShowConfirmation(true)
+                  }
+                  }
+                >
+                  Remove
+                </button>
+              </td>
+            </tr>
+          )))}
         </tbody>
       </table>
       {/* </div> */}
