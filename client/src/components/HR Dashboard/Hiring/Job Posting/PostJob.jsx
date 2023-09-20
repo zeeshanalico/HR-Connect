@@ -15,11 +15,10 @@ export default function PostJob() {
   const [alljobs, setAllJobs] = useState([]);//get
   const [confirmationModal, setConfirmationModal] = useState(false); // State for the confirmation modal
   const [focus, setFocus] = useState(false);
-  console.log(focus);
 
   const [jobToRemove, setJobToRemove] = useState(null); // State to track the job to be removed
   const [filteredResults, setFilteredResults] = useState([]);
-  console.log(filteredResults);
+  console.log(alljobs);
   const [dep, setDep] = useState([])
 
   const fetchData = async () => {
@@ -49,6 +48,7 @@ export default function PostJob() {
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
+    console.log(name , value);
     setJobDetails((prevState) => {
       return { ...prevState, [name]: value };
     });
@@ -159,6 +159,27 @@ export default function PostJob() {
                   required
                 />
               </Form.Group>
+              <Form.Group controlId="locationrequired">
+                <Form.Label className='mt-3'>Location</Form.Label>
+                <Form.Control
+                  type="text"
+                  name='location'
+                  placeholder="Job location"
+                  value={jobDetails.location || ''}
+                  onChange={changeHandler}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="">
+                <Form.Label className='mt-3'>salary</Form.Label>
+                <Form.Control
+                  type="text"
+                  name='salary'
+                  placeholder="Salary"
+                  value={jobDetails.salary || ''}
+                  onChange={changeHandler}
+                />
+              </Form.Group>
 
               <Form.Group controlId="department">
                 <Form.Label className='mt-3'>Select Department</Form.Label>
@@ -228,7 +249,7 @@ export default function PostJob() {
               <th>Experience Required</th>
               <th>Date Posted</th>
               <th>Expiration Date</th>
-              <th>Status</th>
+              <th></th>
               <th>Action</th>
             </tr>
           </thead>
@@ -241,7 +262,6 @@ export default function PostJob() {
                   <td>{job.experience}</td>
                   <td>{job.date_posted.slice(0, 10)}</td>
                   <td>{job.expiry_date.slice(0, 10)}</td>
-                  <td>{job?.status}</td>
                   <td>
                     <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>
                       Remove

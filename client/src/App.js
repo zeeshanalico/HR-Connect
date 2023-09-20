@@ -66,6 +66,7 @@ export default function App() {
 
           {/* // HR's side routes */}
           <Route path="/hrdash/addEmployee" element={<AddEmployee />} />
+          <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />
           <Route path="/hrdash/manageEmployee" element={<ManageEmployeePage />} />
           <Route path="/hrdash/todayAttendance" element={<TodayAttendancePage />} />
           <Route path="/hrdash/attendanceHistory" element={<AttendanceHistoryPage />} />

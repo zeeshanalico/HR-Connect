@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { BaseUrl } from './../../../../constants.js'
+import { useNavigate } from 'react-router-dom';
 import '../../BasicStyle.css';
 import './EmployeeInfo.css';
 import axios from 'axios'
@@ -8,11 +9,12 @@ import Navbar from '../../Navbar';
 import ApplyNow from '../../../ApplyNow/ApplyNow';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';
 
-export default function EmployeeInfo() {
-  const [employeeInformation, setEmployeeInformation] = useState({ job_id: null, dep_id: null });//post
+export default function EmployeeInfo({ id }) {
+  const [employeeInformation, setEmployeeInformation] = useState({});//post
   const [jobPositions, setJobPositions] = useState([]);//get
   const [dep, setDep] = useState([]);//get
   const [roles, setRoles] = useState([]);//get
+  const navigate = useNavigate()
 
   const fetchData = async () => {
     try {
@@ -41,11 +43,25 @@ export default function EmployeeInfo() {
       throw error;
     }
   };
+  const fetchEmpData = async () => {
+    if (id) {
+
+      try {
+        const response = await axios.get(BaseUrl + `/getApplicant/${id}`)
+        console.log(response.data[0]);
+        setEmployeeInformation(response.data[0])
+      }
+      catch (error) {
+        Toast("Employee Information not loaded", 'error')
+      }
+    }
+  }
 
   useEffect(() => {
     fetchData();
     fetchData1();
     fetchData2();
+    fetchEmpData()
   }, [])
 
 
@@ -61,22 +77,31 @@ export default function EmployeeInfo() {
   const handleSubmit = async (event) => {
     event.preventDefault()
     console.log(employeeInformation);
-    if (Object.keys(employeeInformation).length !== 17) {
-      Toast("Please fill out all fields.", 'error');
-      return;
-    }
-    const hasEmptyAttributes = Object.values(employeeInformation).some((value) => value === null || value.trim() === '');
-    if (hasEmptyAttributes) {
-      Toast("Please fill out all fields before submitting.", 'error');
-      return;
+    // if (Object.keys(employeeInformation).length !== 17) {
+    //   Toast("Please fill out all fields.", 'error');
+    //   return;
+    // }
+    // const hasEmptyAttributes = Object.values(employeeInformation).some((value) => value === null || value.trim() === '');
+    // if (hasEmptyAttributes) {
+    //   Toast("Please fill out all fields before submitting.", 'error');
+    //   return;
+    // }
+
+    for (const key in employeeInformation) {
+      const value = employeeInformation[key]
+
+      if (value === '') {
+        Toast(`Fill ${employeeInformation[key]} attribute.`)
+      }
     }
 
     try {
       const response = await axios.post(BaseUrl + '/registerEmployee', employeeInformation);
       if (response.data.success) {
         Toast("Employee Registered Succesfully!", 'info');
+        navigate('/hrdash/viewApplications')
       } else {
-        Toast(`success:${response.data.success} ${<br/>} ${response.data.message}`, 'error');
+        Toast(`success:${response.data.success} ${<br />} ${response.data.message}`, 'error');
       }
     } catch (error) {
       Toast("Error in submission:check console for furthrer Details ", 'error');
@@ -102,8 +127,8 @@ export default function EmployeeInfo() {
                     type="text"
                     className="form-control round"
                     id="name"
-                    name="name"
-                    value={employeeInformation.name}
+                    name="applicant_name"
+                    value={employeeInformation.applicant_name}
                     onChange={handleChange}
 
 
@@ -239,6 +264,7 @@ export default function EmployeeInfo() {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="emp_role" className="form-label">Employee job:</label>
                   <select name="job_id" className="form-control round" value={employeeInformation.job_id} onChange={handleChange}  >
+                    <option>--select</option>
                     {jobPositions.map((job) => (
                       <option key={job.job_id} value={job.job_id}>
                         {job.job_name}
@@ -249,6 +275,7 @@ export default function EmployeeInfo() {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="DepartmentName" className="form-label">Department Name:</label>
                   <select name="dep_id" className="form-control round" value={employeeInformation.dep_id} onChange={handleChange} >
+                    <option>--select--</option>
                     {dep.map((dep) => (
                       <option key={dep.dep_id} value={dep.dep_id}>
                         {dep.dep_name}
@@ -274,6 +301,7 @@ export default function EmployeeInfo() {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="emprole" className="form-label">Employee Role:</label>
                   <select name="role_id" className="form-control round" value={employeeInformation.role_id} onChange={handleChange} >
+                    <option>--select</option>
                     {roles.map((role) => (
                       <option key={role.role_id} value={role.role_id}>
                         {role.role_name}
@@ -330,30 +358,3 @@ export default function EmployeeInfo() {
 
   )
 }
-{/*
-
- 
-
-<div className="mb-3 rounded-input">
-<label htmlFor="loginEmail" className="form-label">Date of Birth:</label>
-<input
-  type="date"
-  className="form-control round"
-  id="loginEmail"
-  value={loginEmail}
-  onChange={handleLoginEmailChange}
-  
-/>
-</div> 
- <div className="mb-3 rounded-input">
-        <label htmlFor="password" className="form-label">Password:</label>
-        <input
-          type="password"
-          className="form-control round"
-          id="password"
-          value={password}
-          onChange={handlePasswordChange}
-          
-        />
-      </div>
-*/}
