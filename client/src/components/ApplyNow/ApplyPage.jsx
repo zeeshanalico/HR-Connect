@@ -20,6 +20,8 @@ export default function ApplyPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [jobsPerPage, setJobsPerPage] = useState(5);
 
+  const currentDate = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -64,8 +66,10 @@ export default function ApplyPage() {
     )
     .filter((job) =>
       job.title.toLowerCase().includes(filters.jobTitle.toLowerCase())
+    )
+    .filter((job) =>
+      job.expiry_date >= currentDate
     );
-
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -123,6 +127,8 @@ export default function ApplyPage() {
           .filter((job) =>
             job.title.toLowerCase().includes(filters.jobTitle.toLowerCase())
           )
+          // .filter(job=>
+          //   job.expiry_date >= currentDate)
           .map((job) => (
             <Card id="card" key={job.job_id} className="mb-3">
               <Card.Header>

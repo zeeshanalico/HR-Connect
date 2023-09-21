@@ -77,25 +77,46 @@ const ManageEmployee = () => {
     setShowConfirmation(false);
   };
 
+  const [searchName, setSearchName] = useState('');
+
   // pagination and itemsperpage
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+
+  const filteredEmployees = employees.filter((employee) =>
+    (selectedGender === 'All' || employee.gender === selectedGender) &&
+    (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
+    (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
+    (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
+  );
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const displayedEmployees = employees.slice(indexOfFirstItem, indexOfLastItem);
+  const displayedEmployees = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
+
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(employees.length / itemsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredEmployees.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
-
-
 
   return (
     <div id="full-content" className="container mt-3">
       <h2 className="mb-4">Manage Employee</h2>
       <div className="content">
         <div className="d-flex justify-content-start mb-3">
-          <label htmlFor="itemsPerPage" className="form-label me-2">
+          <div className="d-flex justify-content-start mb-3">
+            <input
+              type="text"
+              placeholder="Search by Name"
+              style={{ width: '350px', marginLeft: "-10px" }}
+
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="form-control"
+            />
+          </div>
+
+          <label htmlFor="itemsPerPage" className="form-label me-2" style={{ marginLeft: "550px" }}>
             Items Per Page:
           </label>
           <Dropdown>
@@ -115,26 +136,27 @@ const ManageEmployee = () => {
       <table className="table">
         <thead>
           <tr>
-            <th>Employee ID</th>
+            <th>Emp ID</th>
             <th>Name</th>
             <th>Email Address</th>
-            <th>Phone Number</th>
-            <th>   <select
-              value={selectedJobRole}
-              style={{
-                border: "none",
-                height: "40px",
-                outline: "none",
-                width: "150px",
-                cursor: "pointer",
-                backgroundColor: "transparent",
-              }}
-              className="form-control round"
-              onChange={(e) => setSelectedJobRole(e.target.value)}
-            >                <option value={'All'}>Job Position</option>
+            <th style={{ lineHeight: '34px' }}>Ph. #</th>
+            <th>
+              <select
+                value={selectedJobRole}
+                style={{
+                  border: "none",
+                  height: "40px",
+                  outline: "none",
+                  width: "150px",
+                  cursor: "pointer",
+                  backgroundColor: "transparent",
+                }}
+                className="form-control round"
+                onChange={(e) => setSelectedJobRole(e.target.value)}
+              >                <option value={'All'}>Job Position</option>
 
-              {jobPositions.map((job => { return <option value={job.job_name}>{job.job_name}</option> }))}
-            </select>
+                {jobPositions.map((job => { return <option value={job.job_name}>{job.job_name}</option> }))}
+              </select>
             </th>
             <th>
               <select
@@ -172,7 +194,7 @@ const ManageEmployee = () => {
                 <option value={'Female'}>Female</option>
               </select>
             </th>
-            <th>Actions</th>
+            <th style={{ lineHeight: '34px' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -180,7 +202,8 @@ const ManageEmployee = () => {
             .filter((employee) =>
               (selectedGender === 'All' || employee.gender === selectedGender) &&
               (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
-              (selectedJobRole === 'All' || employee.job_name === selectedJobRole)
+              (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
+              (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
             )
             .map(employee => (
               <tr key={employee.emp_id}>
