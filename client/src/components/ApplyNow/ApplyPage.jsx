@@ -1,39 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'
+import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
-import { Card, Button } from 'react-bootstrap';
 import ApplyNow from './ApplyNow';
+import { Card, Button, InputGroup, FormControl, Pagination } from 'react-bootstrap';
+
 import '../BasicStyle.css';
 import './ApplyPage.css';
-import { InputGroup, FormControl } from 'react-bootstrap';
 
-import { BaseUrl } from './../../constants.js'
+import { BaseUrl } from './../../constants.js';
 
 export default function ApplyPage() {
+  const [filters, setFilters] = useState({
+    location: '',
+    jobTitle: '',
+  });
 
-  const [locationFilter, setLocationFilter] = useState('');
-  const [jobTitleFilter, setJobTitleFilter] = useState('');
-  // const [minSalaryFilter, setMinSalaryFilter] = useState('');
-  // const [maxSalaryFilter, setMaxSalaryFilter] = useState('');
-
-
-
-  const [alljobs, setAllJobs] = useState([]);//get
+  const [alljobs, setAllJobs] = useState([]); // get
   const [expandedJobs, setExpandedJobs] = useState({});
-  console.log(alljobs);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [jobsPerPage, setJobsPerPage] = useState(5);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getJobs');
       setAllJobs(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error('Error fetching data jobs:', error);
       throw error;
     }
   };
-  useEffect(() => {
-    fetchData()
-  }, []);
+
 
   const toggleExpand = (job_id) => {
     setExpandedJobs((prevState) => ({
@@ -42,55 +42,87 @@ export default function ApplyPage() {
     }));
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    setCurrentPage(1);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setJobsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const filteredJobs = alljobs
+    .filter((job) =>
+      job.location.toLowerCase().includes(filters.location.toLowerCase())
+    )
+    .filter((job) =>
+      job.title.toLowerCase().includes(filters.jobTitle.toLowerCase())
+    );
+
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+
+
   return (
     <div id="full-content" className="container mt-4">
-
-      <RouterLink to="/">
-        <i id="back-arrow" style={{ position: 'absolute', top: '35px', left: '40px', }} className="fa fa-arrow-left" aria-hidden="true" />
-      </RouterLink>
+      {/* ... Your existing code ... */}
       <div>
-        <h2 className="mb-4" style={{ display: "inline" }}>Jobs Available </h2><hr />
-        <InputGroup className="mb-4">
+        <h2 className="mb-4" style={{ display: 'inline' }}>
+          Jobs Available{' '}
+        </h2>
+        <hr />
+        <InputGroup className="mb-4" style={{ display: 'flex', justifyContent: 'center' }}>
           <FormControl
+            name="jobTitle"
             placeholder="Filter by Job Title"
-            value={jobTitleFilter}
-            onChange={(e) => setJobTitleFilter(e.target.value)}
+            value={filters.jobTitle}
+            onChange={handleFilterChange}
           />
           <FormControl
+            name="location"
             placeholder="Filter by Location"
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
+            value={filters.location}
+            onChange={handleFilterChange}
           />
-          {/* <FormControl
-            placeholder="Min Salary"
-            type="number"
-            value={minSalaryFilter}
-            onChange={(e) => setMinSalaryFilter(e.target.value)}
-          />
-          <FormControl
-            placeholder="Max Salary"
-            type="number"
-            value={maxSalaryFilter}
-            onChange={(e) => setMaxSalaryFilter(e.target.value)}
-          /> */}
+          <label htmlFor="itemsPerPage" style={{ marginRight: '10px' }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Items Per Page: </label>
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            onChange={handleItemsPerPageChange}
+            value={jobsPerPage}
+            style={{
+              padding: '5px',
+              height: '40px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+            }}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
         </InputGroup>
-        {/* <RouterLink to="/applyPage/applyNow" style={{ position: 'absolute', top: '35px', right: '40px', }}><Button variant="primary">Apply Now</Button></RouterLink> */}
+
+
       </div>
       {alljobs.length === 0 ? (
         <p>Currently, There are no Jobs available.</p>
       ) : (
-
-        alljobs
+        currentJobs
           .filter((job) =>
-            job.location.toLowerCase().includes(locationFilter.toLowerCase())
+            job.location.toLowerCase().includes(filters.location.toLowerCase())
           )
           .filter((job) =>
-            job.title.toLowerCase().includes(jobTitleFilter.toLowerCase())
+            job.title.toLowerCase().includes(filters.jobTitle.toLowerCase())
           )
-          // .filter((job) =>
-          //   job.salary >= (minSalaryFilter ? parseFloat(minSalaryFilter) : 0)
-          //   && job.salary <= (maxSalaryFilter ? parseFloat(maxSalaryFilter) : Number.MAX_VALUE)
-          // )
           .map((job) => (
             <Card id="card" key={job.job_id} className="mb-3">
               <Card.Header>
@@ -109,12 +141,12 @@ export default function ApplyPage() {
                     {/* <p>Location: {job.location}</p> */}
                     <p>Last Date to Apply: {job.expiry_date.slice(0, 10)}</p>
                     <RouterLink
-                     to={{
-                      pathname: '/applyPage/applyNow',
-                      search: `?job_title=${job.title}&job_id=${job.job_id}`,
-                      state: { job_title: job.title }
-                    }}
-                     style={{ position: 'absolute', top: '35px', right: '40px', }}><Button variant="primary">Apply Now</Button></RouterLink>
+                      to={{
+                        pathname: '/applyPage/applyNow',
+                        search: `?job_title=${job.title}&job_id=${job.job_id}`,
+                        state: { job_title: job.title }
+                      }}
+                      style={{ position: 'absolute', top: '35px', right: '40px', }}><Button variant="primary">Apply Now</Button></RouterLink>
                     {/* to={{pathname: '/applyPage/applyNow', state: { jobTitle: job.title } }} */}
                   </div>
                 ) : null}
@@ -127,6 +159,17 @@ export default function ApplyPage() {
             </Card>
           ))
       )}
+      <Pagination>
+        {Array.from({ length: Math.ceil(alljobs.length / jobsPerPage) }).map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={index + 1 === currentPage}
+            onClick={() => paginate(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+      </Pagination>
     </div>
   );
 }

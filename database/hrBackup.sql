@@ -36,9 +36,19 @@ CREATE TABLE `applications` (
   `status` enum('Pending','Rejected','Interview','Hired') NOT NULL DEFAULT 'Pending',
   `address` text,
   `job_id` int NOT NULL,
+  `gender` varchar(40) DEFAULT NULL,
+  `zipcode` varchar(40) DEFAULT NULL,
+  `experience` varchar(30) DEFAULT NULL,
+  `university` varchar(100) DEFAULT NULL,
+  `degree` varchar(30) DEFAULT NULL,
+  `major` varchar(30) DEFAULT NULL,
+  `github_profile_url` varchar(200) DEFAULT NULL,
+  `linkedin_profile_url` varchar(200) DEFAULT NULL,
+  `cgpa` varchar(30) DEFAULT NULL,
+  `dob` date DEFAULT NULL,
   PRIMARY KEY (`application_id`),
   KEY `job_id` (`job_id`),
-  CONSTRAINT `applications_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`job_id`)
+  CONSTRAINT `applications_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`job_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,7 +58,7 @@ CREATE TABLE `applications` (
 
 LOCK TABLES `applications` WRITE;
 /*!40000 ALTER TABLE `applications` DISABLE KEYS */;
-INSERT INTO `applications` VALUES (12,'Applit 1','applicant1@example.com','17890123','City 1','12345890','50000','cv1.pdf','Interview','Address 1',5),(13,'Applit 1','applicant1@example.com','17890123','City 1','12345890','50000','cv1.pdf','Pending','Address 1',7),(14,'Applicant 2','applicant2@example.com','2234567890123','City 2','2234567890','55000','cv2.pdf','Rejected','Address 2',6);
+INSERT INTO `applications` VALUES (11,'akali','dfsw@w','dfd','fdf','dfd','dfd','3_akali.pdf','Interview','dfd',3,'Female','dfd','dfd','fd','dfd','dfd','dfd','fdf',NULL,NULL),(12,'ewrf','werw@erw','wkerjqwj','werkljwkl','werklqwj','jklsdlf','8_ewrf.pdf','Interview','ejrklwjeklr',8,'Female','erklwjekl','less than 1 year','weklrklj','efsdklfkl','sjdfkljs','jelrjwkl``','erklwj','3.45','2004-01-01'),(13,'hassan abdal ali','hassan@gmail.com','3445389498232','khaniwal','0322345232423','3450000','9_hassan abdal ali.pdf','Interview','sdfklskljkl sf ljjk address wis sjis well ana d',9,'Female','52332','2 years','FCIT','BS','CS','www.ssdfs.d.w.e.rw','www.sd.fwe.r.wer.w.',NULL,NULL),(14,'hurma ali','hurma@gmail.com','3455343422435','lahore','034233242','345000','7_hurma ali.pdf','Interview','sdflksdj fjs dfkjkldfj dfkls d',7,'Female','54000','less than 1 year','GCUL','BS','CS','www.er..r.wer.w','www.sdf.s..sf','3.4','2010-05-03');
 /*!40000 ALTER TABLE `applications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,8 +76,8 @@ CREATE TABLE `attendance` (
   `status` enum('Present','Late','Leave') DEFAULT NULL,
   PRIMARY KEY (`attendance_id`),
   UNIQUE KEY `emp_id` (`emp_id`,`attendance_date`),
-  CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,6 +86,7 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
+INSERT INTO `attendance` VALUES (8,121,'2023-09-18','Present'),(9,232,'2023-09-18','Late'),(10,232,'2023-09-25','Leave'),(11,232,'2023-09-19','Present'),(12,121,'2023-09-19','Present'),(13,9,'2023-09-19','Late'),(14,7,'2023-09-19','Late');
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,7 +101,7 @@ CREATE TABLE `department` (
   `dep_id` int NOT NULL AUTO_INCREMENT,
   `dep_name` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`dep_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +110,7 @@ CREATE TABLE `department` (
 
 LOCK TABLES `department` WRITE;
 /*!40000 ALTER TABLE `department` DISABLE KEYS */;
-INSERT INTO `department` VALUES (1,'Department 1'),(2,'Department 2'),(3,'Department 3'),(4,'Department 4'),(5,'Department 5'),(6,'HR'),(7,'Finance'),(8,'Marketing'),(9,'IT'),(10,'Operations'),(11,'Generative Ai');
+INSERT INTO `department` VALUES (1,'Web Developers Geek'),(2,'Sales '),(3,'Finance');
 /*!40000 ALTER TABLE `department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,13 +139,19 @@ CREATE TABLE `employee` (
   `role_id` int DEFAULT NULL,
   `job_id` int DEFAULT NULL,
   `dep_id` int DEFAULT NULL,
+  `cgpa` varchar(10) DEFAULT NULL,
+  `major` varchar(20) DEFAULT NULL,
+  `degree` varchar(20) DEFAULT NULL,
+  `github_profile_url` varchar(200) DEFAULT NULL,
+  `linkedin_profile_url` varchar(200) DEFAULT NULL,
+  `university` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`emp_id`),
-  KEY `dep_id` (`dep_id`),
   KEY `role_id` (`role_id`),
+  KEY `dep_id` (`dep_id`),
   KEY `job_id` (`job_id`),
-  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`dep_id`) REFERENCES `department` (`dep_id`),
-  CONSTRAINT `employee_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
-  CONSTRAINT `employee_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `jobpositions` (`job_id`)
+  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`),
+  CONSTRAINT `employee_ibfk_2` FOREIGN KEY (`dep_id`) REFERENCES `department` (`dep_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `employee_ibfk_3` FOREIGN KEY (`job_id`) REFERENCES `jobpositions` (`job_id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -144,7 +161,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'John Doe','john.doe@example.com','123-456-7890','New York','123 Main St','12345','1990-01-15','1234567890123','Male','2020-03-15',75000.00,'john_login@example.com','hashed_password_1',1,1,5),(2,'Jane Smith','jane.smith@example.com','987-654-3210','Los Angeles','456 Elm St','54321','1985-07-20','9876543210987','Female','2019-05-20',65000.00,'jane_login@example.com','hashed_password_2',2,2,6);
+INSERT INTO `employee` VALUES (7,'ali khan','zsldjf2@gmail.com','342414','sdfd','sdfasdfl',NULL,'2023-09-27','3242423232323','Male','2023-09-06',123.00,'zsldjf2@gmail.com','123',2,1,2,NULL,NULL,NULL,NULL,NULL,NULL),(9,'abdullah dogar','dfs@gmail.com','2435','24343','34e34',NULL,'2023-09-27','3434343424232','Male','2023-09-20',1231.00,'dfs@gmail.com','1234',2,1,2,NULL,NULL,NULL,NULL,NULL,NULL),(121,'haseeb','zjdlf@gmail.com','342414','2342','shahdara lahore','54000','2023-09-07','3242423232323','Male','2023-09-27',23242.00,'zeeshanla@gmail.com','$2b$10$FPUK121nt//VUVGBaUE2T.WMZkJIVI6PiDHp5goo62ip5vaqW3Zau',2,2,2,NULL,NULL,NULL,NULL,NULL,NULL),(232,'zulqurnain','zeeshanalo24@gmail.com','2232320-3','l','this is my address','323','2023-03-03','2342222323232','Male','2023-09-27',23240.00,'zee@gmail.com','$2b$10$QpoYtJdHvPG5vJR2XLtcr.BxDN7Djsjfp4I6vjCAnthPDT.2NRrUa',2,2,1,NULL,NULL,NULL,NULL,NULL,NULL),(234455,'gujjar bawa','bawag@gmail.com','03021055932','shakargarh','shakargarh narrowal','23443','2023-09-12','57676897979','Male','2023-08-29',356576.00,NULL,NULL,2,2,1,'3.4','hr','bg','kljkl jkgjkgk gkgjhfjf gkk','jkhjhkljkljkl kjkh klkljkljklj','gft');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,7 +176,7 @@ CREATE TABLE `jobpositions` (
   `job_id` int NOT NULL AUTO_INCREMENT,
   `job_name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -168,7 +185,7 @@ CREATE TABLE `jobpositions` (
 
 LOCK TABLES `jobpositions` WRITE;
 /*!40000 ALTER TABLE `jobpositions` DISABLE KEYS */;
-INSERT INTO `jobpositions` VALUES (1,'Job Position 1'),(2,'Job Position 2'),(3,'Job Position 3'),(4,'Job Position 4'),(5,'Job Position 5'),(6,'Software Engineer'),(7,'Marketing Specialist'),(8,'Financial Analyst'),(9,'HR Manager'),(10,'Operations Coordinator');
+INSERT INTO `jobpositions` VALUES (1,'software engineer'),(2,'Lead Project Manager');
 /*!40000 ALTER TABLE `jobpositions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,10 +204,12 @@ CREATE TABLE `jobs` (
   `expiry_date` date DEFAULT NULL,
   `description` text NOT NULL,
   `dep_id` int DEFAULT NULL,
+  `salary` varchar(40) DEFAULT NULL,
+  `location` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`job_id`),
   KEY `dep_id` (`dep_id`),
-  CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`dep_id`) REFERENCES `department` (`dep_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`dep_id`) REFERENCES `department` (`dep_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +218,7 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (5,'Job Title 1','2 years','2023-09-01','2023-09-30','Description 1',1),(6,'Job Title 2','3 years','2023-09-02','2023-09-29','Description 2',2),(7,'Job Title 3','4 years','2023-09-03','2023-09-28','Description 3',3),(8,'Job Title 4','5 years','2023-09-04','2023-09-27','Description 4',4),(9,'Job Title 5','6 years','2023-09-05','2023-09-26','Description 5',5),(10,'Job Title 1','2 years','2023-09-01','2023-09-30','Description 1',1),(11,'Job Title 2','3 years','2023-09-02','2023-09-29','Description 2',2),(12,'Job Title 3','4 years','2023-09-03','2023-09-28','Description 3',3),(13,'Job Title 4','5 years','2023-09-04','2023-09-27','Description 4',4),(14,'Job Title 5','6 years','2023-09-05','2023-09-26','Description 5',5);
+INSERT INTO `jobs` VALUES (2,'Mern Developer','3+years','2023-09-17','2023-10-03','The MERN stack is a popular and powerful technology stack for building modern web applications. It consists of four main technologies: MongoDB, Express.js, React, and Node.js. Each component of the stack plays a specific role in the development process, and together they provide a robust and efficient platform for creating web applications.\n\n',1,'2232300','lahore'),(3,'Data Analyst','4+years','2023-09-18','2023-10-07','As a Data Analyst, you will play a crucial role in our organization by turning data into actionable insights. You will be responsible for collecting, analyzing, and interpreting complex data sets to provide valuable information that drives informed decision-making.\n\nKey Responsibilities:\n\nData Collection: Gather and consolidate data from various sources, including databases, spreadsheets, and external APIs.\n\nData Cleaning: Clean, preprocess, and validate data to ensure accuracy and reliability.\n\nData Analysis: Utilize statistical techniques and data visualization tools to identify trends, patterns, and outliers in the data.\n\nReporting: Create clear and concise reports and dashboards that communicate insights to stakeholders.\n\nPredictive Modeling: Develop and implement predictive models to forecast future trends and outcomes.\n\nA/B Testing: Design and analyze A/B tests to optimize product performance and user experience.\n\nData Insights: Collaborate with cross-functional teams to provide data-driven insights and recommendations.\n\nData Governance: Ensure data integrity and compliance with data privacy regulations.\n\nQualifications:\n\nBachelor\'s degree in a related field (e.g., Statistics, Mathematics, Computer Science).\nProficiency in data analysis tools such as Python, R, or SQL.\nStrong knowledge of data visualization tools like Tableau or Power BI.\nExperience with data cleaning, transformation, and manipulation.\nExcellent problem-solving skills and attention to detail.\nStrong communication skills to convey complex findings in a clear and understandable way.\nAbility to work independently and as part of a team.\nPreferred Qualifications:\n\nMaster\'s degree in Data Science or a related field.\nExperience with machine learning algorithms and predictive modeling.\nKnowledge of big data technologies (e.g., Hadoop, Spark).\nFamiliarity with cloud computing platforms (e.g., AWS, Azure, Google Cloud).',1,'800000','islamabad'),(7,'SQA','3+year','2023-09-18','2023-09-12','\nCertainly! Here\'s a description for a Software Quality Assurance (SQA) position:\n\nJob Title: Software Quality Assurance (SQA) Engineer\n\nJob Description:\n\nAs a Software Quality Assurance (SQA) Engineer, you will play a vital role in ensuring the quality and reliability of our software products. You will work closely with cross-functional teams to develop and execute test plans, identify defects, and contribute to the delivery of high-quality software solutions.\n\nKey Responsibilities:\n\nTest Planning: Collaborate with product managers and developers to create comprehensive test plans and test cases that cover all aspects of software functionality.\n\nTest Execution: Conduct manual and automated tests to identify defects, verify fixes, and validate new features.\n\nRegression Testing: Continuously monitor and conduct regression testing to ensure that software updates do not introduce new issues.\n\nBug Tracking: Document defects accurately, including steps to reproduce and relevant information, and manage defect tracking systems.\n\nTest Automation: Develop and maintain automated test scripts to increase testing efficiency and coverage.\n\nPerformance Testing: Perform load and performance testing to identify bottlenecks and ensure optimal system performance.\n\nSecurity Testing: Conduct security testing to identify vulnerabilities and ensure that our software is secure.\n\nQuality Assurance Processes: Contribute to the improvement of quality assurance processes and best practices within the organization.\n\nQualifications:\n\nBachelor\'s degree in Computer Science, Software Engineering, or a related field.\nProven experience in software quality assurance and testing.\nKnowledge of testing methodologies, tools, and best practices.\nProficiency in test automation tools such as Selenium, JUnit, or similar.\nStrong analytical and problem-solving skills.\nExcellent communication and collaboration skills to work effectively with development and product teams.\nFamiliarity with Agile and DevOps methodologies is a plus.\nPreferred Qualifications:\n\nISTQB or similar certification is a plus.\nExperience with continuous integration and continuous delivery (CI/CD) pipelines.\nKnowledge of performance testing tools like JMeter or LoadRunner.\nUnderstanding of security testing principles and tools.\nExperience with testing mobile applications and web services.\n',1,'3450000','lahore'),(8,'Mern intern','no experience','2023-09-18','2023-09-14','With these changes, you can now filter jobs by providing a minimum and maximum salary range. The jobs displayed will be filtered based on the selected range.',1,'30,000k','lahore'),(9,'Fellowship Program','2+years','2023-09-18','2023-09-28','Type Conversion: If job.salary is stored as a string and you are comparing it to numeric values, you might need to convert it to a number using parseFloat or parseInt to ensure accurate comparisons.\n\nError Handling: Implement error handling in your code to catch any potential issues with data retrieval or filtering. This can help you identify any specific errors that occur during the filtering process.',1,'230000','islamabad'),(10,'Assistant Manager','3+years','2023-09-18','2023-10-04','Data in Your Database: Make sure that the data in your database includes jobs with salaries that fall within the specified range. If there are no jobs that match the given salary range, it will appear as if no jobs are shown.\n\nData Type Matching: Ensure that the data type of the salary attribute in your job objects matches the data type you\'re comparing it to in the filter. If the salary attribute in your data is stored as a string, you might need to convert it to a number for accurate filtering.\n\nCheck for Typos: Double-check that there are no typos or case sensitivity issues in the job.salary values or in the filter input.',2,'3400000','Islamabad');
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,8 +238,8 @@ CREATE TABLE `leaverequest` (
   `emp_id` int DEFAULT NULL,
   PRIMARY KEY (`leave_req_id`),
   KEY `emp_id` (`emp_id`),
-  CONSTRAINT `leaverequest_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `leaverequest_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,7 +248,7 @@ CREATE TABLE `leaverequest` (
 
 LOCK TABLES `leaverequest` WRITE;
 /*!40000 ALTER TABLE `leaverequest` DISABLE KEYS */;
-INSERT INTO `leaverequest` VALUES (17,'Pending','2023-09-10','Vacation','2023-08-25',1),(18,'Approved','2023-09-12','Family event','2023-09-05',2),(19,'Pending','2023-09-14','Sick leave','2023-09-09',1),(20,'Rejected','2023-09-11','Personal reasons','2023-09-07',1),(21,'Approved','2023-09-13','Medical appointment','2023-09-10',2),(27,'Pending','2023-09-10','Vacation','2023-08-25',1),(28,'Approved','2023-09-12','Family event','2023-09-05',2);
+INSERT INTO `leaverequest` VALUES (1,'Approved','2023-09-19','testing ','2023-09-18',NULL),(2,'Rejected','2023-09-20','testing 121emp','2023-09-18',121),(3,'Rejected','2023-09-27','232','2023-09-18',232),(4,'Approved','2023-09-25','testing 232','2023-09-18',232);
 /*!40000 ALTER TABLE `leaverequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +272,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'Employee'),(2,'HR');
+INSERT INTO `roles` VALUES (1,'HR'),(2,'Employee');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,6 +283,30 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'hr'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `attendanceApproval` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `attendanceApproval`(IN id INT, IN p_att_status VARCHAR(10), IN p_date DATE)
+BEGIN
+	-- inserting into attendance
+    INSERT INTO attendance (emp_id, attendance_date, status) VALUES (id, p_date, p_att_status);
+    -- updating leave request
+    UPDATE leaverequest
+    SET att_status = 'Approved'
+    WHERE emp_id = id AND leave_date = p_date;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `attendanceRejected` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -274,11 +317,108 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `attendanceRejected`(IN emp_id_param INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `attendanceRejected`(IN req_id_param INT)
 BEGIN
 UPDATE leaverequest
     SET att_status = 'Rejected'
-    WHERE emp_id = emp_id_param;
+    WHERE leave_req_id = req_id_param;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `employeeLeaveHistory` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `employeeLeaveHistory`(IN id INT)
+BEGIN
+	SELECT * FROM leaverequest 
+	WHERE emp_id = id
+	ORDER BY leave_date DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getAttendanceHistory` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getAttendanceHistory`()
+BEGIN
+SELECT
+    e.emp_id,
+    e.name,
+    a.attendance_date,
+    a.status
+FROM
+    employee e
+LEFT JOIN
+    attendance a ON e.emp_id = a.emp_id
+ORDER BY
+    e.emp_id, a.attendance_date;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getDashboardStats` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getDashboardStats`()
+BEGIN
+    DECLARE totalEmployees INT;
+    DECLARE presentEmployees INT;
+    DECLARE absentEmployees INT;
+    DECLARE leaveEmployees INT;
+
+    -- Get the total number of employees
+    SELECT COUNT(*) INTO totalEmployees FROM employee;
+
+    -- Get the number of present employees
+    SELECT COUNT(*) INTO presentEmployees
+    FROM attendance
+    WHERE attendance_date = DATE(NOW()) AND status = 'Present';
+
+    -- Get the number of absent employees
+    SELECT COUNT(*) INTO absentEmployees
+    FROM attendance
+    WHERE attendance_date = DATE(NOW()) AND status = 'Late';
+
+    -- Get the number of employees on leave
+    SELECT COUNT(*) INTO leaveEmployees
+    FROM attendance
+    WHERE attendance_date = DATE(NOW()) AND status = 'Leave';
+
+    -- Return the results
+    SELECT totalEmployees AS no_of_employees,
+           presentEmployees AS no_of_present_employees,
+           absentEmployees AS no_of_absent_employees,
+           leaveEmployees AS no_of_leave_employees;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -297,7 +437,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GetDepartmentsWithTotalEmployees`()
 BEGIN
- SELECT
+    SELECT
         d.dep_id,
         d.dep_name,
         COUNT(e.emp_id) AS total_employees
@@ -325,21 +465,146 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getLeaveApplication`()
 BEGIN
-SELECT
-    lr.emp_id,    lr.att_status,
-    lr.leave_date,
-    lr.reason,
-    lr.applying_date,
-    e.name AS emp_name,
-    d.dep_name,
-    d.dep_id
-FROM
-    leaverequest lr
-INNER JOIN
-    employee e ON lr.emp_id = e.emp_id
-LEFT JOIN
-    Department d ON e.dep_id = d.dep_id;
+    SELECT
+        lr.emp_id,
+        lr.att_status,
+        lr.leave_date,
+        lr.reason,
+        lr.applying_date,
+        lr.leave_req_id,
+        e.name AS emp_name,
+        d.dep_name,
+        d.dep_id
+    FROM
+        leaverequest lr
+    INNER JOIN
+        employee e ON lr.emp_id = e.emp_id
+    LEFT JOIN
+        Department d ON e.dep_id = d.dep_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getTodayAttendance` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getTodayAttendance`()
+BEGIN
 
+SELECT
+    e.emp_id,
+    e.name ,
+    e.dep_id,
+    e.email,
+    e.gender,
+    e.phone_number,
+    a.status,
+    d.dep_name
+FROM
+    employee e
+LEFT JOIN
+    attendance a ON e.emp_id = a.emp_id
+inner join 
+	department d on d.dep_id=e.dep_id
+WHERE
+    DATE(a.attendance_date) = CURDATE();
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `registerEmployee` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registerEmployee`(
+     IN p_address VARCHAR(255),
+    IN p_applicant_name VARCHAR(255),
+    IN p_cgpa varchar(20),
+    IN p_city VARCHAR(255),
+    IN p_cnic VARCHAR(255),
+    IN p_degree VARCHAR(255),
+    IN p_dep_id INT,
+    IN p_dob DATE,
+    IN p_email VARCHAR(255),
+    IN p_emp_id INT,
+    IN p_gender VARCHAR(10),
+    IN p_github_profile_url VARCHAR(255),
+    IN p_hire_date DATE,
+    IN p_job_id INT,
+    IN p_linkedin_profile_url VARCHAR(255),
+    IN p_major VARCHAR(255),
+    IN p_phone_number VARCHAR(255),
+    IN p_role_id INT,
+    IN p_salary int,
+    IN p_university VARCHAR(255),
+    IN p_zipcode VARCHAR(255)
+)
+BEGIN
+    INSERT INTO employee (
+          address,
+        name,
+        cgpa,
+        city,
+        cnic,
+        degree,
+        dep_id,
+        dob,
+        email,
+        emp_id,
+        gender,
+        github_profile_url,
+        hire_date,
+        job_id,
+        linkedin_profile_url,
+        major,
+        phone_number,
+        role_id,
+        salary,
+        university,
+        zipcode
+    ) 
+    VALUES (
+         p_address,
+        p_applicant_name,
+        p_cgpa,
+        p_city,
+        p_cnic,
+        p_degree,
+        p_dep_id,
+        p_dob,
+        p_email,
+        p_emp_id,
+        p_gender,
+        p_github_profile_url,
+        p_hire_date,
+        p_job_id,
+        p_linkedin_profile_url,
+        p_major,
+        p_phone_number,
+        p_role_id,
+        p_salary,
+        p_university,
+        p_zipcode
+    );
+    
+    DELETE FROM applications WHERE application_id = p_emp_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -356,4 +621,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-11 16:04:14
+-- Dump completed on 2023-09-21 11:17:35

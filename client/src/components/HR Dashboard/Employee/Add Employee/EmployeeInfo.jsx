@@ -45,7 +45,6 @@ export default function EmployeeInfo({ id }) {
   };
   const fetchEmpData = async () => {
     if (id) {
-
       try {
         const response = await axios.get(BaseUrl + `/getApplicant/${id}`)
         console.log(response.data[0]);
@@ -205,13 +204,12 @@ export default function EmployeeInfo({ id }) {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="DateofBirth" className="form-label">Date of Birth:</label>
                   <input
-                    type="date"
+                    type={(!employeeInformation.dob || employeeInformation.dob.trim() === '' || employeeInformation.dob == null) ? 'date' : 'text'}
                     className="form-control round"
                     id="DateofBirth"
-                    name='DOB'
-                    value={employeeInformation.DOB}
+                    name='dob'
+                    value={employeeInformation.dob}
                     onChange={handleChange}
-
                   />
                 </div>
 
@@ -256,7 +254,7 @@ export default function EmployeeInfo({ id }) {
                     className="form-control round"
                     id="EmployeeID"
                     name='emp_id'
-                    value={employeeInformation.emp_id}
+                    value={employeeInformation?.emp_id}
                     onChange={handleChange}
 
                   />
@@ -295,50 +293,21 @@ export default function EmployeeInfo({ id }) {
 
                   />
                 </div>
-              </div>
-
-              <div id="second-half">
-                <div className="mb-3 rounded-input">
-                  <label htmlFor="emprole" className="form-label">Employee Role:</label>
-                  <select name="role_id" className="form-control round" value={employeeInformation.role_id} onChange={handleChange} >
-                    <option>--select</option>
-                    {roles.map((role) => (
-                      <option key={role.role_id} value={role.role_id}>
-                        {role.role_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3 rounded-input">
-                  <label htmlFor="LoginEmail" className="form-label">Login Email:</label>
+                  <div className="mb-3 rounded-input">
+                  <label htmlFor="cgpa" className="form-label">CGPA:</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control round"
-                    id="LoginEmail"
-                    name='login_email'
-                    value={employeeInformation.login_email}
+                    id="cgpa"
+                    name='cgpa'
+                    value={employeeInformation?.cgpa}
                     onChange={handleChange}
-
                   />
                 </div>
-
-                <div className="mb-3 rounded-input">
-                  <label htmlFor="LoginPassword" className="form-label">Login Password:</label>
-                  <input
-                    type="password"
-                    className="form-control round"
-                    id="LoginPassword"
-                    name='login_password'
-                    value={employeeInformation.login_password}
-                    onChange={handleChange}
-
-                  />
-                </div>
-
                 <div className="mb-3 rounded-input">
                   <label htmlFor="HireDate" className="form-label">Hire Date:</label>
                   <input
-                    type="date"
+                    type={(!employeeInformation.hire_date || employeeInformation.hire_date.trim() === '' || employeeInformation.hire_date == null) ? 'date' : 'text'}
                     className="form-control round"
                     id="HireDate"
                     name='hire_date'
@@ -347,6 +316,79 @@ export default function EmployeeInfo({ id }) {
 
                   />
                 </div>
+                </div>
+
+              </div>
+
+              <div id="second-half"><div className="mb-3 rounded-input">
+                <label htmlFor="emprole" className="form-label">Employee Role:</label>
+                <select name="role_id" className="form-control round" value={employeeInformation.role_id} onChange={handleChange}>
+                  <option value="">--select</option>
+                  {roles.map((role) => (
+                    <option key={role.role_id} value={role.role_id}>
+                      {role.role_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="uni" className="form-label">University</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="university"
+                    name='university'
+                    value={employeeInformation.university}
+                    onChange={handleChange}
+
+                  />
+                </div>
+
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="" className="form-label">Degree:</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="degree"
+                    name='degree'
+                    value={employeeInformation.degree}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="LoginPassword" className="form-label">Major:</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="major"
+                    name='major'
+                    value={employeeInformation.major}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="Salary" className="form-label">LinkedIn Profile URL:</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="linkedin_profile_url"
+                    name='linkedin_profile_url'
+                    value={employeeInformation.linkedin_profile_url}
+                    onChange={handleChange}
+
+                  />
+                </div>
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="Salary" className="form-label">GitHub Profile URL:</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="github_profile_url"
+                    name='github_profile_url'
+                    value={employeeInformation.github_profile_url}
+                    onChange={handleChange}
+                  />
               </div>
             </div>
           </div>

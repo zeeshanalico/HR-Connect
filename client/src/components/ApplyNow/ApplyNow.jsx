@@ -176,11 +176,11 @@ export default function ApplyNow() {
             <div className="form-group rounded-input">
               <label>Work Experience:</label>
               <select
-              name='experience'
+                name='experience'
                 value={userDetails.experience}
                 className="form-control round"
                 onChange={handleChange}
-                style={{height:"42px"}}
+                style={{ height: "42px" }}
               >
                 <option >--select--</option>
                 <option value={'0 - 6 months'}>0 - 6 months</option>
@@ -190,20 +190,31 @@ export default function ApplyNow() {
                 <option value={'more than 5 years'}>more than 5 years</option>
               </select>
             </div>
+            <div className="form-group rounded-input">
+              <label>CGPA:</label>
+              <input
+                className="form-control round"
+                type="text"
+                name='cgpa'
+                value={userDetails?.cgpa}
+                placeholder='CGPA'
+                onChange={handleChange}
+              />
+            </div>
             <div id="gender-input">
-                  <p>Gender:</p>
-                  <input type="radio" id="male" name="gender" value="Male" checked={userDetails.gender === "Male"} onChange={handleChange} />
-                  <label for="male">Male</label>
-                  <input type="radio" id="female" name="gender" value='Female' checked={userDetails.gender === "Female"} onChange={handleChange} />
-                  <label for="female">Female</label>
-                </div>
+              <p>Gender:</p>
+              <input type="radio" id="male" name="gender" value="Male" checked={userDetails.gender === "Male"} onChange={handleChange} />
+              <label for="male">Male</label>
+              <input type="radio" id="female" name="gender" value='Female' checked={userDetails.gender === "Female"} onChange={handleChange} />
+              <label for="female">Female</label>
+            </div>
 
           </div>
           <div className="second-half">
             <div className="form-group rounded-input">
               <label>Address:</label>
               <textarea
-              style={{height:'125px'}}
+                style={{ height: '125px' }}
                 className="form-control round"
                 name='address'
                 value={userDetails?.address}
@@ -278,6 +289,17 @@ export default function ApplyNow() {
                 onChange={handleChange}
               />
             </div>
+            <div className="form-group rounded-input">
+              <label>Date of Birth:</label>
+              <input
+                className="form-control round"
+                type="date"
+                name='dob'
+                value={userDetails?.dob}
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="form-group rounded-input">
               <label>Upload Resume/CV:</label>
               <input
