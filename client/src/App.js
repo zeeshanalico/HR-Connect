@@ -22,6 +22,7 @@ import AttendanceRecordPage from "./components/Employee Interface/Employee Atten
 import SubmitLeavePage from "./components/Employee Interface/Leave/Submit Leave/SubmitLeavePage.jsx";
 import LeaveStatusPage from "./components/Employee Interface/Leave/Leave Status/LeaveStatusPage.jsx";
 import PostJobPage from "./components/HR Dashboard/Hiring/Job Posting/PostJobPage.jsx";
+import RegisterUser from './components/RegisterUser/RegisterUser.js'
 import ApplyNow from "./components/ApplyNow/ApplyNow.jsx";
 
 
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />
           <Route path="/hrdash/viewApplications" element={<ViewApplicationsPage />} />
           <Route path="/hrdash/postJob" element={<PostJobPage />} />
+          <Route path="/RegisterEmployee" element={<RegisterUser />} />
         </Routes>
       </Router>
       <ContainerToast/>

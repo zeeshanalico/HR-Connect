@@ -177,7 +177,7 @@ export default function LeaveApplication() {
                 value={filters.applicationStatus}
                 onChange={(e) => handleFilter('applicationStatus', e.target.value)}
               >
-                <option value="All">All</option>
+                <option value="All">Status</option>
                 <option value="Pending">Pending</option>
                 <option value="Rejected">Rejected</option>
                 <option value="Approved">Approved</option>

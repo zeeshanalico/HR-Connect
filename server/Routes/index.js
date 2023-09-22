@@ -358,60 +358,82 @@ const { log } = require('console');
 
 router.post('/registerEmployee', async (req, res) => {
     console.log('/registerEmployee');
-            const { address,
-            applicant_name,
-            cgpa,
-            city,
-            cnic,
-            degree,
-            dep_id,
-            dob,
-            email,
-            emp_id,
-            gender,
-            github_profile_url,
-            hire_date,
-            job_id,
-            linkedin_profile_url,
-            major,
-            phone_number,
-            role_id,
-            salary,
-            university,
-            zipcode } = req.body;
+    const { address,
+        applicant_name,
+        cgpa,
+        city,
+        cnic,
+        degree,
+        dep_id,
+        dob,
+        email,
+        emp_id,
+        gender,
+        github_profile_url,
+        hire_date,
+        job_id,
+        linkedin_profile_url,
+        major,
+        phone_number,
+        role_id,
+        salary,
+        university,
+        zipcode } = req.body;
 
-        mysql.query('CALL registerEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-            address,
-            applicant_name,
-            cgpa,
-            city,
-            cnic,
-            degree,
-            dep_id,
-            dob,
-            email,
-            emp_id,
-            gender,
-            github_profile_url,
-            hire_date,
-            job_id,
-            linkedin_profile_url,
-            major,
-            phone_number,
-            role_id,
-            salary,
-            university,
-            zipcode
-        ],
-            (err, result) => {
-                if (err) {
-                    console.error('Error inserting data:', err);
-                    res.json({ message: err.sqlMessage, success: false, error: 'Error inserting  data' });
-                } else {
-                    res.json({ success: true, message: 'Employee Data inserted successfully' });
-                }
+    mysql.query('CALL registerEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        address,
+        applicant_name,
+        cgpa,
+        city,
+        cnic,
+        degree,
+        dep_id,
+        dob,
+        email,
+        emp_id,
+        gender,
+        github_profile_url,
+        hire_date,
+        job_id,
+        linkedin_profile_url,
+        major,
+        phone_number,
+        role_id,
+        salary,
+        university,
+        zipcode
+    ],
+        (err, result) => {
+            if (err) {
+                console.error('Error inserting data:', err);
+                res.json({ message: err.sqlMessage, success: false, error: 'Error inserting  data' });
+            } else {
+                const mailOptions = {
+                    from: process.env.EMAIL_USERNAME,
+                    // to: 'muhammadihtisham60@gmail.com',
+                    // to: email,
+                    to: 'hmic828@gmail.com',
+                    subject: 'Job Offer Letter',
+                    text: `Congratulations you are hired and TechoHub! You can join us from date.
+        
+                            Sincerely,
+                            Zeeshan Ali(HR) 
+                            TECHNOHUB  
+                        `,
+                };
+
+                transporter.sendMail(mailOptions, (emailError, info) => {
+                    if (emailError) {
+                        console.error('Error sending email:', emailError);
+                        res.status(500).json({ success: false, message: 'Failed to send Hiring Offer letter via email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(200).json({ success: true, message: 'Employee Data inserted successfully & Offer Letter Sended' });
+                    }
+                });
             }
-        );
+        }
+    );
 });
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -722,6 +744,43 @@ router.get('/getattendancehistory', (req, res) => {
         }
         res.json(results[0]);
     });
+});
+
+// ----------------------------------------------------authentication----------------------------------------------------------------------
+router.get('/users',  (req, res) => {
+    mysql.query('SELECT user_id, username FROM users', (err, results) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ err, message: err.message });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+router.post('/RegisterUser', async (req, res) => {
+    try {
+        const users = await axios.get('http://localhost:3002/users');
+        finduser = users.data.find((u) => { return u.username == req.body.username });
+        if (finduser.useremail === req.body.username) {
+            res.json({ success: false, message: "user Already exist with this username/email" })
+        } else {
+            const { user_name, user_password ,role_id,emp_id} = req.body;
+            const hashed_password = await bcrypt.hash(user_password, 10);
+            const values = [user_name, hashed_password,role_id,emp_id];
+
+            mysql.query('insert into user(username,hashed_password,role_id,emp_id) values (?,?,?,?) ', values, (err, result) => {
+                if (err) {
+                    console.error('Error in registration', err);
+                    res.json({ message: err.sqlMessage });
+                } else {
+                    res.json({ success: true, message: 'Registration successful'});
+                }
+            });
+        }
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 module.exports = router;
