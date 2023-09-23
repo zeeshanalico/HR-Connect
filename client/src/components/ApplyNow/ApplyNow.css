@@ -9,9 +9,9 @@ font-size: large !important;
 
 .rounded-input .round {
   padding:10px;
-  border-radius:12px;
-  border: 1px solid black;
-  width: 330px;
+  border-radius:7px!important;
+  border: 0.5px inset black;
+  width: 430px!important;
 }
 
 .submit-button{

@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import ContainerToast from './UIModules/Toast/ContainerToast'
 
 // Screens 
 import Landing from "./screens/Landing.jsx";
@@ -22,6 +22,7 @@ import AttendanceRecordPage from "./components/Employee Interface/Employee Atten
 import SubmitLeavePage from "./components/Employee Interface/Leave/Submit Leave/SubmitLeavePage.jsx";
 import LeaveStatusPage from "./components/Employee Interface/Leave/Leave Status/LeaveStatusPage.jsx";
 import PostJobPage from "./components/HR Dashboard/Hiring/Job Posting/PostJobPage.jsx";
+import RegisterUser from './components/RegisterUser/RegisterUser.js'
 import ApplyNow from "./components/ApplyNow/ApplyNow.jsx";
 
 
@@ -57,7 +58,6 @@ export default function App() {
           <Route path="/empdash" element={<EmployeeDashboardPage />} />
           <Route path="/applyPage/applyNow" element={<ApplyNow />} />
 
-
           {/* //Employee's side routes */}
           <Route path="/empdash/viewProfile" element={<ViewProfilePage />} />
           <Route path="/empdash/markAttendance" element={<MarkAttendancePage />} />
@@ -65,9 +65,9 @@ export default function App() {
           <Route path="/empdash/submitLeave" element={<SubmitLeavePage />} />
           <Route path="/empdash/leaveStatus" element={<LeaveStatusPage />} />
 
-
           {/* // HR's side routes */}
           <Route path="/hrdash/addEmployee" element={<AddEmployee />} />
+          <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />
           <Route path="/hrdash/manageEmployee" element={<ManageEmployeePage />} />
           <Route path="/hrdash/todayAttendance" element={<TodayAttendancePage />} />
           <Route path="/hrdash/attendanceHistory" element={<AttendanceHistoryPage />} />
@@ -75,13 +75,10 @@ export default function App() {
           <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />
           <Route path="/hrdash/viewApplications" element={<ViewApplicationsPage />} />
           <Route path="/hrdash/postJob" element={<PostJobPage />} />
-
-
-
-
-
+          <Route path="/RegisterEmployee" element={<RegisterUser />} />
         </Routes>
       </Router>
+      <ContainerToast/>
     </>
   );
 }

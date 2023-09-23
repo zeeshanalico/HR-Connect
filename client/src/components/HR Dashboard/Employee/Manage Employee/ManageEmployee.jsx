@@ -1,159 +1,268 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../../BasicStyle.css'
 import { Modal, Button, Form } from 'react-bootstrap';
+import axios from 'axios'
+import { BaseUrl } from './../../../../constants.js'
+import Toast from '../../../../UIModules/Toast/Toast';
+import { Dropdown } from 'react-bootstrap';
+import FilterSearch from '../../../../UIModules/FilterSearch';
 
-
-const sampleEmployees = [
-  {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    department: 'Engineering',
-    email: 'john.doe@example.com',
-    phoneNumber: '123-456-7890',
-  },
-  {
-    id: 2,
-    firstName: 'Jane',
-    lastName: 'Smith',
-    department: 'HR',
-    email: 'jane.smith@example.com',
-    phoneNumber: '987-654-3210',
-  },
-  // ... Add more sample employees
-];
 
 const ManageEmployee = () => {
-  const [employees, setEmployees] = useState(sampleEmployees);
-  const [searchName, setSearchName] = useState('');
-  const [filterDepartment, setFilterDepartment] = useState('');
-  const [searchId, setSearchId] = useState('');
+
+  const [employees, setEmployees] = useState([]);
+  const [dep, setDep] = useState([])
+  const [jobPositions, setJobPositions] = useState([])
+  const [empId, setEmpId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [employeeToRemove, setEmployeeToRemove] = useState(null);
+
+  const [selectedGender, setSelectedGender] = useState('All');
+  const [selectedDepartment, setSelectedDepartment] = useState('All');
+  const [selectedJobRole, setSelectedJobRole] = useState('All');
 
 
-  const filteredEmployees = employees.filter(employee => {
-    return (
-      employee.firstName.toLowerCase().includes(searchName.toLowerCase()) &&
-      (filterDepartment === '' || employee.department === filterDepartment) &&
-      (searchId === '' || employee.id.toString() === searchId)
-    );
-  });
-
-  const handleRemoveEmployee = (employeeId) => {
-    setEmployeeToRemove(employeeId);
-    setShowConfirmation(true);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getEmployees');
+      setEmployees(response.data);
+    } catch (error) {
+      console.error('Error fetching roles :', error);
+      throw error;
+    }
   };
 
-  const handleConfirmRemove = () => {
-    const updatedEmployees = employees.filter(employee => employee.id !== employeeToRemove);
-    setEmployees(updatedEmployees);
-    setEmployeeToRemove(null);
+  const fetchData1 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getJobPositions');
+      setJobPositions(response.data);
+    } catch (error) {
+      console.error('Error fetching data jobpositons:', error);
+      throw error;
+    }
+  };
+  const fetchData2 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getDepartment');
+      setDep(response.data);
+    } catch (error) {
+      console.error('Error fetching data dep :', error);
+      throw error;
+    }
+  };
+  useEffect(() => {
+    fetchData();
+    fetchData1();
+    fetchData2();
+  }, [])
+
+
+  const handleRemoveEmployee = async () => {
+    console.log(empId);
+    try {
+      const response = await axios.post(BaseUrl + '/removeEmployee', { emp_id: empId })
+      if (response.data.success) {
+        Toast(`${response.data.message}`, 'success')
+        setShowConfirmation(false);
+        await fetchData();
+      }
+      else {
+        Toast(`Success : ${response.data.success} - Message : ${response.data.message}`)
+        console.log("Error occured", response.data.message);
+        setShowConfirmation(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
     setShowConfirmation(false);
   };
 
-  const handleCancelRemove = () => {
-    setEmployeeToRemove(null);
-    setShowConfirmation(false);
-  };
+  const [searchName, setSearchName] = useState('');
+
+  // pagination and itemsperpage
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+
+  const filteredEmployees = employees.filter((employee) =>
+    (selectedGender === 'All' || employee.gender === selectedGender) &&
+    (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
+    (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
+    (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const displayedEmployees = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredEmployees.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
   return (
-    <div id="full-content" className="container mt-4">
+    <div id="full-content" className="container mt-3">
       <h2 className="mb-4">Manage Employee</h2>
-      <div id="content">
-      <div className="mb-3">
-        <label htmlFor="searchName" className="form-label">Search by Name:</label>
-        <input
-          type="text"
-          className="form-control"
-          id="searchName"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
+      <div className="content">
+        <div className="d-flex justify-content-start mb-3">
+          <div className="d-flex justify-content-start mb-3">
+            <input
+              type="text"
+              placeholder="Search by Name"
+              style={{ width: '350px', marginLeft: "-10px" }}
+
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="form-control"
+            />
+          </div>
+
+          <label htmlFor="itemsPerPage" className="form-label me-2" style={{ marginLeft: "550px" }}>
+            Items Per Page:
+          </label>
+          <Dropdown>
+            <Dropdown.Toggle variant="info" id="itemsPerPageDropdown" style={{ width: '70px' }}>
+              {itemsPerPage}
+            </Dropdown.Toggle>
+            <Dropdown.Menu style={{ minWidth: '70px', left: 'auto', right: '0' }}>
+              <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
+              <Dropdown.Item onClick={() => setItemsPerPage(50)}>50</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="filterDepartment" className="form-label">Filter by Department:</label>
-        <br/>
-        <select
-          className="form-select"
-          id="filterDepartment"
-          value={filterDepartment}
-          onChange={(e) => setFilterDepartment(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="Engineering">Engineering</option>
-          <option value="HR">HR</option>
-          {/* Add more department options */}
-        </select>
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="searchId" className="form-label">Search by Employee ID:</label>
-        <input
-          type="text"
-          className="form-control"
-          id="searchId"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-        />
-      </div>
-      
       <table className="table">
         <thead>
           <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Employee ID</th>
+            <th>Emp ID</th>
+            <th>Name</th>
             <th>Email Address</th>
-            <th>Phone Number</th>
-            <th>Department</th>
-            <th>Actions</th>
+            <th style={{ lineHeight: '34px' }}>Ph. #</th>
+            <th>
+              <select
+                value={selectedJobRole}
+                style={{
+                  border: "none",
+                  height: "40px",
+                  outline: "none",
+                  width: "150px",
+                  cursor: "pointer",
+                  backgroundColor: "transparent",
+                }}
+                className="form-control round"
+                onChange={(e) => setSelectedJobRole(e.target.value)}
+              >                <option value={'All'}>Job Position</option>
+
+                {jobPositions.map((job => { return <option value={job.job_name}>{job.job_name}</option> }))}
+              </select>
+            </th>
+            <th>
+              <select
+                value={selectedDepartment}
+                style={{
+                  border: "none",
+                  height: "40px",
+                  outline: "none",
+                  width: "150px",
+                  backgroundColor: "transparent",
+                }}
+                className="form-control round"
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+              >                <option value={'All'}>Department</option>
+
+                {dep.map((department => { return <option value={department.dep_name}>{department.dep_name}</option> }))}
+              </select>
+            </th>
+            <th>
+              <select
+                value={selectedGender}
+                style={{
+                  border: "none",
+                  height: "35px",
+                  outline: "none",
+                  width: "100px",
+                  cursor: "pointer",
+                  backgroundColor: "transparent",
+                }}
+                className="form-control round"
+                onChange={(e) => setSelectedGender(e.target.value)}
+              >
+                <option value={'All'}>Gender</option>
+                <option value={'Male'}>Male</option>
+                <option value={'Female'}>Female</option>
+              </select>
+            </th>
+            <th style={{ lineHeight: '34px' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredEmployees.map(employee => (
-            <tr key={employee.id}>
-              <td>{employee.firstName}</td>
-              <td>{employee.lastName}</td>
-              <td>{employee.id}</td>
-              <td>{employee.email}</td>
-              <td>{employee.phoneNumber}</td>
-              <td>{employee.department}</td>
-              <td>
-              <button
+          {displayedEmployees
+            .filter((employee) =>
+              (selectedGender === 'All' || employee.gender === selectedGender) &&
+              (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
+              (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
+              (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
+            )
+            .map(employee => (
+              <tr key={employee.emp_id}>
+                <td>{employee.emp_id}</td>
+                <td>{employee.name}</td>
+                <td>{employee.email}</td>
+                <td>{employee.phone_number}</td>
+                <td>{employee.job_name}</td>
+                <td>{employee.dep_name}</td>
+                <td>{employee.gender}</td>
+                <td>
+                  <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={() => handleRemoveEmployee(employee.id)}
+                    onClick={() => {
+                      setEmpId(employee.emp_id)
+                      setShowConfirmation(true)
+                    }
+                    }
                   >
-                    Remove
+                    Terminate
                   </button>
-              </td>
-            </tr>
-          ))}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
-      </div>
 
- {/* Confirmation Modal */}
- <Modal show={showConfirmation} onHide={handleCancelRemove}>
+      {/* Confirmation Modal */}
+      <Modal
+        show={showConfirmation}
+        onHide={() => { setShowConfirmation(false) }}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Removal</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to remove this employee?
+          Are you sure you want to remove this employee?  <br /> Because it will also remove the Account of Employee.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCancelRemove}>
+          <Button variant="secondary" onClick={() => setShowConfirmation(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleConfirmRemove}>
+          <Button variant="danger" onClick={() => {
+            handleRemoveEmployee()
+          }}>
             Confirm
           </Button>
         </Modal.Footer>
       </Modal>
 
+      <ul className="pagination">
+        {pageNumbers.map(number => (
+          <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
+            <button className="page-link" onClick={() => setCurrentPage(number)}>
+              {number}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
