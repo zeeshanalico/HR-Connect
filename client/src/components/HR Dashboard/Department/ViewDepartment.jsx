@@ -37,7 +37,7 @@ const ViewDepartment = () => {
     try {
       const response = await axios.post(BaseUrl + '/addDepartment', { newDepartmentName });
       if (response.data.success) {
-        Toast(`Success ${response.data.success}, -  Message : ${response.data.message}`, 'info')
+        Toast(` ${response.data.message}`, 'success')
       }
     } catch (e) {
       console.log(e);

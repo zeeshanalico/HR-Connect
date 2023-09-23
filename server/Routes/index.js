@@ -525,7 +525,7 @@ router.post("/removeEmployee", async (req, res) => {
     console.log("/removeEmployee");
     const { emp_id } = req.body;
     const response = await axios.post(
-      "http://localhost:3002/getEmpInfobyEmpId",
+      "http://localhost:3004/getEmpInfobyEmpId",
       { emp_id }
     );
     const employee = response.data[0];
@@ -631,7 +631,7 @@ router.post("/getAttendencebyEmp", (req, res) => {
 router.put("/updateAttendance", async (req, res) => {
   console.log("/updateAttendance");
   const { emp_id, att_status } = req.body;
-  // const allAttendance=await axios.get('http://localhost:3002/getAttendence');
+  // const allAttendance=await axios.get('http://localhost:3004/getAttendence');
   // const findAttendance=allAttendance.data((attendance)=>{ emp_id===attendance.emp_id && current_date===attendance.attendance_date})
   mysql.query(
     "INSERT INTO attendance (emp_id, status, attendance_date) VALUES (?, ?, ?)",
@@ -896,7 +896,7 @@ router.get("/users", (req, res) => {
 
 router.post("/RegisterUser", async (req, res) => {
   try {
-    const users = await axios.get("http://localhost:3002/users");
+    const users = await axios.get("http://localhost:3004/users");
     finduser = users.data.find((u) => {
       return u.username == req.body.username;
     });
