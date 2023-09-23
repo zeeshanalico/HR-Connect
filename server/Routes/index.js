@@ -1,318 +1,368 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const mysql = require('../connection');
-const dotenv = require('dotenv');
-dotenv.config({ path: "./config.env" })
-const fs = require('fs')
-const multer = require('multer');
+const mysql = require("../connection");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+const fs = require("fs");
+const multer = require("multer");
 
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 // const jwt = require('jsonwebtoken');
-const axios = require('axios');
+const axios = require("axios");
 
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD
-    }
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
 //------------------------------------------------------hiring/post a job---------------------------------------------------------------------------
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const getCurrentDate = require('./../Utils/dateUtils.js')
+const getCurrentDate = require("./../Utils/dateUtils.js");
 const current_date = getCurrentDate();
 
+router.get("/getDepartment", (req, res) => {
+  console.log("/getDepartment");
+  mysql.query("select * from department", (error, result) => {
+    if (error) {
+      res.json({ message: error.sqlMessage });
+    } else {
+      res.json(result);
+    }
+  });
+});
 
-router.get('/getDepartment', (req, res) => {
-    console.log('/getDepartment');
-    mysql.query('select * from department', (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage });
-        } else {
-            res.json(result);
-        }
-    })
-})
-
-
-router.get('/getRoles', (req, res) => {
-    console.log('/getRoles');
-    mysql.query('select * from roles', (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage });
-        } else {
-            res.json(result);
-        }
-    })
-})
-router.get('/getAttendence', (req, res) => {
-    console.log('/getAttendence');
-    mysql.query('select * from attendance', (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage });
-        } else {
-            res.json(result);
-        }
-    })
-})
+router.get("/getRoles", (req, res) => {
+  console.log("/getRoles");
+  mysql.query("select * from roles", (error, result) => {
+    if (error) {
+      res.json({ message: error.sqlMessage });
+    } else {
+      res.json(result);
+    }
+  });
+});
+router.get("/getAttendence", (req, res) => {
+  console.log("/getAttendence");
+  mysql.query("select * from attendance", (error, result) => {
+    if (error) {
+      res.json({ message: error.sqlMessage });
+    } else {
+      res.json(result);
+    }
+  });
+});
 
 // get jobs by hr and employee
-router.get('/getJobs', (req, res) => {
-    console.log('/getJobs');
-    mysql.query('select * from jobs j inner join department d on d.dep_id=j.dep_id', (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage });
-        } else {
-            res.json(result);
-        }
-    })
-})
-router.get('/getJobPositions', (req, res) => {
-    console.log('/getJobPositons');
-    mysql.query('SELECT * FROM jobpositions', (err, results) => {
-        if (err) {
-            console.error('Error fetching job positions:', err);
-            res.json({ success: false, message: error.sqlMessage });
-        } else {
-            res.json(results);
-        }
-    });
+router.get("/getJobs", (req, res) => {
+  console.log("/getJobs");
+  mysql.query(
+    "select * from jobs j inner join department d on d.dep_id=j.dep_id",
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage });
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
-router.get('/getDepInfo', (req, res) => {
-    console.log('/getDepInfo');
-    mysql.query(`call GetDepartmentsWithTotalEmployees()`, (err, results) => {
-        if (err) {
-            console.error('Error fetching dep info for dep module:', err);
-            res.json({ success: false, message: error.sqlMessage });
-        } else {
-            res.json(results);
-        }
-    });
+router.get("/getJobPositions", (req, res) => {
+  console.log("/getJobPositons");
+  mysql.query("SELECT * FROM jobpositions", (err, results) => {
+    if (err) {
+      console.error("Error fetching job positions:", err);
+      res.json({ success: false, message: error.sqlMessage });
+    } else {
+      res.json(results);
+    }
+  });
 });
-
-router.get('/getEmployees', (req, res) => {
-    console.log('/getEmployees');
-    mysql.query('SELECT * FROM employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id;', (err, results) => {
-        if (err) {
-            console.error('Error fetching job emp info:', err);
-            res.json({ message: error.sqlMessage });
-        } else {
-            res.json(results);
-        }
-    });
+router.get("/getDepInfo", (req, res) => {
+  console.log("/getDepInfo");
+  mysql.query(`call GetDepartmentsWithTotalEmployees()`, (err, results) => {
+    if (err) {
+      console.error("Error fetching dep info for dep module:", err);
+      res.json({ success: false, message: error.sqlMessage });
+    } else {
+      res.json(results);
+    }
+  });
 });
 
-router.get('/getEmployee/:id', (req, res) => {
+router.get("/getEmployees", (req, res) => {
+  console.log("/getEmployees");
+  mysql.query(
+    "SELECT * FROM employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id;",
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching job emp info:", err);
+        res.json({ message: error.sqlMessage });
+      } else {
+        res.json(results);
+      }
+    }
+  );
+});
 
-    const { id } = req.params
-    console.log(`Get Employee @ ${id}`);
+router.get("/getEmployee/:id", (req, res) => {
+  const { id } = req.params;
+  console.log(`Get Employee @ ${id}`);
 
-    mysql.query('', (error, result) => {
-        if (error) {
-            res.json({ message: 'Database or Backend error occured', success: false })
-        } else {
-            console.log(result);
-            res.json(result)
-        }
-    })
-})
+  mysql.query("", (error, result) => {
+    if (error) {
+      res.json({
+        message: "Database or Backend error occured",
+        success: false,
+      });
+    } else {
+      console.log(result);
+      res.json(result);
+    }
+  });
+});
 
 // delete job by hr
-router.post('/deleteJob', (req, res) => {
-    console.log('/deleteJob');
-    const { job_id } = req.body;
-    mysql.query('DELETE FROM jobs WHERE job_id = ?;', [job_id], (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage, error, success: false });
-        } else {
-            res.json({ success: true });
-        }
-    });
+router.post("/deleteJob", (req, res) => {
+  console.log("/deleteJob");
+  const { job_id } = req.body;
+  mysql.query(
+    "DELETE FROM jobs WHERE job_id = ?;",
+    [job_id],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
 });
 
 // job post by hr
-router.post('/jobPost', (req, res) => {
-    console.log('/jobPost');
+router.post("/jobPost", (req, res) => {
+  console.log("/jobPost");
 
-    const { title, experience, expiry_date, description, dep_id, salary, location } = req.body;
-    mysql.query('insert into jobs(title,experience,date_posted,expiry_date,description,dep_id,salary,location) values(?,?,?,?,?,?,?,?);', [title, experience, current_date, expiry_date, description, dep_id, salary, location], (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage, error, success: false });
-        } else {
-            res.json({ success: true });
-        }
-    })
+  const {
+    title,
+    experience,
+    expiry_date,
+    description,
+    dep_id,
+    salary,
+    location,
+  } = req.body;
+  mysql.query(
+    "insert into jobs(title,experience,date_posted,expiry_date,description,dep_id,salary,location) values(?,?,?,?,?,?,?,?);",
+    [
+      title,
+      experience,
+      current_date,
+      expiry_date,
+      description,
+      dep_id,
+      salary,
+      location,
+    ],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
 });
 //------------------------------------------job application submission api's-----------------------------------------
-
 
 const uploadDirectory = `${__dirname}/../uploads`; // Replace 'uploads' with your desired directory name
 
 if (!fs.existsSync(uploadDirectory)) {
-    fs.mkdirSync(uploadDirectory, { recursive: true });
+  fs.mkdirSync(uploadDirectory, { recursive: true });
 }
 
-router.post('/submitJobApplication', upload.single('cv_file'), (req, res) => {
-    console.log('/submitJobApplication');
-    const {
-        applicant_name,
-        email,
-        city,
-        cnic,
-        phone_number,
-        desired_salary,
-        address,
-        job_id,
-        university,
-        degree,
-        major,
-        gender,
-        zipcode,
-        experience,
-        linkedin_profile_url,
-        github_profile_url,
-        dob,
-        cgpa
-    } = req.body;
-    const fileName = `${job_id}_${applicant_name}.pdf`; // Generate a unique file name
-    const cv_file = req.file.buffer; // Use req.file.buffer to access the file data
-    const dataArray = [
-        applicant_name,
-        email,
-        cnic,
-        city,
-        phone_number,
-        desired_salary,
-        fileName,
-        address,
-        job_id,
-        university,
-        degree,
-        major,
-        gender,
-        zipcode,
-        experience,
-        linkedin_profile_url,
-        github_profile_url,
-        dob,
-        cgpa];
-    const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
-    console.log(dataArray);
-    const extra = "nofil";
+router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
+  console.log("/submitJobApplication");
+  const {
+    applicant_name,
+    email,
+    city,
+    cnic,
+    phone_number,
+    desired_salary,
+    address,
+    job_id,
+    university,
+    degree,
+    major,
+    gender,
+    zipcode,
+    experience,
+    linkedin_profile_url,
+    github_profile_url,
+    dob,
+    cgpa,
+  } = req.body;
+  const fileName = `${job_id}_${applicant_name}.pdf`; // Generate a unique file name
+  const cv_file = req.file.buffer; // Use req.file.buffer to access the file data
+  const dataArray = [
+    applicant_name,
+    email,
+    cnic,
+    city,
+    phone_number,
+    desired_salary,
+    fileName,
+    address,
+    job_id,
+    university,
+    degree,
+    major,
+    gender,
+    zipcode,
+    experience,
+    linkedin_profile_url,
+    github_profile_url,
+    dob,
+    cgpa,
+  ];
+  const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
+  console.log(dataArray);
+  const extra = "nofil";
 
-
-    fs.writeFile(filePath, cv_file, (err) => {
-        if (err) {
-            console.error('Error saving file to server:', err);
-            res.json({ message: 'Error saving file to server', error: err, success: false });
-        } else {
-            mysql.query(
-                'INSERT INTO applications (applicant_name, email, cnic, city, phone_number, desired_salary, cv_pdf, address, job_id,university,degree,major,gender,zipcode,experience,linkedin_profile_url,github_profile_url,dob,cgpa) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                dataArray,
-                (error, result) => {
-                    if (error) {
-                        res.json({ message: error.sqlMessage, error, success: false });
-                        console.log(error);
-                    } else {
-                        res.json({ success: true, message: "Application submitted successfully." });
-                    }
-                }
-            );
-
-        }
-    });
-
-});
-
-router.post('/getResume', (req, res) => {
-    const { applicationId } = req.body;
-    const job_id = req.query.job_id; // Assuming job_id is available in the request
-    const applicant_name = req.query.applicant_name; // Assuming applicant_name is available in the request
-
-    const fileName = `${job_id}_${applicant_name}.pdf`;
-    const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
-
-    if (fs.existsSync(filePath)) {
-        res.contentType('application/pdf');
-        const stream = fs.createReadStream(filePath);
-        stream.pipe(res);
+  fs.writeFile(filePath, cv_file, (err) => {
+    if (err) {
+      console.error("Error saving file to server:", err);
+      res.json({
+        message: "Error saving file to server",
+        error: err,
+        success: false,
+      });
     } else {
-        res.status(404).send('File not found');
+      mysql.query(
+        "INSERT INTO applications (applicant_name, email, cnic, city, phone_number, desired_salary, cv_pdf, address, job_id,university,degree,major,gender,zipcode,experience,linkedin_profile_url,github_profile_url,dob,cgpa) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        dataArray,
+        (error, result) => {
+          if (error) {
+            res.json({ message: error.sqlMessage, error, success: false });
+            console.log(error);
+          } else {
+            res.json({
+              success: true,
+              message: "Application submitted successfully.",
+            });
+          }
+        }
+      );
     }
+  });
 });
 
+router.post("/getResume", (req, res) => {
+  const { applicationId } = req.body;
+  const job_id = req.query.job_id; // Assuming job_id is available in the request
+  const applicant_name = req.query.applicant_name; // Assuming applicant_name is available in the request
 
+  const fileName = `${job_id}_${applicant_name}.pdf`;
+  const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
 
-
-
+  if (fs.existsSync(filePath)) {
+    res.contentType("application/pdf");
+    const stream = fs.createReadStream(filePath);
+    stream.pipe(res);
+  } else {
+    res.status(404).send("File not found");
+  }
+});
 
 //---------------------------------------------hiring/view job applications------------------------------------------------------------------------
-router.get('/getJobApplications', (req, res) => {
-    console.log('/getJobApplications');
-    mysql.query('select application_id, applicant_name, email,phone_number, status,j.job_id,title from applications a inner join jobs j on a.job_id=j.job_id;', (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage, error, success: false });
-        } else {
-            res.json(result);
-        }
-    })
-})
-router.post('/rejectApplication', (req, res) => {
-    console.log('/rejectApplication');
-    const { rejectedApplicationId } = req.body;
-    console.log(rejectedApplicationId);
-    mysql.query('delete from applications where application_id =?', [rejectedApplicationId], (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage, error, success: false });
-        } else {
-            const mailOptions = {
-                from: process.env.EMAIL_USERNAME,
-                // to: 'muhammadihtisham60@gmail.com',
-                // to: email,
-                to: 'hmic828@gmail.com',
-                subject: 'Job Application Rejected',
-                text: `Better luck next time! Your Job Application Rejected.
+router.get("/getJobApplications", (req, res) => {
+  console.log("/getJobApplications");
+  mysql.query(
+    "select application_id, applicant_name, email,phone_number, status,j.job_id,title from applications a inner join jobs j on a.job_id=j.job_id;",
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+});
+router.post("/rejectApplication", (req, res) => {
+  console.log("/rejectApplication");
+  const { rejectedApplicationId } = req.body;
+  console.log(rejectedApplicationId);
+  mysql.query(
+    "delete from applications where application_id =?",
+    [rejectedApplicationId],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        const mailOptions = {
+          from: process.env.EMAIL_USERNAME,
+          // to: 'muhammadihtisham60@gmail.com',
+          // to: email,
+          to: "hmic828@gmail.com",
+          subject: "Job Application Rejected",
+          text: `Better luck next time! Your Job Application Rejected.
 
                     Sincerely,
                     Zeeshan Ali(HR) 
                     TECHNOHUB  
                 `,
-            };
+        };
 
-            transporter.sendMail(mailOptions, (emailError, info) => {
-                if (emailError) {
-                    console.error('Error sending email:', emailError);
-                    res.status(500).json({ success: false, message: 'Failed to send reject application letter via email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    res.status(200).json({ success: true, message: 'application rejected successfully successfully' });
-                }
-            });
-        }
-    })
-})
+        transporter.sendMail(mailOptions, (emailError, info) => {
+          if (emailError) {
+            console.error("Error sending email:", emailError);
+            res
+              .status(500)
+              .json({
+                success: false,
+                message: "Failed to send reject application letter via email",
+              });
+          } else {
+            console.log("Email sent:", info.response);
+            res
+              .status(200)
+              .json({
+                success: true,
+                message: "application rejected successfully successfully",
+              });
+          }
+        });
+      }
+    }
+  );
+});
 
-router.post('/callForInterview', (req, res) => {
-    console.log('callForInterview');
-    const { callForInterviewId, interviewDate, interviewTime, email } = req.body;
+router.post("/callForInterview", (req, res) => {
+  console.log("callForInterview");
+  const { callForInterviewId, interviewDate, interviewTime, email } = req.body;
 
-    console.log(callForInterviewId);
-    mysql.query('update applications set status="interview" where application_id=?;', [callForInterviewId], (error, result) => {
-        if (error) {
-            res.json({ message: error.sqlMessage, error, success: false });
-        } else {
-            const mailOptions = {
-                from: process.env.EMAIL_USERNAME,
-                // to: 'muhammadihtisham60@gmail.com',
-                // to: email,
-                to: 'hmic828@gmail.com',
-                subject: 'Call For Interview',
-                text: `Congrats! We are calling you for interview at TecnoHub.
+  console.log(callForInterviewId);
+  mysql.query(
+    'update applications set status="interview" where application_id=?;',
+    [callForInterviewId],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        const mailOptions = {
+          from: process.env.EMAIL_USERNAME,
+          // to: 'muhammadihtisham60@gmail.com',
+          // to: email,
+          to: "hmic828@gmail.com",
+          subject: "Call For Interview",
+          text: `Congrats! We are calling you for interview at TecnoHub.
                     Interview Date: ${interviewDate}
                     Interview Time:${interviewTime}
 
@@ -320,141 +370,181 @@ router.post('/callForInterview', (req, res) => {
                     Zeeshan Ali(HR) 
                     TECHNOHUB  
                 `,
-            };
+        };
 
-            transporter.sendMail(mailOptions, (emailError, info) => {
-                if (emailError) {
-                    console.error('Error sending email:', emailError);
-                    res.status(500).json({ success: false, message: 'Failed to send  Inteview call letter via email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    res.status(200).json({ success: true, message: 'Interview Call Letter sended successfully' });
-                }
-            });
-        }
-    })
-})
+        transporter.sendMail(mailOptions, (emailError, info) => {
+          if (emailError) {
+            console.error("Error sending email:", emailError);
+            res
+              .status(500)
+              .json({
+                success: false,
+                message: "Failed to send  Inteview call letter via email",
+              });
+          } else {
+            console.log("Email sent:", info.response);
+            res
+              .status(200)
+              .json({
+                success: true,
+                message: "Interview Call Letter sended successfully",
+              });
+          }
+        });
+      }
+    }
+  );
+});
 
 // ------------------------------------------------------------Departments--------------------------------------------------------------------------------------------
-router.post('/addDepartment', (req, res) => {
-    console.log('/addDepartment');
-    const { newDepartmentName } = req.body;
+router.post("/addDepartment", (req, res) => {
+  console.log("/addDepartment");
+  const { newDepartmentName } = req.body;
 
-    if (!newDepartmentName) {
-        return res.json({ success: false, message: 'Department name is required.' });
-    }
-    const query = 'INSERT INTO Department (dep_name) VALUES (?)';
-    mysql.query(query, [newDepartmentName], (error, results) => {
-        if (error) {
-            console.error('Error adding department:', error);
-            return res.json({ success: false, message: 'Error adding department.' });
-        }
-        res.json({ success: true, message: 'Department added successfully.' });
+  if (!newDepartmentName) {
+    return res.json({
+      success: false,
+      message: "Department name is required.",
     });
+  }
+  const query = "INSERT INTO Department (dep_name) VALUES (?)";
+  mysql.query(query, [newDepartmentName], (error, results) => {
+    if (error) {
+      console.error("Error adding department:", error);
+      return res.json({ success: false, message: "Error adding department." });
+    }
+    res.json({ success: true, message: "Department added successfully." });
+  });
 });
 
 //// -----------------------------------------------------emplyees/addemployees---------------------------------------------------------------------------------------
-const { log } = require('console');
+const { log } = require("console");
 
-router.post('/registerEmployee', async (req, res) => {
-    console.log('/registerEmployee');
-    const { address,
-        applicant_name,
-        cgpa,
-        city,
-        cnic,
-        degree,
-        dep_id,
-        dob,
-        email,
-        emp_id,
-        gender,
-        github_profile_url,
-        hire_date,
-        job_id,
-        linkedin_profile_url,
-        major,
-        phone_number,
-        role_id,
-        salary,
-        university,
-        zipcode } = req.body;
+router.post("/registerEmployee", async (req, res) => {
+  console.log("/registerEmployee");
+  const {
+    address,
+    applicant_name,
+    cgpa,
+    city,
+    cnic,
+    degree,
+    dep_id,
+    dob,
+    email,
+    emp_id,
+    gender,
+    github_profile_url,
+    hire_date,
+    job_id,
+    linkedin_profile_url,
+    major,
+    phone_number,
+    role_id,
+    salary,
+    university,
+    zipcode,
+  } = req.body;
 
-    mysql.query('CALL registerEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-        address,
-        applicant_name,
-        cgpa,
-        city,
-        cnic,
-        degree,
-        dep_id,
-        dob,
-        email,
-        emp_id,
-        gender,
-        github_profile_url,
-        hire_date,
-        job_id,
-        linkedin_profile_url,
-        major,
-        phone_number,
-        role_id,
-        salary,
-        university,
-        zipcode
+  mysql.query(
+    "CALL registerEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      address,
+      applicant_name,
+      cgpa,
+      city,
+      cnic,
+      degree,
+      dep_id,
+      dob,
+      email,
+      emp_id,
+      gender,
+      github_profile_url,
+      hire_date,
+      job_id,
+      linkedin_profile_url,
+      major,
+      phone_number,
+      role_id,
+      salary,
+      university,
+      zipcode,
     ],
-        (err, result) => {
-            if (err) {
-                console.error('Error inserting data:', err);
-                res.json({ message: err.sqlMessage, success: false, error: 'Error inserting  data' });
-            } else {
-                const mailOptions = {
-                    from: process.env.EMAIL_USERNAME,
-                    // to: 'muhammadihtisham60@gmail.com',
-                    // to: email,
-                    to: 'hmic828@gmail.com',
-                    subject: 'Job Offer Letter',
-                    text: `Congratulations you are hired and TechoHub! You can join us from date.
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        res.json({
+          message: err.sqlMessage,
+          success: false,
+          error: "Error inserting  data",
+        });
+      } else {
+        const mailOptions = {
+          from: process.env.EMAIL_USERNAME,
+          // to: 'muhammadihtisham60@gmail.com',
+          // to: email,
+          to: "hmic828@gmail.com",
+          subject: "Job Offer Letter",
+          text: `Congratulations you are hired and TechoHub! You can join us from date.
         
                             Sincerely,
                             Zeeshan Ali(HR) 
                             TECHNOHUB  
                         `,
-                };
+        };
 
-                transporter.sendMail(mailOptions, (emailError, info) => {
-                    if (emailError) {
-                        console.error('Error sending email:', emailError);
-                        res.status(500).json({ success: false, message: 'Failed to send Hiring Offer letter via email' });
-                    } else {
-                        console.log('Email sent:', info.response);
-                        res.status(200).json({ success: true, message: 'Employee Data inserted successfully & Offer Letter Sended' });
-                    }
-                });
-            }
-        }
-    );
+        transporter.sendMail(mailOptions, (emailError, info) => {
+          if (emailError) {
+            console.error("Error sending email:", emailError);
+            res
+              .status(500)
+              .json({
+                success: false,
+                message: "Failed to send Hiring Offer letter via email",
+              });
+          } else {
+            console.log("Email sent:", info.response);
+            res
+              .status(200)
+              .json({
+                success: true,
+                message:
+                  "Employee Data inserted successfully & Offer Letter Sended",
+              });
+          }
+        });
+      }
+    }
+  );
 });
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+router.post("/removeEmployee", async (req, res) => {
+  try {
+    console.log("/removeEmployee");
+    const { emp_id } = req.body;
+    const response = await axios.post(
+      "http://localhost:3002/getEmpInfobyEmpId",
+      { emp_id }
+    );
+    const employee = response.data[0];
 
-router.post('/removeEmployee', async (req, res) => {
-    try {
-        console.log('/removeEmployee');
-        const { emp_id } = req.body;
-        const response = await axios.post('http://localhost:3002/getEmpInfobyEmpId', { emp_id });
-        const employee = response.data[0];
-
-        mysql.query('delete from employee where emp_id = ?;', [emp_id], (error, result) => {
-            if (error) {
-                console.error('Error removing employee:', error);
-                res.status(500).json({ success: false, message: 'Failed to remove employee' });
-            } else {
-                const mailOptions = {
-                    from: process.env.EMAIL_USERNAME,
-                    to: 'muhammadihtisham60@gmail.com',
-                    subject: 'Offer Letter',
-                    text: `Subject: Job Offer - [Your Company Name]
+    mysql.query(
+      "delete from employee where emp_id = ?;",
+      [emp_id],
+      (error, result) => {
+        if (error) {
+          console.error("Error removing employee:", error);
+          res
+            .status(500)
+            .json({ success: false, message: "Failed to remove employee" });
+        } else {
+          const mailOptions = {
+            from: process.env.EMAIL_USERNAME,
+            to: "muhammadihtisham60@gmail.com",
+            subject: "Offer Letter",
+            text: `Subject: Job Offer - [Your Company Name]
 
           [Date]
           
@@ -484,303 +574,358 @@ HR
 TECHNOHUB
 03021055932
                     `,
-                };
+          };
 
-                transporter.sendMail(mailOptions, (emailError, info) => {
-                    if (emailError) {
-                        console.error('Error sending email:', emailError);
-                        res.status(500).json({ success: false, message: 'Failed to send offer letter via email' });
-                    } else {
-                        console.log('Email sent:', info.response);
-                        res.status(200).json({ success: true, message: 'Employee removed and offer letter sent successfully' });
-                    }
+          transporter.sendMail(mailOptions, (emailError, info) => {
+            if (emailError) {
+              console.error("Error sending email:", emailError);
+              res
+                .status(500)
+                .json({
+                  success: false,
+                  message: "Failed to send offer letter via email",
+                });
+            } else {
+              console.log("Email sent:", info.response);
+              res
+                .status(200)
+                .json({
+                  success: true,
+                  message:
+                    "Employee removed and offer letter sent successfully",
                 });
             }
-        });
-    } catch (e) {
-        response.json({ success: false, message: e })
-    }
+          });
+        }
+      }
+    );
+  } catch (e) {
+    response.json({ success: false, message: e });
+  }
 });
-
 
 // --------------------------------------------------------------------------emp/attendence---------------------------------------------------------------------------------
-router.post('/getAttendencebyEmp', (req, res) => {
-    console.log('getAttendencebyEmp');
-    const { emp_id, todayDate } = req.body;
-    mysql.query('select status from attendance where emp_id=? and attendance_date=?;', [emp_id, todayDate], (err, result) => {
-        if (err) {
-            res.json({ success: false, message: "error in fetching attendace status" })
-        }
-        // if (results.length === 0) {
-        //     res.json({ status: 'absent' });
-        //   } 
-        else {
-            res.json(result)
-        }
-    });
-})
-
-router.put('/updateAttendance', async (req, res) => {
-    console.log('/updateAttendance');
-    const { emp_id, att_status } = req.body;
-    // const allAttendance=await axios.get('http://localhost:3002/getAttendence');
-    // const findAttendance=allAttendance.data((attendance)=>{ emp_id===attendance.emp_id && current_date===attendance.attendance_date})
-    mysql.query('INSERT INTO attendance (emp_id, status, attendance_date) VALUES (?, ?, ?)',
-        [emp_id, att_status, current_date],
-        (error, result) => {
-            if (error) {
-                console.error(error);
-                res.json({ success: false, message: "An error occurred" });
-            } else {
-                res.json({ success: true, message: "Attendance marked" });
-            }
-        }
-    );
+router.post("/getAttendencebyEmp", (req, res) => {
+  console.log("getAttendencebyEmp");
+  const { emp_id, todayDate } = req.body;
+  mysql.query(
+    "select status from attendance where emp_id=? and attendance_date=?;",
+    [emp_id, todayDate],
+    (err, result) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: "error in fetching attendace status",
+        });
+      }
+      // if (results.length === 0) {
+      //     res.json({ status: 'absent' });
+      //   }
+      else {
+        res.json(result);
+      }
+    }
+  );
 });
 
-router.put('/leaverequest', async (req, res) => {
-    console.log('/leaverequest');
-    const { emp_id, reason, leave_date } = req.body;
-    console.log('/leaverequest');
-    console.table({ emp_id, reason, leave_date })
-    mysql.query(
-        'INSERT INTO leaverequest (emp_id, reason, leave_date, applying_date) VALUES (?,  ?, ?, ?) ' +
-        'ON DUPLICATE KEY UPDATE reason = VALUES(reason), leave_date = VALUES(leave_date), applying_date = VALUES(applying_date)',
-        [emp_id, reason, leave_date, current_date],
-        (error, result) => {
-            if (error) {
-                console.error(error);
-                res.json({ success: false, message: "An error occurred" });
-            } else {
-                res.json({ success: true, message: "Leave request has been sented." });
-            }
-        }
-    );
+router.put("/updateAttendance", async (req, res) => {
+  console.log("/updateAttendance");
+  const { emp_id, att_status } = req.body;
+  // const allAttendance=await axios.get('http://localhost:3002/getAttendence');
+  // const findAttendance=allAttendance.data((attendance)=>{ emp_id===attendance.emp_id && current_date===attendance.attendance_date})
+  mysql.query(
+    "INSERT INTO attendance (emp_id, status, attendance_date) VALUES (?, ?, ?)",
+    [emp_id, att_status, current_date],
+    (error, result) => {
+      if (error) {
+        console.error(error);
+        res.json({ success: false, message: "An error occurred" });
+      } else {
+        res.json({ success: true, message: "Attendance marked" });
+      }
+    }
+  );
 });
 
+router.put("/leaverequest", async (req, res) => {
+  console.log("/leaverequest");
+  const { emp_id, reason, leave_date } = req.body;
+  console.log("/leaverequest");
+  console.table({ emp_id, reason, leave_date });
+  mysql.query(
+    "INSERT INTO leaverequest (emp_id, reason, leave_date, applying_date) VALUES (?,  ?, ?, ?) " +
+      "ON DUPLICATE KEY UPDATE reason = VALUES(reason), leave_date = VALUES(leave_date), applying_date = VALUES(applying_date)",
+    [emp_id, reason, leave_date, current_date],
+    (error, result) => {
+      if (error) {
+        console.error(error);
+        res.json({ success: false, message: "An error occurred" });
+      } else {
+        res.json({ success: true, message: "Leave request has been sented." });
+      }
+    }
+  );
+});
 
-router.get('/getTodayAttendance', (req, res) => {
-    mysql.query('SELECT * FROM hr.attendance WHERE attendance_date = DATE(NOW());', (err, result) => {
+router.get("/getTodayAttendance", (req, res) => {
+  mysql.query(
+    "SELECT * FROM hr.attendance WHERE attendance_date = DATE(NOW());",
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json({ success: false, message: "An error occurred" });
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    }
+  );
+});
+
+router.post('/markAbsent', (req, res)=>{
+    console.log('mark attendance');
+    const query = `CALL markAbsentIntoAttendance()`
+
+    mysql.query(query, (err, result) => {
         if (err) {
             console.error(err);
             res.json({ success: false, message: "An error occurred" });
-        }
-        else {
-            console.log(result)
-            res.json(result)
-        }
+          } else {
+            console.log(result);
+            res.json(result);
+          }
     })
 })
 
 // --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
-router.post('/getEmpInfobyEmpId', (req, res) => {
-    console.log('/getEmpInfobyEmpId');
-    const { emp_id } = req.body;
-    mysql.query('select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;', [emp_id], (err, result) => {
-        if (err) {
-            res.json({ success: false, message: "error in fetching attendace status", err })
-        } else {
-            res.json(result)
-        }
-    });
-})
-
-router.put('/updateEmployeeInfo', async (req, res) => {
-    console.log('/updateEmployeeInfo');
-    try {
-        const { emp_id, email, phone_number, city, address, zipcode } = req.body;
-        const updateQuery = `UPDATE employee SET email = ?, phone_number = ?, city = ?, address = ?, zipcode = ? WHERE emp_id = ?;`;
-
-        mysql.query(
-            updateQuery,
-            [email, phone_number, city, address, zipcode, emp_id],
-            (error, results) => {
-                if (error) {
-                    console.error('Error updating employee information:', error);
-                    res.json({ success: false, message: 'Internal server error.' });
-                } else {
-                    res.json({ success: true, message: 'Employee information updated successfully.' });
-                }
-            }
-        );
-    } catch (error) {
-        console.error('Error updating employee information:', error);
-        res.json({ success: false, message: 'Internal server error.' });
+router.post("/getEmpInfobyEmpId", (req, res) => {
+  console.log("/getEmpInfobyEmpId");
+  const { emp_id } = req.body;
+  mysql.query(
+    "select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;",
+    [emp_id],
+    (err, result) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: "error in fetching attendace status",
+          err,
+        });
+      } else {
+        res.json(result);
+      }
     }
+  );
 });
 
-router.get('/getApplicant/:id', (req, res) => {
-    console.log('/getApplicant');
+router.put("/updateEmployeeInfo", async (req, res) => {
+  console.log("/updateEmployeeInfo");
+  try {
+    const { emp_id, email, phone_number, city, address, zipcode } = req.body;
+    const updateQuery = `UPDATE employee SET email = ?, phone_number = ?, city = ?, address = ?, zipcode = ? WHERE emp_id = ?;`;
 
-    const { id } = req.params;
+    mysql.query(
+      updateQuery,
+      [email, phone_number, city, address, zipcode, emp_id],
+      (error, results) => {
+        if (error) {
+          console.error("Error updating employee information:", error);
+          res.json({ success: false, message: "Internal server error." });
+        } else {
+          res.json({
+            success: true,
+            message: "Employee information updated successfully.",
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error updating employee information:", error);
+    res.json({ success: false, message: "Internal server error." });
+  }
+});
 
-    mysql.query(`SELECT * FROM hr.applications WHERE application_id = ${id};`, (err, result) => {
-        if (err) {
-            console.error('Error updating employee information:', err);
-            res.json({ success: false, message: 'Internal server error.' });
-        }
-        else {
-            res.json(result)
-        }
-    })
-})
+router.get("/getApplicant/:id", (req, res) => {
+  console.log("/getApplicant");
+
+  const { id } = req.params;
+
+  mysql.query(
+    `SELECT * FROM hr.applications WHERE application_id = ${id};`,
+    (err, result) => {
+      if (err) {
+        console.error("Error updating employee information:", err);
+        res.json({ success: false, message: "Internal server error." });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+});
 
 // --------------------------------------------------------------------------hr/leaveapplication---------------------------------------------------------------------------------
 
-router.get('/getApplications', (req, res) => {
-    console.log('/getApplications');
-    mysql.query('call getLeaveApplication();', (err, results) => {
-        if (err) {
-            console.error('Error fetching job leave Applications:', err);
-            res.json({ message: err.sqlMessage });
-        } else {
-            res.json(results);
-        }
-    });
-});
-
-
-router.put('/leaveApproved', (req, res) => {
-    console.log('/leaveApproved');
-    const { emp_id, attendance_date } = req.body;
-    const status = 'Leave';
-    mysql.query(`call attendanceApproval(${emp_id},'${status}','${attendance_date}')`, (error, result) => {
-        if (error) {
-            console.error(error);
-            res.json({ success: false, message: "An error occurred" });
-        } else {
-            res.json({ success: true, message: "Attendence Approved" });
-        }
+router.get("/getApplications", (req, res) => {
+  console.log("/getApplications");
+  mysql.query("call getLeaveApplication();", (err, results) => {
+    if (err) {
+      console.error("Error fetching job leave Applications:", err);
+      res.json({ message: err.sqlMessage });
+    } else {
+      res.json(results);
     }
-    );
+  });
 });
-router.put('/leaveRejected', (req, res) => {
-    console.log('/leaveRejected');
-    const { req_id } = req.body;
-    console.log(req_id);
-    mysql.query(`call attendanceRejected(${req_id})`, (error, result) => {
-        if (error) {
-            console.error(error);
-            res.json({ success: false, message: "An error occurred" });
-        } else {
-            res.json({ success: true, message: "Leave Rejected" });
-        }
+
+router.put("/leaveApproved", (req, res) => {
+  console.log("/leaveApproved");
+  const { emp_id, attendance_date } = req.body;
+  const status = "Leave";
+  mysql.query(
+    `call attendanceApproval(${emp_id},'${status}','${attendance_date}')`,
+    (error, result) => {
+      if (error) {
+        console.error(error);
+        res.json({ success: false, message: "An error occurred" });
+      } else {
+        res.json({ success: true, message: "Attendence Approved" });
+      }
     }
-    );
+  );
+});
+router.put("/leaveRejected", (req, res) => {
+  console.log("/leaveRejected");
+  const { req_id } = req.body;
+  console.log(req_id);
+  mysql.query(`call attendanceRejected(${req_id})`, (error, result) => {
+    if (error) {
+      console.error(error);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json({ success: true, message: "Leave Rejected" });
+    }
+  });
 });
 
-router.get('/empLeaveHistory/:id', (req, res) => {
-    console.log('/employeeLeaveHistory');
-    const { id } = req.params
+router.get("/empLeaveHistory/:id", (req, res) => {
+  console.log("/employeeLeaveHistory");
+  const { id } = req.params;
 
-    console.log("Employee ID: " + id);
+  console.log("Employee ID: " + id);
 
-    mysql.query(`CALL employeeLeaveHistory(${id})`, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.json({ success: false, message: "An error occurred" });
-        } else {
-            res.json(result[0])
-        }
-    })
-})
+  mysql.query(`CALL employeeLeaveHistory(${id})`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
 
+router.get("/getAttendance/:id", (req, res) => {
+  console.log("/getAttendance");
+  const { id } = req.params;
 
-router.get('/getAttendance/:id', (req, res) => {
-    console.log('/getAttendance');
-    const { id } = req.params
+  console.log("Employee ID: " + id);
 
-    console.log("Employee ID: " + id);
-
-    mysql.query(`CALL getAttendance(${id})`, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.json({ success: false, message: "An error occurred" });
-        } else {
-            console.log(result[0]);
-            res.json(result[0])
-        }
-    })
-})
-
+  mysql.query(`CALL getAttendance(${id})`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result[0]);
+      res.json(result[0]);
+    }
+  });
+});
 
 // -------------------------------- Dashboard -----------------------------
 
-router.get('/getDashboardData', (req, res) => {
-    console.log('/getDashboardData');
+router.get("/getDashboardData", (req, res) => {
+  console.log("/getDashboardData");
 
-    mysql.query(`CALL getDashboardStats();`, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.json({ success: false, message: "An error occurred" });
-        } else {
-            console.log(result);
-            res.json(result[0])
-        }
-    })
-})
+  mysql.query(`CALL getDashboardStats();`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result);
+      res.json(result[0]);
+    }
+  });
+});
 // ---------------------------------------------get today attendce/hr---------------------------------------
-router.get('/getTodayAllAttendance', (req, res) => {
-    const query = `CALL getTodayAttendance()`;
+router.get("/getTodayAllAttendance", (req, res) => {
+  const query = `CALL getTodayAttendance()`;
 
-    mysql.query(query, (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ err, message: err.message });
-            return;
-        }
-        res.json(results[0]);
-    });
+  mysql.query(query, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ err, message: err.message });
+      return;
+    }
+    res.json(results[0]);
+  });
 });
 
-router.get('/getattendancehistory', (req, res) => {
-    const query = `CALL getattendancehistory()`;
+router.get("/getattendancehistory", (req, res) => {
+  const query = `CALL getattendancehistory()`;
 
-    mysql.query(query, (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ err, message: err.message });
-            return;
-        }
-        res.json(results[0]);
-    });
+  mysql.query(query, (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ err, message: err.message });
+      return;
+    }
+    res.json(results[0]);
+  });
 });
 
 // ----------------------------------------------------authentication----------------------------------------------------------------------
-router.get('/users',  (req, res) => {
-    mysql.query('SELECT user_id, username FROM users', (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ err, message: err.message });
-            return;
-        }
-        res.json(results);
-    });
+router.get("/users", (req, res) => {
+  mysql.query("SELECT user_id, username FROM users", (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ err, message: err.message });
+      return;
+    }
+    res.json(results);
+  });
 });
 
-router.post('/RegisterUser', async (req, res) => {
-    try {
-        const users = await axios.get('http://localhost:3002/users');
-        finduser = users.data.find((u) => { return u.username == req.body.username });
-        if (finduser.useremail === req.body.username) {
-            res.json({ success: false, message: "user Already exist with this username/email" })
-        } else {
-            const { user_name, user_password ,role_id,emp_id} = req.body;
-            const hashed_password = await bcrypt.hash(user_password, 10);
-            const values = [user_name, hashed_password,role_id,emp_id];
+router.post("/RegisterUser", async (req, res) => {
+  try {
+    const users = await axios.get("http://localhost:3002/users");
+    finduser = users.data.find((u) => {
+      return u.username == req.body.username;
+    });
+    if (finduser.useremail === req.body.username) {
+      res.json({
+        success: false,
+        message: "user Already exist with this username/email",
+      });
+    } else {
+      const { user_name, user_password, role_id, emp_id } = req.body;
+      const hashed_password = await bcrypt.hash(user_password, 10);
+      const values = [user_name, hashed_password, role_id, emp_id];
 
-            mysql.query('insert into user(username,hashed_password,role_id,emp_id) values (?,?,?,?) ', values, (err, result) => {
-                if (err) {
-                    console.error('Error in registration', err);
-                    res.json({ message: err.sqlMessage });
-                } else {
-                    res.json({ success: true, message: 'Registration successful'});
-                }
-            });
+      mysql.query(
+        "insert into user(username,hashed_password,role_id,emp_id) values (?,?,?,?) ",
+        values,
+        (err, result) => {
+          if (err) {
+            console.error("Error in registration", err);
+            res.json({ message: err.sqlMessage });
+          } else {
+            res.json({ success: true, message: "Registration successful" });
+          }
         }
-    } catch (e) {
-        console.log(e);
+      );
     }
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 module.exports = router;

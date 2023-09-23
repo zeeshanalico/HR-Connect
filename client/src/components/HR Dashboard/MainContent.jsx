@@ -3,12 +3,77 @@ import { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import './MainContent.css';
 import axios from 'axios';
-import { BaseUrl } from '../../constants';
-import Toast from '../../UIModules/Toast/Toast';
+import { BaseUrl, end_time } from '../../constants';
+import Toast from '../../UIModules/Toast/Toast'; 
 
 export default function MainContent() {
 
-  const [record, setRecord] = useState([])
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getDashboardData');
+
+      const {  
+        no_of_absent_employees,
+        no_of_employees,
+        no_of_leave_employees,
+        no_of_present_employees
+      } = response.data[0]
+
+      setStat({
+        absent: no_of_absent_employees ,
+        present: no_of_present_employees,
+        leave: no_of_leave_employees ,
+        total: no_of_employees,
+      })
+
+      console.log(stat);
+
+    } catch (error) {
+      console.log(error);
+      Toast("Data not received")
+    }  
+  }    
+
+  const markAbsent = async () => {
+    const response = await axios.post(BaseUrl+'/markAbsent')
+    console.log(response);
+    if (!response.data.success) {
+      Toast("Absent Marked", "success")
+      // window.location.reload()
+    }
+  }
+
+  // time related info
+  const [currentTime, setCurrentTime] = useState();
+  const handleTimeChanges = () => {
+    setCurrentTime(() => {
+      const currentTime = new Date(); 
+
+      const hour = currentTime.getHours();
+      const minute = currentTime.getMinutes();
+      const second = currentTime.getSeconds();
+
+      return `${hour}:${minute}:${second}`;
+    });
+  };
+
+  useEffect(() => {
+    // fetchData();
+
+    // Time
+    const intervalId = setInterval(() => {
+      handleTimeChanges();
+    }, 1000);
+
+    // Clean up
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  // dashboard data
+
+  const [record, setRecord] = useState()
 
   const [stat, setStat] = useState({
     absent: "",
@@ -26,32 +91,15 @@ export default function MainContent() {
   useEffect(() => {
     // fetching data from backend
 
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(BaseUrl + '/getDashboardData');
+    const time = new Date()
+    
+    console.log("Current : "+record);
+    console.log("End : "+end_time)
 
-        const {
-          no_of_absent_employees,
-          no_of_employees,
-          no_of_leave_employees,
-          no_of_present_employees
-        } = response.data[0]
-
-        setStat({
-          absent: no_of_absent_employees ,
-          present: no_of_present_employees,
-          leave: no_of_leave_employees ,
-          total: no_of_employees,
-        })
-
-        console.log(stat);
-
-      } catch (error) {
-        console.log(error);
-        Toast("Data not received")
-      }
-    }    
-
+    // Getting current time when Dashboard Render
+    if (`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}` >= end_time) {
+      markAbsent()
+    }
 
     fetchData()
   }, [])
@@ -70,6 +118,8 @@ export default function MainContent() {
             </button>
             <strong>Data and Records</strong> Learn more about employee
   </div>  */}
+
+  <p>{currentTime}</p>
 
       <div className="container mt-4">
         <div className="row mb-3">

@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import "../../../BasicStyle.css";
 import "./MarkAttendance.css";
 import Toast from "../../../../UIModules/Toast/Toast";
-import { BaseUrl, employeeId } from "../../../../constants";
+import { BaseUrl, employeeId, start_time, end_time } from "../../../../constants";
 import axios from "axios";
 const emp_id = employeeId;
 
@@ -40,9 +40,6 @@ const emp_id = employeeId;
 //   )
 
 // }
-
-const start_time = "10:0:10";
-const end_time = "11:15:00";
 
 export default function MarkAttendance() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -171,7 +168,8 @@ export default function MarkAttendance() {
 
   return (
     <div className="full-content" id="full-content">
-      {<p>{currentTime}</p>}
+      {<h2>{currentTime}</h2>}
+      {<p>You can mark your attendance in between {start_time} and {end_time}</p>}
 
       <h2 className="mb-4">Mark Attendance</h2>
       <div id="content">
