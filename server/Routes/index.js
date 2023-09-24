@@ -396,6 +396,31 @@ router.post("/callForInterview", (req, res) => {
   );
 });
 
+const path = require('path');
+
+router.post('/pdf', (req, res) => {
+  console.log('/pdf');
+  const job_id = req.body.application_id;
+  const applicant_name = req.body.applicant_name;
+  console.log(job_id,applicant_name);
+  const fileName = `${job_id}_${applicant_name}.pdf`;
+  const filePath = path.join(__dirname, '../uploads', fileName);
+
+  if (fs.existsSync(filePath)) {
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.status(500).json({ error: `Error reading PDF file at ${filePath}` });
+      } else {
+        res.setHeader('Content-Disposition', `inline; filename="${fileName}"`);
+        res.contentType('application/pdf');
+        res.send(data);
+      }
+    });
+  } else {
+    res.status(404).json({ error: `PDF file not found at ${filePath}` });
+  }
+});
+
 // ------------------------------------------------------------Departments--------------------------------------------------------------------------------------------
 router.post("/addDepartment", (req, res) => {
   console.log("/addDepartment");
@@ -654,7 +679,7 @@ router.put("/leaverequest", async (req, res) => {
   console.table({ emp_id, reason, leave_date });
   mysql.query(
     "INSERT INTO leaverequest (emp_id, reason, leave_date, applying_date) VALUES (?,  ?, ?, ?) " +
-      "ON DUPLICATE KEY UPDATE reason = VALUES(reason), leave_date = VALUES(leave_date), applying_date = VALUES(applying_date)",
+    "ON DUPLICATE KEY UPDATE reason = VALUES(reason), leave_date = VALUES(leave_date), applying_date = VALUES(applying_date)",
     [emp_id, reason, leave_date, current_date],
     (error, result) => {
       if (error) {
@@ -669,7 +694,7 @@ router.put("/leaverequest", async (req, res) => {
 
 router.get("/getTodayAttendance", (req, res) => {
   mysql.query(
-    "SELECT * FROM hr.attendance WHERE attendance_date = DATE(NOW());",
+    "SELECT * FROM attendance WHERE attendance_date = DATE(NOW());",
     (err, result) => {
       if (err) {
         console.error(err);
@@ -682,19 +707,19 @@ router.get("/getTodayAttendance", (req, res) => {
   );
 });
 
-router.post('/markAbsent', (req, res)=>{
-    console.log('mark attendance');
-    const query = `CALL markAbsentIntoAttendance()`
+router.post('/markAbsent', (req, res) => {
+  console.log('mark attendance');
+  const query = `CALL markAbsentIntoAttendance()`
 
-    mysql.query(query, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.json({ success: false, message: "An error occurred" });
-          } else {
-            console.log(result);
-            res.json(result);
-          }
-    })
+  mysql.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result);
+      res.json(result);
+    }
+  })
 })
 
 // --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
@@ -747,14 +772,13 @@ router.put("/updateEmployeeInfo", async (req, res) => {
 
 router.get("/getApplicant/:id", (req, res) => {
   console.log("/getApplicant");
-
   const { id } = req.params;
 
   mysql.query(
-    `SELECT * FROM hr.applications WHERE application_id = ${id};`,
+    `SELECT * FROM applications WHERE application_id = ${id};`,
     (err, result) => {
       if (err) {
-        console.error("Error updating employee information:", err);
+        console.error("Internal server erro:", err);
         res.json({ success: false, message: "Internal server error." });
       } else {
         res.json(result);

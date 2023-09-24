@@ -5,6 +5,7 @@ import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import "./../../../BasicStyle.css";
 import { BaseUrl } from "./../../../../constants.js";
+import ViewResume from "./ViewResume";
 import { Dropdown } from "react-bootstrap";
 import { Link } from 'react-router-dom'
 import Toast from "./../../../../UIModules/Toast/Toast.jsx";
@@ -139,9 +140,9 @@ export default function ViewJobApplications() {
           </Dropdown>
         </div>
         <Table striped bordered hover responsive>
-          {/* ... Table header */}
           <thead>
             <tr>
+              <th>ID</th>
               <th>Applicant Name</th>
               <th>Applicant Email</th>
               <th>Applicant Phone</th>
@@ -177,15 +178,12 @@ export default function ViewJobApplications() {
               )
               .map((application) => (
                 <tr key={application.application_id}>
+                  <td>{application.application_id}</td>
                   <td>{application.applicant_name}</td>
                   <td>{application.email}</td>
                   <td>{application.phone_number}</td>
                   <td>
-                    <Button
-                      variant="link"
-                    >
-                      View Resume
-                    </Button>
+                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} />
                   </td>
                   <td>{application.title}</td>
                   <td>{application.status}</td>
