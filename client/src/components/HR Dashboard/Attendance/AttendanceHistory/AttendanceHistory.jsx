@@ -7,6 +7,7 @@ const inputStyle = {
   border: 'none',
   height: '30px',
   outline: 'none',
+  width:'fit-content',
   cursor: 'pointer',
   backgroundColor: 'transparent',
 };
@@ -17,10 +18,12 @@ const AttendanceHistory = () => {
     status: 'All',
     date: '',
     name: '',
+    emp_id: ''
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Default items per page
-  const itemsPerPageOptions = [5, 20, 50, 100]; // Options for items per page
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const itemsPerPageOptions = [5, 20, 50, 100];
+  const [sortByDate, setSortByDate] = useState(''); // State for sorting by date
 
   const fetchData = async () => {
     try {
@@ -42,31 +45,46 @@ const AttendanceHistory = () => {
       ...filters,
       [name]: value,
     });
-    setCurrentPage(1); // Reset to the first page when filters change
+    setCurrentPage(1);
   };
 
   const handleItemsPerPageChange = (e) => {
     const selectedItemsPerPage = parseInt(e.target.value);
     setItemsPerPage(selectedItemsPerPage);
-    setCurrentPage(1); // Reset to the first page when items per page changes
+    setCurrentPage(1);
   };
 
-  // Filter the attendanceHistory based on filters
-  const filteredAttendanceHistory = attendanceHistory.filter((emp) => {
-    const { status, date, name } = filters;
-    return (
-      (status === 'All' || emp.status.toLowerCase() === status.toLowerCase()) &&
-      (date === '' || emp.attendance_date.includes(date)) &&
-      (name === '' || emp.name.toLowerCase().includes(name.toLowerCase()))
-    );
-  });
+  const handleSortByDateChange = (e) => {
+    const selectedSortByDate = e.target.value;
+    setSortByDate(selectedSortByDate);
+    setCurrentPage(1);
+  };
 
-  // Calculate the range of items to display on the current page
+  const filteredAndSortedAttendanceHistory = attendanceHistory
+    .filter((emp) => {
+      const { status, date, name, emp_id } = filters;
+      return (
+        (status === 'All' || emp.status.toLowerCase() === status.toLowerCase()) &&
+        (date === '' || emp.attendance_date.includes(date)) &&
+        (emp_id === '' || emp.emp_id.toString().includes(emp_id)) &&
+        (name === '' || emp.name.toLowerCase().includes(name.toLowerCase()))
+      );
+    })
+    .sort((a, b) => {
+      if (sortByDate === 'asc') {
+        return a.attendance_date.localeCompare(b.attendance_date);
+      } else if (sortByDate === 'desc') {
+        return b.attendance_date.localeCompare(a.attendance_date);
+      } else {
+        return 0; // No sorting by date
+      }
+    });
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredAttendanceHistory.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredAndSortedAttendanceHistory.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(filteredAttendanceHistory.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAndSortedAttendanceHistory.length / itemsPerPage);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -79,8 +97,11 @@ const AttendanceHistory = () => {
       <h2 className="mb-4">Employee Attendance History</h2>
       <div id="content">
         <div className="items-per-page">
-          <label style={{marginLeft:"760px"}} className="mr-2">Show items per page:</label>
-          <select style={{display:'inline',width:"70px"}}
+          <label style={{ marginLeft: '760px' }} className="mr-2">
+            Show items per page:
+          </label>
+          <select
+            style={{ display: 'inline', width: '70px' }}
             className="form-control"
             value={itemsPerPage}
             onChange={handleItemsPerPageChange}
@@ -92,10 +113,20 @@ const AttendanceHistory = () => {
             ))}
           </select>
         </div>
+
         <table className="table">
           <thead>
             <tr>
-              <th>Employee ID</th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Employee id"
+                  name="emp_id"
+                  value={filters.emp_id}
+                  style={inputStyle}
+                  onChange={handleFilterChange}
+                />
+              </th>
               <th>
                 <input
                   type="text"
@@ -106,7 +137,19 @@ const AttendanceHistory = () => {
                   onChange={handleFilterChange}
                 />
               </th>
-              <th>Attendance Date:</th>
+              <th>
+                <select
+                  style={inputStyle}
+                  className="form-control"
+
+                  value={sortByDate}
+                  onChange={handleSortByDateChange}
+                >
+                  <option style={{ display: 'none' }} value="All">Attedence Date</option>
+                  {/* <option value="">All</option> */}
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select></th>
               <th>
                 <select
                   name="status"
@@ -115,7 +158,7 @@ const AttendanceHistory = () => {
                   onChange={handleFilterChange}
                 >
                   <option value={'All'}>Status</option>
-                  <option value={'Late'}>Late</option>
+                  <option value={'Absent'}>Absent</option>
                   <option value={'Leave'}>Leave</option>
                   <option value={'Present'}>Present</option>
                 </select>
@@ -153,7 +196,7 @@ const AttendanceHistory = () => {
             ))}
           </tbody>
         </table>
-        <div className="pagination">
+        <div className="pagination" style={{ margin: 'auto' }}>
           <button
             className="page-link"
             onClick={() => handlePageChange(currentPage - 1)}
@@ -164,7 +207,11 @@ const AttendanceHistory = () => {
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
-              className={`page-link ${index + 1 === currentPage ? 'active' : ''}`}
+              className={`page-link ${index + 1 === currentPage ? 'active-button' : ''}`}
+              style={{
+                backgroundColor: index + 1 === currentPage ? '#007BFF' : 'white',
+                color: index + 1 === currentPage ? 'white' : 'black',
+              }}
               onClick={() => handlePageChange(index + 1)}
             >
               {index + 1}
@@ -178,6 +225,7 @@ const AttendanceHistory = () => {
             Next
           </button>
         </div>
+
       </div>
     </div>
   );

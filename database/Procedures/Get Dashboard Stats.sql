@@ -16,7 +16,7 @@ BEGIN
     -- Get the number of absent employees
     SELECT COUNT(*) INTO absentEmployees
     FROM attendance
-    WHERE attendance_date = DATE(NOW()) AND status = 'Late';
+    WHERE attendance_date = DATE(NOW()) AND status = 'Absent';
 
     -- Get the number of employees on leave
     SELECT COUNT(*) INTO leaveEmployees
