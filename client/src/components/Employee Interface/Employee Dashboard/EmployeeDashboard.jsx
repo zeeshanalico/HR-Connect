@@ -1,25 +1,53 @@
 import React from 'react';
 import { Link as RouterLink } from "react-router-dom";
+import axios from 'axios'
+import { useState, useEffect } from 'react';
+import { BaseUrl, employeeId } from '../../../constants';
+import { useNavigate } from 'react-router-dom';
+import Toast from '../../../UIModules/Toast/Toast';
 
 export default function EmployeeDashboard() {
-  const monthlyPresents = 22;
-  const monthlyAbsents = 8;
-  const performanceScore = 95;
-
+  const [empStats, setEmpStats] = useState({})
+  const navigate = useNavigate();
+  const fetchData = async () => {
+    try {
+      const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', { emp_id: employeeId });
+      setEmpStats(response.data[0]);
+      console.log(response.data[0])
+    } catch (error) {
+      console.error('Error fetching data empInfobyId:', error);
+      throw error;
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [])
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/logout');
+      if (response.data.success) {
+        Toast("You're Logout")
+        navigate('/Login')
+      }
+      else {
+        Toast("Issue Occured")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div class="col main pt-3 mt-3">
-       <nav aria-label="breadcrumb">
+      <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><a href="#">Home</a></li>
-  
-        <li className="breadcrumb-item ml-auto">
-          <RouterLink to="/Login">
-            <button className="btn btn-danger">
+
+          <li className="breadcrumb-item ml-auto">
+          <button className="btn btn-danger" onClick={handleLogout}>
               Logout
             </button>
-            </RouterLink>
-           </li>
-        
+          </li>
+
         </ol>
       </nav>
       <h2>Employee Dashboard</h2>
@@ -28,10 +56,9 @@ export default function EmployeeDashboard() {
           <div className="card bg-primary text-white h-100">
             <div className="card-body bg-primary" style={{ backgroundColor: "#428bca" }}>
               <div className="rotate">
-                <i className="fas fa-calendar-check fa-4x"></i>
+                <i class="fa fa-user fa-4x" aria-hidden="true"></i>
               </div>
-              <h6 className="text-uppercase">Monthly Presents</h6>
-              <h3>{monthlyPresents}</h3>
+              <h2>{empStats.name}</h2>
             </div>
           </div>
         </div>
@@ -39,10 +66,10 @@ export default function EmployeeDashboard() {
           <div className="card text-white bg-danger h-100">
             <div className="card-body bg-danger">
               <div className="rotate">
-                <i className="fas fa-calendar-times fa-4x"></i>
+              <i class="fa fa-users fa-4x" aria-hidden="true"></i>
               </div>
-              <h6 className="text-uppercase">Monthly Absents</h6>
-              <h3>{monthlyAbsents}</h3>
+              {/* <h4 className="text-uppercase">Role</h4> */}
+              <h3>{empStats.job_name}</h3>
             </div>
           </div>
         </div>
@@ -50,10 +77,10 @@ export default function EmployeeDashboard() {
           <div className="card text-white bg-success h-100">
             <div className="card-body bg-success">
               <div className="rotate">
-                <i className="fas fa-trophy fa-4x"></i>
+                <i className="fa-4x fa fa-credit-card-alt"></i>
               </div>
-              <h6 className="text-uppercase">Performance Score</h6>
-              <h3>{performanceScore}</h3>
+              <h4 className="text-uppercase">Salary</h4>
+              <h3>{empStats.salary}</h3>
             </div>
           </div>
         </div>

@@ -116,13 +116,13 @@ export default function SideBar() {
             </Dropdown.Menu>
           </Dropdown>
         </li>
-        <li className="nav-item mb-2">
+        {/* <li className="nav-item mb-2">
           <RouterLink to="/RegisterEmployee">
             <a className="nav-link text-secondary" href="/">
               <i className="fas fa-user font-weight-bold"></i> <span className="ml-3">Register User</span>
             </a>
           </RouterLink>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

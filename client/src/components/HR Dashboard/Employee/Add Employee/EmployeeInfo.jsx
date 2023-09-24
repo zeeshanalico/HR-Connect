@@ -92,22 +92,22 @@ export default function EmployeeInfo({ id }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'cnic') {
-      const numericInput = value.replace(/[^0-9]/g, '');
-      const formattedCNIC =
-        numericInput.slice(0, 5) +
-        (numericInput.length > 5 ? '-' + numericInput.slice(5, 12) : '') +
-        (numericInput.length > 12 ? '-' + numericInput.slice(12, 13) : '');
+    // if (name === 'cnic') {
+    //   const numericInput = value.replace(/[^0-9]/g, '');
+    //   const formattedCNIC =
+    //     numericInput.slice(0, 5) +
+    //     (numericInput.length > 5 ? '-' + numericInput.slice(5, 12) : '') +
+    //     (numericInput.length > 12 ? '-' + numericInput.slice(12, 13) : '');
 
-      setEmployeeInformation((prevState) => {
-        return { ...prevState, [name]: formattedCNIC };
-      });
-    } else {
+    //   setEmployeeInformation((prevState) => {
+    //     return { ...prevState, [name]: formattedCNIC };
+    //   });
+    // } else {
 
       setEmployeeInformation((prevState) => {
         return { ...prevState, [name]: value };
       });
-    }
+    // }
   }
 
 
@@ -118,7 +118,7 @@ export default function EmployeeInfo({ id }) {
     for (const key in employeeInformation) {
       const value = employeeInformation[key]
 
-      if (value.trim() === '' || value === null) {
+      if (value === '' || value === null) {
         Toast(`Fill All attribute.`)
         return
       }
@@ -127,7 +127,7 @@ export default function EmployeeInfo({ id }) {
     try {
       const response = await axios.post(BaseUrl + '/registerEmployee', {
         ...employeeInformation,
-        cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
+        cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),emp_id:id
       });
 
       if (response.data.success) {
@@ -251,7 +251,7 @@ export default function EmployeeInfo({ id }) {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="CNIC" className="form-label">CNIC:</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control round"
                     id="CNIC"
                     placeholder="XXXXX-XXXXXXX-X"
@@ -317,9 +317,9 @@ export default function EmployeeInfo({ id }) {
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="Salary" className="form-label">Salary:</label>
+                  <label htmlFor="Salary" className="form-label">Salary(PKR):</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control round"
                     id="Salary"
                     name='salary'

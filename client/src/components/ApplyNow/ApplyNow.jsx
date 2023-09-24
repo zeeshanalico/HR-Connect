@@ -129,14 +129,12 @@ export default function ApplyNow() {
               />
             </div>
             <div className="form-group rounded-input">
-              <label>CNIC:</label>
+              <label>CNIC:(without dashes)</label>
               <input
                 className="form-control round"
-                // pattern="[0-9]{5}[0-9]{7}[0-9]{1}"
-                type="text"
+                type="number"
                 name='cnic'
                 value={userDetails?.cnic}
-                // placeholder='xxxxxxxxxxxx-x'
                 onChange={handleChange}
               />
             </div>
@@ -194,7 +192,7 @@ export default function ApplyNow() {
               <label>CGPA:</label>
               <input
                 className="form-control round"
-                type="text"
+                type="number"
                 name='cgpa'
                 value={userDetails?.cgpa}
                 placeholder='CGPA'
@@ -279,10 +277,10 @@ export default function ApplyNow() {
               </select> */}
             </div>
             <div className="form-group rounded-input">
-              <label>Desired Salary:</label>
+              <label>Desired Salary(PKR):</label>
               <input
                 className="form-control round"
-                type="text"
+                type="number"
                 name='desired_salary'
                 value={userDetails?.desired_salary}
                 placeholder='Desired Salary'
