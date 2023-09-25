@@ -1,36 +1,71 @@
-import React from 'react'
-import '../../BasicStyle.css'
-import { useState, useEffect } from 'react';
-import Toast from '../../../../UIModules/Toast/Toast';
+import React, { useState, useEffect } from 'react';
 import { BaseUrl } from '../../../../constants';
 import axios from 'axios';
-import { InputGroup, FormControl } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
-
-
+import ReactPaginate from 'react-paginate';
 
 const TodayAttendance = () => {
-  const [todayAllAttendance, setTodayAllAttendence] = useState([]);
+  const [todayAllAttendance, setTodayAllAttendance] = useState([]);
   const [status, setStatus] = useState('All');
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getTodayAllAttendance');
-      setTodayAllAttendence(response.data);
+      setTodayAllAttendance(response.data);
     } catch (error) {
-      console.error('Error fetching data jobpositons:', error);
+      console.error('Error fetching data jobpositions:', error);
       throw error;
     }
   };
 
+
   useEffect(() => {
     fetchData();
-  }, [])
+    // console.log("connection:",navigator);
+  }, []);
+
+  // Handle change in items per page select
+  const handleItemsPerPageChange = (e) => {
+    const selectedItemsPerPage = parseInt(e.target.value);
+    setItemsPerPage(selectedItemsPerPage);
+    setCurrentPage(0); // Reset to first page when changing items per page
+  };
+
+  // Apply filtering to the entire dataset
+  const filteredAttendance = todayAllAttendance.filter((employee) =>
+    status === 'All' || employee.status.toLowerCase() === status.toLowerCase()
+  );
+
+  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredAttendance.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Today's Attendance</h2>
       <div id="content">
+        <Row>
+          <Col md={10}></Col>
+          <Col md={2} className="text-right">
+            <label htmlFor="itemsPerPageSelect" style={{ marginRight: '10px' }}>Items per Page:</label>
+            <select
+              id="itemsPerPageSelect"
+              className="form-control"
+              value={itemsPerPage}
+              style={{ width: '70px', marginLeft: '70px' }}
+              onChange={handleItemsPerPageChange}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </Col>
+        </Row>
+
         <table className="table">
           <thead>
             <tr>
@@ -43,7 +78,7 @@ const TodayAttendance = () => {
               <th>
                 <select style={{ border: "none", height: "30px", outline: " none", cursor: 'pointer', backgroundColor: "transparent" }} name="status" className="form-control round" onChange={(e) => setStatus(e.target.value)}>
                   <option value={'All'}>Status</option>
-                  <option value={'Late'} >Late</option>
+                  <option value={'Absent'} >Absent</option>
                   <option value={'Leave'} >Leave</option>
                   <option value={'Present'} >present</option>
                 </select>
@@ -51,26 +86,39 @@ const TodayAttendance = () => {
             </tr>
           </thead>
           <tbody>
-            {todayAllAttendance
-              .filter((employee) =>
-                status === 'All' || employee.status.toLowerCase() === status.toLowerCase()
-              )
-              .map(employee => (
-                <tr
-                  key={employee.emp_id}
-                  className={employee.status === 'Leave' ? 'table-warning' : employee.status === 'Present' ? 'table-success' : 'table-danger'}
-                >
-                  <td>{employee.emp_id}</td>
-                  <td>{employee.name}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.gender}</td>
-                  <td>{employee.dep_name}</td>
-                  <td>{employee.phone_number}</td>
-                  <td style={{ color: employee.status === 'Leave' ? 'grey' : employee.status === 'Present' ? 'green' : 'red' }}>{employee.status}</td>
-                </tr>
-              ))}
+            {currentItems.map(employee => (
+              <tr
+                key={employee.emp_id}
+                className={employee.status === 'Leave' ? 'table-warning' : employee.status === 'Present' ? 'table-success' : 'table-danger'}
+              >
+                <td>{employee.emp_id}</td>
+                <td>{employee.name}</td>
+                <td>{employee.email}</td>
+                <td>{employee.gender}</td>
+                <td>{employee.dep_name}</td>
+                <td>{employee.phone_number}</td>
+                <td style={{ color: employee.status === 'Leave' ? 'grey' : employee.status === 'Present' ? 'green' : 'red' }}>{employee.status}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
+        <div style={{ margin: 'auto' }}>
+
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={Math.ceil(filteredAttendance.length / itemsPerPage)}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+            pageClassName={"page-item"} // Add this class
+            pageLinkClassName={"page-link"} // Add this class
+            previousClassName={"page-item"} // Add this class
+            previousLinkClassName={"page-link"} // Add this class
+            nextClassName={"page-item"} // Add this class
+            nextLinkClassName={"page-link"} // Add this class
+          />
+        </div>
       </div>
     </div>
   );

@@ -38,7 +38,7 @@ export default function MainContent() {
     const response = await axios.post(BaseUrl+'/markAbsent')
     console.log(response);
     if (!response.data.success) {
-      Toast("Absent Marked", "success")
+      console.log("Absent Marked")
       // window.location.reload()
     }
   }
@@ -111,15 +111,7 @@ export default function MainContent() {
       <Navbar type={"dashboard"} />
       <p class="lead d-none d-sm-block mb-4"><h2>Dashboard</h2></p>
 
-      { /*  <div class="alert alert-warning fade collapse" role="alert" id="myAlert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">×</span>
-                <span class="sr-only">Close</span>
-            </button>
-            <strong>Data and Records</strong> Learn more about employee
-  </div>  */}
-
-  <p>{currentTime}</p>
+  {/* <p>{currentTime}</p> */}
 
       <div className="container mt-4">
         <div className="row mb-3">

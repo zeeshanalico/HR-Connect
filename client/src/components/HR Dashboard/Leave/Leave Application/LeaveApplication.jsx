@@ -124,6 +124,7 @@ export default function LeaveApplication() {
         <Table striped bordered hover responsive>
           <thead>
             <tr>
+              <th>emp ID</th>
               <th>
                 <input
                   type="text"
@@ -206,6 +207,7 @@ export default function LeaveApplication() {
               })
               .map(application => (
                 <tr key={application.emp_id}>
+                  <td>{application.emp_id}</td>
                   <td>{application.emp_name}</td>
                   <td>{application.dep_name}</td>
                   <td>{application.reason}</td>

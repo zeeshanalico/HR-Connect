@@ -126,7 +126,7 @@ export default function MarkAttendance() {
   };
 
   const callAbsentFunc = () => {
-    handleAttendance("Late");
+    handleAttendance("Absent");
     setAttendanceMarked(true)
     return (
       <div className="alert alert-success" role="alert">

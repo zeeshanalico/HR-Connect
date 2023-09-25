@@ -73,7 +73,7 @@ CREATE TABLE `attendance` (
   `attendance_id` int NOT NULL AUTO_INCREMENT,
   `emp_id` int DEFAULT NULL,
   `attendance_date` date DEFAULT NULL,
-  `status` enum('Present','Late','Leave') DEFAULT NULL,
+  `status` enum('Present','Late','Present','Leave') DEFAULT NULL,
   PRIMARY KEY (`attendance_id`),
   UNIQUE KEY `emp_id` (`emp_id`,`attendance_date`),
   CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -86,7 +86,6 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
-INSERT INTO `attendance` VALUES (8,121,'2023-09-18','Present'),(9,232,'2023-09-18','Late'),(10,232,'2023-09-25','Leave'),(11,232,'2023-09-19','Present'),(12,121,'2023-09-19','Present'),(13,9,'2023-09-19','Late'),(14,7,'2023-09-19','Late');
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
