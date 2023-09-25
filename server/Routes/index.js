@@ -23,48 +23,48 @@ const transporter = nodemailer.createTransport({
 // ------------------------------------------ Verify MiddleWare ----------------------------------------
 
 const verify = (req, res, next) => {
-  const {token} = req.cookies;
+  console.log("Verify");
+  const { token } = req.cookies;
 
-  if (!token) {
+  if (token === undefined) {
     res.status(401).json({
       success: false,
-      message: `You're not a authorized user`
-    })
+      message: `You're not a authorized user`,
+    });
   }
 
-  console.log(token)
+  console.log(token);
   jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
     if (err) {
       return res.json({
         success: false,
-        message: `Some error occurred`
-      })
+        message: `Some error occurred`,
+      });
     }
 
-    req.id = decode.user_id ;
-    console.log("User id in jwt : "+req.id)
+    req.id = decode.user_id;
+    console.log("User id in jwt : " + req.id);
     next();
-  })
-}
+  });
+};
 
 const getEmpID = (req, res, next) => {
-  
-  mysql.query(`SELECT * FROM users WHERE user_id = ${req.id}`, (err, result) => {
-    if(err) {
-      res.json({
-        sucess: false,
-        message: "Employee ID not fetched"
-      })
+  mysql.query(
+    `SELECT * FROM users WHERE user_id = ${req.id}`,
+    (err, result) => {
+      if (err) {
+        res.json({
+          sucess: false,
+          message: "Employee ID not fetched",
+        });
+      } else {
+        console.log("Emp ID into else : " + result[0].emp_id);
+        req.emp = result[0].emp_id;
+        next();
+      }
     }
-    else {
-      console.log("Emp ID into else : "+result[0].emp_id);
-      req.emp = result[0].emp_id;
-      next();
-    }
-  })
-
-}
-
+  );
+};
 
 //------------------------------------------------------hiring/post a job---------------------------------------------------------------------------
 const storage = multer.memoryStorage();
@@ -724,7 +724,7 @@ router.post("/getAttendencebyEmp", verify, getEmpID, (req, res) => {
       //     res.json({ status: 'absent' });
       //   }
       else {
-        console.log(result)
+        console.log(result);
         res.json(result);
       }
     }
@@ -751,10 +751,10 @@ router.put("/updateAttendance", verify, getEmpID, async (req, res) => {
   );
 });
 
-router.put("/leaverequest",  verify, getEmpID, async (req, res) => {
+router.put("/leaverequest", verify, getEmpID, async (req, res) => {
   console.log("/leaverequest");
   const { reason, leave_date } = req.body;
-  const emp_id = req.emp; 
+  const emp_id = req.emp;
   console.log("/leaverequest");
   console.table({ emp_id, reason, leave_date });
   mysql.query(
@@ -808,8 +808,6 @@ router.post("/getEmpInfobyEmpId", verify, getEmpID, (req, res) => {
   // const { emp_id } = req.body;
 
   const emp_id = req.emp;
-
-
 
   mysql.query(
     "select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;",
@@ -932,7 +930,6 @@ router.get("/empLeaveHistory/:id", (req, res) => {
     }
   });
 });
-
 
 router.get("/empLeaveHistory", verify, getEmpID, (req, res) => {
   console.log("/employeeLeaveHistory");
@@ -1130,10 +1127,10 @@ router.post("/verifyEmail", (req, res) => {
 });
 
 router.post("/loginUser", async (req, res) => {
-  console.log("Login user is in process")
+  console.log("Login user is in process");
   const { email, password, role } = req.body;
 
-  console.log(email, password, role)
+  console.log(email, password, role);
 
   mysql.query(
     "select * from users where user_email = ? and role_id = ?",
@@ -1147,7 +1144,7 @@ router.post("/loginUser", async (req, res) => {
         });
       }
 
-      console.log("heelo")
+      console.log("heelo");
 
       if (result.length > 0) {
         console.log(result[0].user_id);
@@ -1159,10 +1156,10 @@ router.post("/loginUser", async (req, res) => {
           const token = jwt.sign(
             { user_id: result[0].user_id },
             process.env.SECRET_KEY,
-            { expiresIn: "1h" }
+            { expiresIn: "1d" }
           );
 
-          console.log(token)
+          console.log(token);
 
           // return res.json({
           //   success: true,
@@ -1170,7 +1167,7 @@ router.post("/loginUser", async (req, res) => {
           //   token: token,
           // });
 
-          res.cookie('token', token);
+          res.cookie("token", token);
         } else {
           return res.json({
             success: false,
@@ -1192,12 +1189,99 @@ router.post("/loginUser", async (req, res) => {
   );
 });
 
-router.get('/logout', (req, res) => {
+router.get("/logout", (req, res) => {
   console.log("This is logout place");
   return res.clearCookie("token").json({
     success: true,
-    message: "Ready to move on"
+    message: "Ready to move on",
   });
-})
+});
+
+router.get("/checkAuth", verify, (req, res) => {
+  console.log("/checkAuth");
+
+  console.log("Cookie : " + req.cookies.token);
+
+  console.log("Check Auth USER ID : " + req.id);
+
+  mysql.query(
+    "select * from users where user_id = ?",
+    [req.id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          message: "Query not executed well",
+        });
+      }
+
+      console.log(result);
+
+      return res.json({
+        success: true,
+        role: result[0].role_id,
+      });
+    }
+  );
+});
+
+const verifyPassword = async (req, res, next) => {
+  console.log("Verify Password");
+  const { current, confirm, newPass } = req.body;
+  const salt = await bcrypt.genSalt(10);
+
+  mysql.query("SELECT * FROM users WHERE user_id = ? ",[req.id], async (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          message: "Users table not processed",
+        });
+      }
+
+      console.log("User Password : " + result[0].user_password);
+
+      const isMatch = bcrypt.compare(current, result[0].user_password);
+
+      if (isMatch) {
+        console.log("Matched");
+        req.hashed_password = await bcrypt.hash(newPass, salt);
+        next();
+      } else {
+        console.log(" no Matched");
+        return res.json({
+          success: false,
+          message: "Cannot change password",
+        });
+      }
+    }
+  );
+};
+
+router.put("/resetPassword", verify, verifyPassword, (req, res) => {
+  console.log("reset password");
+
+  const q = `update users set user_password = ? where user_id = ?`;
+
+  console.log("ID: "+req.id)
+  console.log("Password : "+req.hashed_password)
+
+  mysql.query(q, [req.hashed_password, req.id], (err, result) => {
+    if (err) {
+      console.log("last step failed");
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "Last step failed",
+      });
+    } else {
+      return res.status(201).json({
+        success: true,
+        message: "Password Reset Successfully"
+      })
+    }
+  });
+});
 
 module.exports = router;

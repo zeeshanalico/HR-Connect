@@ -26,6 +26,7 @@ import RegisterUser from './components/RegisterUser/RegisterUser.js'
 import ApplyNow from "./components/ApplyNow/ApplyNow.jsx";
 
 
+
 export default function App() {
 
   const [isLogged, setLogged] = useState({
@@ -57,23 +58,23 @@ export default function App() {
         <Routes>
 
           {/* //landing page routes */}
-          { !(isLogged.hr || isLogged.emp) ? <Route path="/login" element={<LoginPage setter={setLogged}/>} /> : <Route path="/" element={<Landing />} />}
+          {/* { !(isLogged.hr || isLogged.emp) ? <Route path="/login" element={<LoginPage setter={setLogged}/>} /> : <Route path="/" element={<Landing />} />}
           <Route path="/applyPage" element={<ApplyPage />} />
           <Route path="/" element={<Landing />} />
           { isLogged.hr && <Route path="/hrdash" element={<HrDashboard />} /> }
           { isLogged.emp && <Route path="/empdash" element={<EmployeeDashboardPage />} />}
-          <Route path="/applyPage/applyNow" element={<ApplyNow />} />
+          <Route path="/applyPage/applyNow" element={<ApplyNow />} /> */}
 
           {/* //Employee's side routes */}
-          { isLogged.emp && <Route path="/empdash/viewProfile" element={<ViewProfilePage />} /> }
+          {/* { isLogged.emp && <Route path="/empdash/viewProfile" element={<ViewProfilePage />} /> }
           { isLogged.emp && <Route path="/empdash/markAttendance" element={<MarkAttendancePage />} />}
           { isLogged.emp && <Route path="/empdash/markAttendance" element={<MarkAttendancePage />} />}
           { isLogged.emp && <Route path="/empdash/AttendanceRecord" element={<AttendanceRecordPage />} />}
           { isLogged.emp && <Route path="/empdash/submitLeave" element={<SubmitLeavePage />} />}
-          { isLogged.emp && <Route path="/empdash/leaveStatus" element={<LeaveStatusPage />} />}
+          { isLogged.emp && <Route path="/empdash/leaveStatus" element={<LeaveStatusPage />} />} */}
 
           {/* // HR's side routes */}
-          { isLogged.hr &&  <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />}
+          {/* { isLogged.hr &&  <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />}
           { isLogged.hr && <Route path="/hrdash/addEmployee" element={<AddEmployee />} />}
           { isLogged.hr && <Route path="/hrdash/todayAttendance" element={<TodayAttendancePage />} />}
           { isLogged.hr && <Route path="/hrdash/manageEmployee" element={<ManageEmployeePage />} />}
@@ -83,7 +84,35 @@ export default function App() {
           { isLogged.hr && <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />}
           { isLogged.hr && <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />}
           { isLogged.hr && <Route path="/RegisterEmployee" element={<RegisterUser />} />}
-         { isLogged.hr && <Route path="/hrdash/postJob" element={<PostJobPage />} />}
+         { isLogged.hr && <Route path="/hrdash/postJob" element={<PostJobPage />} />} */}
+
+         {/* //landing page routes */}
+         {/* <Route path="/login" element={<LoginPage />} />  */}
+          <Route path="/login" element={<LoginPage setter={setLogged}/>} />
+          <Route path="/applyPage" element={<ApplyPage />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/hrdash" element={<HrDashboard />} />
+          <Route path="/empdash" element={<EmployeeDashboardPage />} />
+          <Route path="/applyPage/applyNow" element={<ApplyNow />} />
+
+          {/* //Employee's side routes */}
+          <Route path="/empdash/viewProfile" element={<ViewProfilePage />} />
+          <Route path="/empdash/markAttendance" element={<MarkAttendancePage />} />
+          <Route path="/empdash/AttendanceRecord" element={<AttendanceRecordPage />} />
+          <Route path="/empdash/submitLeave" element={<SubmitLeavePage />} />
+          <Route path="/empdash/leaveStatus" element={<LeaveStatusPage />} />
+
+          {/* // HR's side routes */}
+          <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />
+          <Route path="/hrdash/addEmployee" element={<AddEmployee />} />
+          <Route path="/hrdash/manageEmployee" element={<ManageEmployeePage />} />
+          <Route path="/hrdash/todayAttendance" element={<TodayAttendancePage />} />
+          <Route path="/hrdash/attendanceHistory" element={<AttendanceHistoryPage />} />
+          <Route path="/hrdash/viewDepartment" element={<ViewDepartmentPage />} />
+          <Route path="/hrdash/leaveApplication" element={<LeaveApplicationPage />} />
+          <Route path="/hrdash/viewApplications" element={<ViewApplicationsPage />} />
+          <Route path="/hrdash/postJob" element={<PostJobPage />} />
+          <Route path="/RegisterEmployee" element={<RegisterUser />} />
           
         </Routes>
           

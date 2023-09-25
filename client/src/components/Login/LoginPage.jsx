@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link as RouterLink, useNavigation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,38 @@ import Toast from "../../UIModules/Toast/Toast";
 
 export default function LoginPage({setter}) {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(BaseUrl + "/checkAuth");
+
+        if (response.data.success) {
+          switch (response.data.role) {
+            case 1:
+              setter(1)
+              navigate("/hrdash");
+              break;
+
+            case 2:
+              setter(2)
+              navigate("/empdash");
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          console.log("Not logged in");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   axios.defaults.withCredentials = true;
 
