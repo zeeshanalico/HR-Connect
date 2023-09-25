@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link as RouterLink } from "react-router-dom";
-import '../BasicStyle.css';
-import './LoginPage.css';
+import { Link as RouterLink, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "../BasicStyle.css";
+import "./LoginPage.css";
+import axios from 'axios'
+import { BaseUrl } from "../../constants";
+import Toast from "../../UIModules/Toast/Toast";
 
-export default function LoginPage() {
+export default function LoginPage({setter}) {
+
+  const navigate = useNavigate()
+
+  axios.defaults.withCredentials = true;
+
+  const [role_no, setRole] = useState()
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("employee");
@@ -13,11 +23,46 @@ export default function LoginPage() {
     passwordLabel: "Employee Password",
   });
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     console.log(
       `Logging in as ${userType} with username: ${username} and password: ${password}`
     );
+
+
+      console.log("Employee Log : "+username, password)
+
+      if (userType === 'employee') {
+        setRole(2)
+      }
+      else {
+        setRole(1)
+      }
+
+      const response = await axios.post(BaseUrl+'/loginUser', {email: username, password: password, role: role_no});
+
+      console.log("Message : "+response.data.message);
+      console.log("Token : "+response.data.token);
+
+      if (response.data.success) {
+        switch(userType) {
+          case 'hr': 
+            setter({emp: false, hr: true})
+            navigate('/hrdash')
+            break;
+            
+            case 'employee':
+              setter({emp: true, hr: false})
+              navigate('/empdash')
+              break;
+
+            default: 
+              navigate('/')
+        }
+      }
+      else {
+        Toast("Not such a user exist")
+      }
   };
 
   const handleUserTypeChange = (type) => {
@@ -37,59 +82,62 @@ export default function LoginPage() {
 
   return (
     <Wrapper id="wrapper">
-       <RouterLink to="/">
-      <i id="back-arrow" className="fa fa-arrow-left" aria-hidden="true"></i>
+      <RouterLink to="/">
+        <i id="back-arrow" className="fa fa-arrow-left" aria-hidden="true"></i>
       </RouterLink>
-      <LoginForm id="content" style={{textAlign: 'center'}}>
-      <div>
-      <h1 className="mb-4" >Login</h1>
+      <LoginForm id="content" style={{ textAlign: "center" }}>
         <div>
-          <ButtonGroup>
-            <Button
-              active={userType === "employee"}
-              onClick={() => handleUserTypeChange("employee")}
-            >
-              Employee Login
-            </Button>
-            <Button
-              active={userType === "hr"}
-              onClick={() => handleUserTypeChange("hr")}
-            >
-              HR Login
-            </Button>
-          </ButtonGroup>
-        </div>
-        <form className="pt-3" onSubmit={handleLogin}>
-          <FormGroup>
-            <Label>{loginFields.usernameLabel}:</Label>
-            <Input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>{loginFields.passwordLabel}:</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormGroup>
+          <h1 className="mb-4">Login</h1>
+          <div>
+            <ButtonGroup>
+              <Button
+                active={userType === "employee"}
+                onClick={() => handleUserTypeChange("employee")}
+              >
+                Employee Login
+              </Button>
+              <Button
+                active={userType === "hr"}
+                onClick={() => handleUserTypeChange("hr")}
+              >
+                HR Login
+              </Button>
+            </ButtonGroup>
+          </div>
+          <form className="pt-3" onSubmit={handleLogin}>
+            <FormGroup>
+              <Label>{loginFields.usernameLabel}:</Label>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{loginFields.passwordLabel}:</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </FormGroup>
 
-          { userType === "hr" ?
-          <RouterLink to= "/hrdash">
-          <SubmitButton type="submit">Log In</SubmitButton>
-          </RouterLink> 
-           :
-          <RouterLink to= "/empdash">
-          <SubmitButton type="submit">Log In</SubmitButton>
-          </RouterLink> 
-}
-          
-        </form>
+            <SubmitButton type="submit" >
+              Log in
+            </SubmitButton>
+
+            {/* {userType === "hr" ? (
+              <RouterLink to="/hrdash">
+                <SubmitButton type="submit">Log In</SubmitButton>
+              </RouterLink>
+            ) : (
+              <RouterLink to="/empdash">
+                <SubmitButton type="submit">Log In</SubmitButton>
+              </RouterLink>
+            )} */}
+          </form>
         </div>
       </LoginForm>
     </Wrapper>

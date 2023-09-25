@@ -1,10 +1,32 @@
 import React from 'react';
 import { Link as RouterLink } from "react-router-dom";
+import axios from 'axios'
+import { BaseUrl } from '../../../constants';
+import Toast from '../../../UIModules/Toast/Toast';
+import {useNavigate} from 'react-router-dom'
 
 export default function EmployeeDashboard() {
+
+  const navigate = useNavigate()
+
   const monthlyPresents = 22;
   const monthlyAbsents = 8;
   const performanceScore = 95;
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/logout');
+      if (response.data.success) {
+        Toast("You're Logout")
+        navigate('/Login')
+      }
+      else {
+        Toast("Issue Occured")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div class="col main pt-3 mt-3">
@@ -13,11 +35,9 @@ export default function EmployeeDashboard() {
           <li className="breadcrumb-item"><a href="#">Home</a></li>
   
         <li className="breadcrumb-item ml-auto">
-          <RouterLink to="/Login">
-            <button className="btn btn-danger">
+            <button className="btn btn-danger" onClick={handleLogout}>
               Logout
             </button>
-            </RouterLink>
            </li>
         
         </ol>

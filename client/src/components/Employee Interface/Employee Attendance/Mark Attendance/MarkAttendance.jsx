@@ -8,38 +8,6 @@ import { BaseUrl, employeeId, start_time, end_time } from "../../../../constants
 import axios from "axios";
 const emp_id = employeeId;
 
-// export default function MarkAttendance() {
-
-//   const [currentDate, setCurrentDate] = useState('')
-//   const [currentTime, setCurrentTime] = useState('')
-
-//   useEffect(() => {
-
-//     // Date
-//     setCurrentDate(new Date().toISOString().split('T')[0])
-
-//     // Time
-//     setCurrentTime( ()=>{
-//       const currentTime = new Date();
-
-//       const hour = currentTime.getHours();
-//       const minute = currentTime.getMinutes();
-//       const second = currentTime.getSeconds();
-
-//       return `${hour}:${minute}:${second}`
-//     })
-
-//   }, [])
-
-//   return (
-//     <>
-//       <div>
-
-//       </div>
-//     </>
-//   )
-
-// }
 
 export default function MarkAttendance() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -120,6 +88,7 @@ export default function MarkAttendance() {
         emp_id,
         att_status,
       });
+      console.log(response.data)
       if (response.data.status) {
         Toast("Attendence Marked as Present");
       }
@@ -207,46 +176,6 @@ export default function MarkAttendance() {
           Apply for Leave
         </Button>
 
-        {/* {attendanceMarked ? (
-          <>
-            <div className="alert alert-success" role="alert">
-              You had marked your attendance for {todayDate} ({day}).
-            </div>
-            <Button
-              variant="primary"
-              className="mt-3"
-              onClick={() => {
-                setShowLeaveModal(true);
-              }}
-            >
-              Apply for Leave
-            </Button>
-          </>
-        ) : (
-          <>
-            { start_time >= currentTime && end_time <= currentTime ? (
-              <Button
-                variant="primary"
-                onClick={() => {
-                  setShowConfirmationModal(true);
-                }}
-              >
-                Mark Attendance
-              </Button>
-            ) : currentTime > end_time ? (
-              callAbsentFunc()
-            ) : null}
-            <Button
-              variant="primary"
-              className="mt-3"
-              onClick={() => {
-                setShowLeaveModal(true);
-              }}
-            >
-              Apply for Leave
-            </Button>
-          </>
-        )} */}
       </div>
       {/* Confirmation Modal */}
       <Modal

@@ -8,7 +8,7 @@ const fs = require("fs");
 const multer = require("multer");
 
 const bcrypt = require("bcrypt");
-// const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
 const nodemailer = require("nodemailer");
@@ -19,6 +19,52 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 });
+
+// ------------------------------------------ Verify MiddleWare ----------------------------------------
+
+const verify = (req, res, next) => {
+  const {token} = req.cookies;
+
+  if (!token) {
+    res.status(401).json({
+      success: false,
+      message: `You're not a authorized user`
+    })
+  }
+
+  console.log(token)
+  jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
+    if (err) {
+      return res.json({
+        success: false,
+        message: `Some error occurred`
+      })
+    }
+
+    req.id = decode.user_id ;
+    console.log("User id in jwt : "+req.id)
+    next();
+  })
+}
+
+const getEmpID = (req, res, next) => {
+  
+  mysql.query(`SELECT * FROM users WHERE user_id = ${req.id}`, (err, result) => {
+    if(err) {
+      res.json({
+        sucess: false,
+        message: "Employee ID not fetched"
+      })
+    }
+    else {
+      console.log("Emp ID into else : "+result[0].emp_id);
+      req.emp = result[0].emp_id;
+      next();
+    }
+  })
+
+}
+
 
 //------------------------------------------------------hiring/post a job---------------------------------------------------------------------------
 const storage = multer.memoryStorage();
@@ -115,17 +161,20 @@ router.get("/getEmployee/:id", (req, res) => {
   const { id } = req.params;
   console.log(`Get Employee @ ${id}`);
 
-  mysql.query("", (error, result) => {
-    if (error) {
-      res.json({
-        message: "Database or Backend error occured",
-        success: false,
-      });
-    } else {
-      console.log(result);
-      res.json(result);
+  mysql.query(
+    `SELECT * FROM hr.employee WHERE emp_id = ${id};`,
+    (error, result) => {
+      if (error) {
+        res.json({
+          message: "Database or Backend error occured",
+          success: false,
+        });
+      } else {
+        console.log(result);
+        res.json(result);
+      }
     }
-  });
+  );
 });
 
 // delete job by hr
@@ -323,20 +372,16 @@ router.post("/rejectApplication", (req, res) => {
         transporter.sendMail(mailOptions, (emailError, info) => {
           if (emailError) {
             console.error("Error sending email:", emailError);
-            res
-              .status(500)
-              .json({
-                success: false,
-                message: "Failed to send reject application letter via email",
-              });
+            res.status(500).json({
+              success: false,
+              message: "Failed to send reject application letter via email",
+            });
           } else {
             console.log("Email sent:", info.response);
-            res
-              .status(200)
-              .json({
-                success: true,
-                message: "application rejected successfully successfully",
-              });
+            res.status(200).json({
+              success: true,
+              message: "application rejected successfully successfully",
+            });
           }
         });
       }
@@ -375,20 +420,16 @@ router.post("/callForInterview", (req, res) => {
         transporter.sendMail(mailOptions, (emailError, info) => {
           if (emailError) {
             console.error("Error sending email:", emailError);
-            res
-              .status(500)
-              .json({
-                success: false,
-                message: "Failed to send  Inteview call letter via email",
-              });
+            res.status(500).json({
+              success: false,
+              message: "Failed to send  Inteview call letter via email",
+            });
           } else {
             console.log("Email sent:", info.response);
-            res
-              .status(200)
-              .json({
-                success: true,
-                message: "Interview Call Letter sended successfully",
-              });
+            res.status(200).json({
+              success: true,
+              message: "Interview Call Letter sended successfully",
+            });
           }
         });
       }
@@ -420,7 +461,44 @@ router.post("/addDepartment", (req, res) => {
 //// -----------------------------------------------------emplyees/addemployees---------------------------------------------------------------------------------------
 const { log } = require("console");
 
-router.post("/registerEmployee", async (req, res) => {
+// Verifying that email is not used before
+const verifyEmail = (req, res, next) => {
+  const { email } = req.body;
+
+  const query = "SELECT * FROM users WHERE user_email = ?";
+
+  console.log(query);
+
+  mysql.query(query, [email], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Error occurred during verifying email",
+      });
+    }
+
+    console.log(result);
+
+    if (result.length > 0) {
+      return res.json({
+        success: false,
+        message: "User already exists.",
+      });
+    }
+
+    // return res.json({
+    //   success: true,
+    //   message: 'Email is available for registration.',
+    // })
+
+    console.log("Email is available for registration");
+
+    next();
+  });
+};
+
+router.post("/registerEmployee", verifyEmail, async (req, res) => {
   console.log("/registerEmployee");
   const {
     address,
@@ -474,49 +552,77 @@ router.post("/registerEmployee", async (req, res) => {
     (err, result) => {
       if (err) {
         console.error("Error inserting data:", err);
-        res.json({
+        return res.json({
           message: err.sqlMessage,
           success: false,
           error: "Error inserting  data",
         });
       } else {
-        const mailOptions = {
-          from: process.env.EMAIL_USERNAME,
-          // to: 'muhammadihtisham60@gmail.com',
-          // to: email,
-          to: "hmic828@gmail.com",
-          subject: "Job Offer Letter",
-          text: `Congratulations you are hired and TechoHub! You can join us from date.
-        
-                            Sincerely,
-                            Zeeshan Ali(HR) 
-                            TECHNOHUB  
-                        `,
-        };
+        console.log(result);
+        //   const mailOptions = {
+        //     from: process.env.EMAIL_USERNAME,
+        //     // to: 'muhammadihtisham60@gmail.com',
+        //     // to: email,
+        //     to: "hmic828@gmail.com",
+        //     subject: "Job Offer Letter",
+        //     text: `Congratulations you are hired and TechoHub! You can join us from date.
 
-        transporter.sendMail(mailOptions, (emailError, info) => {
-          if (emailError) {
-            console.error("Error sending email:", emailError);
-            res
-              .status(500)
-              .json({
-                success: false,
-                message: "Failed to send Hiring Offer letter via email",
-              });
-          } else {
-            console.log("Email sent:", info.response);
-            res
-              .status(200)
-              .json({
-                success: true,
-                message:
-                  "Employee Data inserted successfully & Offer Letter Sended",
-              });
-          }
-        });
+        //                       Sincerely,
+        //                       Zeeshan Ali(HR)
+        //                       TECHNOHUB
+        //                   `,
+        //   };
+
+        //   transporter.sendMail(mailOptions, (emailError, info) => {
+        //     if (emailError) {
+        //       console.error("Error sending email:", emailError);
+        //       res
+        //         .status(500)
+        //         .json({
+        //           success: false,
+        //           message: "Failed to send Hiring Offer letter via email",
+        //         });
+        //     } else {
+        //       console.log("Email sent:", info.response);
+        //       res
+        //         .status(200)
+        //         .json({
+        //           success: true,
+        //           message:
+        //             "Employee Data inserted successfully & Offer Letter Sended",
+        //         });
+        //     }
+        //   });
       }
     }
   );
+
+  // Inserting into Users
+  const salt = await bcrypt.genSalt(10);
+  const hashed_password = await bcrypt.hash(cnic, salt);
+
+  console.log(email, hashed_password, emp_id, role_id);
+
+  mysql.query(
+    "INSERT INTO users (user_email, user_password, role_id, emp_id) VALUES (?,?,?,?);",
+    [email, hashed_password, role_id, emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          message: "Sign Up Error",
+          success: false,
+        });
+      }
+
+      console.log("Inserting Into USers");
+      console.log(result);
+    }
+  );
+
+  return res.json({
+    message: "Good to go",
+  });
 });
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -579,21 +685,16 @@ TECHNOHUB
           transporter.sendMail(mailOptions, (emailError, info) => {
             if (emailError) {
               console.error("Error sending email:", emailError);
-              res
-                .status(500)
-                .json({
-                  success: false,
-                  message: "Failed to send offer letter via email",
-                });
+              res.status(500).json({
+                success: false,
+                message: "Failed to send offer letter via email",
+              });
             } else {
               console.log("Email sent:", info.response);
-              res
-                .status(200)
-                .json({
-                  success: true,
-                  message:
-                    "Employee removed and offer letter sent successfully",
-                });
+              res.status(200).json({
+                success: true,
+                message: "Employee removed and offer letter sent successfully",
+              });
             }
           });
         }
@@ -605,9 +706,10 @@ TECHNOHUB
 });
 
 // --------------------------------------------------------------------------emp/attendence---------------------------------------------------------------------------------
-router.post("/getAttendencebyEmp", (req, res) => {
+router.post("/getAttendencebyEmp", verify, getEmpID, (req, res) => {
   console.log("getAttendencebyEmp");
-  const { emp_id, todayDate } = req.body;
+  const { todayDate } = req.body;
+  const emp_id = req.emp;
   mysql.query(
     "select status from attendance where emp_id=? and attendance_date=?;",
     [emp_id, todayDate],
@@ -622,15 +724,17 @@ router.post("/getAttendencebyEmp", (req, res) => {
       //     res.json({ status: 'absent' });
       //   }
       else {
+        console.log(result)
         res.json(result);
       }
     }
   );
 });
 
-router.put("/updateAttendance", async (req, res) => {
+router.put("/updateAttendance", verify, getEmpID, async (req, res) => {
   console.log("/updateAttendance");
-  const { emp_id, att_status } = req.body;
+  const { att_status } = req.body;
+  const emp_id = req.emp;
   // const allAttendance=await axios.get('http://localhost:3002/getAttendence');
   // const findAttendance=allAttendance.data((attendance)=>{ emp_id===attendance.emp_id && current_date===attendance.attendance_date})
   mysql.query(
@@ -647,9 +751,10 @@ router.put("/updateAttendance", async (req, res) => {
   );
 });
 
-router.put("/leaverequest", async (req, res) => {
+router.put("/leaverequest",  verify, getEmpID, async (req, res) => {
   console.log("/leaverequest");
-  const { emp_id, reason, leave_date } = req.body;
+  const { reason, leave_date } = req.body;
+  const emp_id = req.emp; 
   console.log("/leaverequest");
   console.table({ emp_id, reason, leave_date });
   mysql.query(
@@ -682,37 +787,42 @@ router.get("/getTodayAttendance", (req, res) => {
   );
 });
 
-router.post('/markAbsent', (req, res)=>{
-    console.log('mark attendance');
-    const query = `CALL markAbsentIntoAttendance()`
+router.post("/markAbsent", (req, res) => {
+  console.log("mark attendance");
+  const query = `CALL markAbsentIntoAttendance()`;
 
-    mysql.query(query, (err, result) => {
-        if (err) {
-            console.error(err);
-            res.json({ success: false, message: "An error occurred" });
-          } else {
-            console.log(result);
-            res.json(result);
-          }
-    })
-})
+  mysql.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result);
+      res.json(result);
+    }
+  });
+});
 
 // --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
-router.post("/getEmpInfobyEmpId", (req, res) => {
+router.post("/getEmpInfobyEmpId", verify, getEmpID, (req, res) => {
   console.log("/getEmpInfobyEmpId");
-  const { emp_id } = req.body;
+  // const { emp_id } = req.body;
+
+  const emp_id = req.emp;
+
+
+
   mysql.query(
     "select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;",
     [emp_id],
     (err, result) => {
       if (err) {
-        res.json({
+        return res.json({
           success: false,
           message: "error in fetching attendace status",
           err,
         });
       } else {
-        res.json(result);
+        return res.json(result);
       }
     }
   );
@@ -823,6 +933,23 @@ router.get("/empLeaveHistory/:id", (req, res) => {
   });
 });
 
+
+router.get("/empLeaveHistory", verify, getEmpID, (req, res) => {
+  console.log("/employeeLeaveHistory");
+  const id = req.emp;
+
+  console.log("Employee ID: " + id);
+
+  mysql.query(`CALL employeeLeaveHistory(${id})`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
+
 router.get("/getAttendance/:id", (req, res) => {
   console.log("/getAttendance");
   const { id } = req.params;
@@ -883,49 +1010,194 @@ router.get("/getattendancehistory", (req, res) => {
 });
 
 // ----------------------------------------------------authentication----------------------------------------------------------------------
-router.get("/users", (req, res) => {
-  mysql.query("SELECT user_id, username FROM users", (err, results) => {
+// router.get("/users", (req, res) => {
+//   mysql.query("SELECT user_id, username FROM users", (err, results) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).json({ err, message: err.message });
+//       return;
+//     }
+//     res.json(results);
+//   });
+// });
+
+// router.post("/RegisterUser", async (req, res) => {
+//   try {
+//     const users = await axios.get("http://localhost:3002/users");
+//     finduser = users.data.find((u) => {
+//       return u.username == req.body.username;
+//     });
+//     if (finduser.useremail === req.body.username) {
+//       res.json({
+//         success: false,
+//         message: "user Already exist with this username/email",
+//       });
+//     } else {
+//       const { user_name, user_password, role_id, emp_id } = req.body;
+//       const hashed_password = await bcrypt.hash(user_password, 10);
+//       const values = [user_name, hashed_password, role_id, emp_id];
+
+//       mysql.query(
+//         "insert into user(username,hashed_password,role_id,emp_id) values (?,?,?,?) ",
+//         values,
+//         (err, result) => {
+//           if (err) {
+//             console.error("Error in registration", err);
+//             res.json({ message: err.sqlMessage });
+//           } else {
+//             res.json({ success: true, message: "Registration successful" });
+//           }
+//         }
+//       );
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
+
+// ------------------------------------ Auth Middleware --------------------------------------
+const authMiddleware = (req, res, next) => {
+  // const {token} = req.cookies;
+
+  // console.log("Token : "+token);
+
+  // const {user_id} = jwt.verify(token, process.env.SECRET_KEY);
+
+  // console.log(user_id)
+
+  // const {email, password, role} = req.body;
+
+  // console.log(email, password, role);
+
+  // mysql.query('select * from users where user_email = ? and role_id = ?', [email, role], (err, result) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return res.json({
+  //       success: false,
+  //       message: "Connectivity issue"
+  //     })
+  //   }
+
+  //   if(result.length > 0) {
+  //     console.log("such a user exist")
+  //     return res.json({
+  //       success: true,
+  //       message: "User Found"
+  //     })
+  //   }
+  //   else {
+  //     console.log("Not such a user found");
+  //     return res.json({
+  //       success: false,
+  //       message: "User Not Found"
+  //     })
+  //   }
+  // })
+
+  next();
+};
+
+router.post("/verifyEmail", (req, res) => {
+  const { email } = req.body;
+
+  const query = "SELECT * FROM users WHERE user_email = ?";
+
+  console.log(query);
+
+  mysql.query(query, [email], (err, result) => {
     if (err) {
-      console.log(err);
-      res.status(500).json({ err, message: err.message });
-      return;
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Error occurred during verifying email",
+      });
     }
-    res.json(results);
+
+    console.log(result);
+
+    if (result.length > 0) {
+      return res.json({
+        success: false,
+        message: "User already exists.",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Email is available for registration.",
+    });
   });
 });
 
-router.post("/RegisterUser", async (req, res) => {
-  try {
-    const users = await axios.get("http://localhost:3002/users");
-    finduser = users.data.find((u) => {
-      return u.username == req.body.username;
-    });
-    if (finduser.useremail === req.body.username) {
-      res.json({
-        success: false,
-        message: "user Already exist with this username/email",
-      });
-    } else {
-      const { user_name, user_password, role_id, emp_id } = req.body;
-      const hashed_password = await bcrypt.hash(user_password, 10);
-      const values = [user_name, hashed_password, role_id, emp_id];
+router.post("/loginUser", async (req, res) => {
+  console.log("Login user is in process")
+  const { email, password, role } = req.body;
 
-      mysql.query(
-        "insert into user(username,hashed_password,role_id,emp_id) values (?,?,?,?) ",
-        values,
-        (err, result) => {
-          if (err) {
-            console.error("Error in registration", err);
-            res.json({ message: err.sqlMessage });
-          } else {
-            res.json({ success: true, message: "Registration successful" });
-          }
+  console.log(email, password, role)
+
+  mysql.query(
+    "select * from users where user_email = ? and role_id = ?",
+    [email, role],
+    async (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          message: "Some Issue Occurred",
+        });
+      }
+
+      console.log("heelo")
+
+      if (result.length > 0) {
+        console.log(result[0].user_id);
+        console.log(result[0].user_password);
+
+        const isMatch = await bcrypt.compare(password, result[0].user_password);
+
+        if (isMatch) {
+          const token = jwt.sign(
+            { user_id: result[0].user_id },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+          );
+
+          console.log(token)
+
+          // return res.json({
+          //   success: true,
+          //   message: "You're Logged In",
+          //   token: token,
+          // });
+
+          res.cookie('token', token);
+        } else {
+          return res.json({
+            success: false,
+            message: "Incorrect",
+          });
         }
-      );
+      } else {
+        return res.json({
+          success: false,
+          message: "Not exist",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Here we go now",
+      });
     }
-  } catch (e) {
-    console.log(e);
-  }
+  );
 });
+
+router.get('/logout', (req, res) => {
+  console.log("This is logout place");
+  return res.clearCookie("token").json({
+    success: true,
+    message: "Ready to move on"
+  });
+})
 
 module.exports = router;

@@ -4,7 +4,7 @@ import { BaseUrl } from './../../../../constants.js'
 import { useNavigate } from 'react-router-dom';
 import '../../BasicStyle.css';
 import './EmployeeInfo.css';
-import axios from 'axios'
+import axios from 'axios' 
 import Navbar from '../../Navbar';
 import ApplyNow from '../../../ApplyNow/ApplyNow';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';

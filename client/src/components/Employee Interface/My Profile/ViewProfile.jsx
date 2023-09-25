@@ -19,7 +19,7 @@ export default function ViewProfile() {
     } catch (error) {
       Toast('an Error Occured', 'error')
       console.error('Error fetching data empInfobyId:', error);
-      throw error;
+      // throw error;
     }
   };
   useEffect(() => {

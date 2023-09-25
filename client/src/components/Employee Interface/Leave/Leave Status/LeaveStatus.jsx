@@ -13,7 +13,7 @@ const LeaveStatus = () => {
 
             try {
                 // Fetching Employee's Leave History
-                const response = await axios.get(BaseUrl+`/empLeaveHistory/${employeeId}`)
+                const response = await axios.get(BaseUrl+`/empLeaveHistory`)
                 console.log(response.data);
 
                 setEmpLev(response.data)
