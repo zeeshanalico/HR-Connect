@@ -45,7 +45,7 @@ export default function LoginPage({setter}) {
 
   axios.defaults.withCredentials = true;
 
-  const [role_no, setRole] = useState()
+  const [role_no, setRole] = useState(2)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("employee");

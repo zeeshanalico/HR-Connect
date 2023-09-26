@@ -1231,33 +1231,40 @@ const verifyPassword = async (req, res, next) => {
   const { current, confirm, newPass } = req.body;
   const salt = await bcrypt.genSalt(10);
 
-  mysql.query("SELECT * FROM users WHERE user_id = ? ",[req.id], async (err, result) => {
-      if (err) {
-        console.log(err);
-        return res.json({
-          success: false,
-          message: "Users table not processed",
-        });
-      }
-
-      console.log("User Password : " + result[0].user_password);
-
-      const isMatch = bcrypt.compare(current, result[0].user_password);
-
-      if (isMatch) {
-        console.log("Matched");
-        req.hashed_password = await bcrypt.hash(newPass, salt);
-        next();
-      } else {
-        console.log(" no Matched");
-        return res.json({
-          success: false,
-          message: "Cannot change password",
-        });
-      }
+  mysql.query("SELECT * FROM users WHERE user_id = ?", [req.id], async (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "Users table not processed",
+      });
     }
-  );
+
+    console.log("User Password : " + result[0].user_password);
+
+    const isMatch = await bcrypt.compare(current, result[0].user_password);
+
+    if (isMatch) {
+      console.log("Matched");
+      if (newPass !== confirm) {
+        return res.json({
+          success: false,
+          message: "New password and Confirm password do not match",
+        });
+      }
+      req.hashed_password = await bcrypt.hash(newPass, salt);
+      next();
+    } else {
+      console.log("No Match");
+      return res.json({
+        success: false,
+        message: "Current password does not match",
+      });
+    }
+  });
 };
+
+
 
 router.put("/resetPassword", verify, verifyPassword, (req, res) => {
   console.log("reset password");

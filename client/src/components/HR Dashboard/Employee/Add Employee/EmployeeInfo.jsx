@@ -111,7 +111,7 @@ export default function EmployeeInfo({ id }) {
 
   return (
     <div className="col main pt-3 mt-3">
-      <Navbar type="add employee" />
+      {/* <Navbar type="add employee" /> */}
       <form onSubmit={handleSubmit}>
         <div id="full-content" className="main pt-3 mt-3">
           <div id="basic-information"></div>
