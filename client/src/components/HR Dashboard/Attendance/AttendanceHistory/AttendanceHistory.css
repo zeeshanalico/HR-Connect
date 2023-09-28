@@ -1,0 +1,18 @@
+#attendance-history-box{
+
+  display: flex;
+  flex-direction: column;
+justify-content: center;
+align-items: center;
+width: 80%;
+
+}
+
+
+#attendance-history-content{
+
+width: 100%;
+padding: 45px;
+background-color: rgb(233, 236, 239);
+
+}

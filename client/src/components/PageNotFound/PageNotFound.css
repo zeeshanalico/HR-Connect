@@ -1,0 +1,23 @@
+/* NotFound.css */
+.not-found-container {
+    text-align: center;
+    margin-top: 100px;
+  }
+  
+  .not-found-title {
+    font-size: 5rem;
+    color: #ff5722; /* Orange color */
+  }
+  
+  .not-found-text {
+    font-size: 2rem;
+    margin-top: -20px; /* Adjust as needed */
+    color: #333; /* Dark gray color */
+  }
+  
+  .not-found-description {
+    font-size: 1.2rem;
+    margin-top: 20px; /* Adjust as needed */
+    color: #777; /* Light gray color */
+  }
+  
