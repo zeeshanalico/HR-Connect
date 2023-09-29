@@ -5,15 +5,16 @@ import { useState, useEffect } from 'react';
 import { BaseUrl } from '../../../constants';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../../../UIModules/Toast/Toast';
+import { config } from '../../../constants';
 
 
 export default function EmployeeDashboard() {
+
   const [empStats, setEmpStats] = useState({})
   const navigate = useNavigate();
-  const fetchData = async (config) => {
+  const fetchData = async () => {
     try {
-      const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', config);
-      // console.log(response.data);
+      const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', {}, config);
       setEmpStats(response.data);
     } catch (error) {
       console.log(error);
@@ -24,13 +25,7 @@ export default function EmployeeDashboard() {
 
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
-    console.log('JWT Token:', jwtToken); // Log the token
-    const config = {
-      headers: { authorization: `Bearer ${jwtToken}` },
-      withCredentials: true
-    };
-    fetchData(config);
+    fetchData();
   }, [])
 
   const handleLogout = async () => {
@@ -91,7 +86,7 @@ export default function EmployeeDashboard() {
                 <i className="fa-4x fa fa-credit-card-alt"></i>
               </div>
               <h4 className="text-uppercase">Salary</h4>
-              <h3>{empStats.salary}</h3>
+              <h3>{empStats.salary?.toString()?.replace(/\.0+$/, '')} PKR</h3>
             </div>
           </div>
         </div>

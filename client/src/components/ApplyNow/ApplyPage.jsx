@@ -5,7 +5,7 @@ import ApplyNow from './ApplyNow';
 import { Card, Button, InputGroup, FormControl } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import './ApplyPage.css';
-import { BaseUrl } from './../../constants.js';
+import { BaseUrl,increaseDateByOneDay } from './../../constants.js';
 
 export default function ApplyPage() {
   // State for filters and pagination
@@ -112,7 +112,7 @@ export default function ApplyPage() {
       </div>
       <span style={{ position: 'fixed', top: '300px', left: '600px', width: '400px' }}>
         <span className="page-header">
-          <span style={{ width: '420px' }} class="animated-text">"At TEHCHNOHUB, every job opening is an opportunity to be part of something bigger. Join us, and let's redefine success together."</span>
+          <span style={{ width: '420px' }} class="animated-text">"At HRConnect, every job opening is an opportunity to be part of something bigger. Join us, and let's redefine success together."</span>
         </span>
 
       </span>
@@ -133,9 +133,9 @@ export default function ApplyPage() {
                   <p>---Description---</p>
                   <p>{job.description}</p>
                   <hr className='hr1' />
-                  <p>Date Posted: {job.date_posted.slice(0, 10)}</p>
+                  <p>Date Posted: {increaseDateByOneDay(job.date_posted.slice(0, 10))}</p>
                   <p>Salary: {job.salary}</p>
-                  <p>Last Date to Apply: {job.expiry_date.slice(0, 10)}</p>
+                  <p>Last Date to Apply: {increaseDateByOneDay(job.expiry_date.slice(0, 10))}</p>
                   <RouterLink
                     to={{
                       pathname: '/applyPage/applyNow',

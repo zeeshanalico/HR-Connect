@@ -5,6 +5,8 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import './LoginPage.css'; // Import your custom CSS
 import { useNavigate } from 'react-router-dom';
+import { withRouter } from 'react-router-dom'; // Import withRouter
+
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     user_email: '',
@@ -36,16 +38,18 @@ const LoginPage = () => {
         if (response.data.role_id === 1) {
           setTimeout(() => {
             navigate('/hrdash');
+            window.location.reload()
           }, 500);
           console.log(response.data.role_id);
           Toast(`${response.data.message} as HR`, 'success')
         }
-         else if (response.data.role_id === 2) {
+        else if (response.data.role_id === 2) {
           setTimeout(() => {
             navigate('/empdash');
+            window.location.reload()
           }, 500);
           Toast(`${response.data.message} as Employee`, 'success')
-
+         
         }
       } else {
         Toast(`${response.data.message}`, 'error')

@@ -27,15 +27,17 @@ import ApplyNow from "./components/ApplyNow/ApplyNow.jsx";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { config, BaseUrl } from "./constants";
 import axios from 'axios'
+import Loading from "./components/Loader/Loading";
 import Toast from "./UIModules/Toast/Toast";
 export default function App() {
 
   const [loggedIn, updateStatus] = useState(false);
   const [roleIDFetched, setRoleIDFetched] = useState(false);
-  console.log('loggedIn',loggedIn);
   const [roleID, setRoleID] = useState(null);
+  const [loading, setLoading] = useState(true); // New loading state
 
-  useEffect(()=>{
+
+  useEffect(() => {
     const Authenticate = async () => {
       try {
         const response = await axios.get(BaseUrl + '/decodeToken', config);
@@ -43,10 +45,13 @@ export default function App() {
           setRoleID(response.data.role_id);
           updateStatus(true);
         }
+
         setRoleIDFetched(true); // Set roleIDFetched to true even if fetching fails
       } catch (error) {
         console.error('Error while decoding token:', error);
         setRoleIDFetched(true); // Set roleIDFetched to true in case of an error
+      } finally {
+        setLoading(false);
       }
     };
     Authenticate();
@@ -80,25 +85,27 @@ export default function App() {
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-      <Router>
+      {loading ? (
+        <Loading/>
+      ) : (<Router>
         <Routes>
 
           <Route path="/" element={<Landing />} />
-           <Route path="/login" element={<LoginPage/>} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/applyPage" element={<ApplyPage />} />
-          <Route path="/hrdash" element={<HrDashboard />} />
-          <Route path="/empdash" element={<EmployeeDashboardPage />} />
           <Route path="/applyPage/applyNow" element={<ApplyNow />} />
 
+          <Route path="/hrdash" element={<HrDashboard />} />
+          <Route path="/empdash" element={<EmployeeDashboardPage />} />
+
           {/* //Employee's side routes */}
-          <Route path="/empdash/viewProfile" element={renderRoute(<ViewProfilePage />, 2)} />
-          <Route path="/empdash/markAttendance" element={renderRoute(<MarkAttendancePage />, 2)} />
-          <Route path="/empdash/AttendanceRecord" element={renderRoute(<AttendanceRecordPage />, 2)} />
-          <Route path="/empdash/submitLeave" element={renderRoute(<SubmitLeavePage />, 2)} />
-          <Route path="/empdash/leaveStatus" element={renderRoute(<LeaveStatusPage />, 2)} />
+          {roleIDFetched && <Route path="/empdash/viewProfile" element={renderRoute(<ViewProfilePage />, 2)} />}
+          {roleIDFetched && <Route path="/empdash/markAttendance" element={renderRoute(<MarkAttendancePage />, 2)} />}
+          {roleIDFetched && <Route path="/empdash/AttendanceRecord" element={renderRoute(<AttendanceRecordPage />, 2)} />}
+          {roleIDFetched && <Route path="/empdash/submitLeave" element={renderRoute(<SubmitLeavePage />, 2)} />}
+          {roleIDFetched && <Route path="/empdash/leaveStatus" element={renderRoute(<LeaveStatusPage />, 2)} />}
 
-
-          {roleIDFetched && <Route path="/hrdash/addEmployee" element={<AddEmployee />} />}
+          {roleIDFetched && <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />}
           {roleIDFetched && <Route path="/hrdash/addEmployee" element={renderRoute(<AddEmployee />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/manageEmployee" element={renderRoute(<ManageEmployeePage />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/todayAttendance" element={renderRoute(<TodayAttendancePage />, 1)} />}
@@ -110,10 +117,11 @@ export default function App() {
 
           {/* <Route path="/RegisterEmployee" element={<RegisterUser />} /> */}
 
+
           <Route path="*" element={<PageNotFound />} />
 
         </Routes>
-      </Router>
+      </Router>)}
       <ContainerToast />
     </>
   );

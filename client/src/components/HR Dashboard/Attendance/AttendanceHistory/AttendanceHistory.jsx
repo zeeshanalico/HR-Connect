@@ -96,10 +96,53 @@ const AttendanceHistory = () => {
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Employee Attendance History</h2>
       <div id="content">
+        <div>
+          <input
+            type="text"
+            placeholder="Employee Name"
+            name="name"
+            value={filters.name}
+            style={{width:"48%",display:'inline'}}
+            className="form-control"
+            
+            onChange={handleFilterChange}
+            />
+          <input
+            type="text"
+            placeholder="Employee id"
+            style={{width:"48%",display:'inline',marginLeft:'20px'}}
+            className="form-control"
+            name="emp_id"
+            value={filters.emp_id}
+            // style={inputStyle}
+            onChange={handleFilterChange}
+          />
+        </div>
         <div className="items-per-page">
-          <label style={{ marginLeft: '760px' }} className="mr-2">
-            Show items per page:
-          </label>
+          <select
+            name="status"
+            value={filters.status}
+            style={{ display: 'inline', width: '235px', margin: '8px 8px 8px 0',  }}
+            // style={inputStyle}
+            onChange={handleFilterChange}
+            className="form-control"
+          >
+            <option value={'All'}>Status</option>
+            <option value={'Absent'}>Absent</option>
+            <option value={'Leave'}>Leave</option>
+            <option value={'Present'}>Present</option>
+          </select>
+          <select
+            className="form-control"
+            style={{ display: 'inline', width: '232px' }}
+            value={sortByDate}
+            onChange={handleSortByDateChange}
+          >
+            <option style={{ display: 'none' }} value="All">Attedence Date</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+          <label className="mr-2" style={{marginLeft:'269px'}}> Show items per page:</label>
           <select
             style={{ display: 'inline', width: '70px' }}
             className="form-control"
@@ -118,51 +161,13 @@ const AttendanceHistory = () => {
           <thead>
             <tr>
               <th>
-                <input
-                  type="text"
-                  placeholder="Employee id"
-                  name="emp_id"
-                  value={filters.emp_id}
-                  style={inputStyle}
-                  onChange={handleFilterChange}
-                />
+                Employee ID
               </th>
               <th>
-                <input
-                  type="text"
-                  placeholder="Employee Name"
-                  name="name"
-                  value={filters.name}
-                  style={inputStyle}
-                  onChange={handleFilterChange}
-                />
+                Employee Name
               </th>
-              <th>
-                <select
-                  style={inputStyle}
-                  className="form-control"
-
-                  value={sortByDate}
-                  onChange={handleSortByDateChange}
-                >
-                  <option style={{ display: 'none' }} value="All">Attedence Date</option>
-                  {/* <option value="">All</option> */}
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
-                </select></th>
-              <th>
-                <select
-                  name="status"
-                  value={filters.status}
-                  style={inputStyle}
-                  onChange={handleFilterChange}
-                >
-                  <option value={'All'}>Status</option>
-                  <option value={'Absent'}>Absent</option>
-                  <option value={'Leave'}>Leave</option>
-                  <option value={'Present'}>Present</option>
-                </select>
-              </th>
+              <th>Attendence Date</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>

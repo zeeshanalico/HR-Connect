@@ -8,8 +8,10 @@ import './EmployeeInfo.css';
 import axios from 'axios'
 import Navbar from '../../Navbar';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';
+import { config } from './../../../../constants.js';
 
 export default function EmployeeInfo({ id }) {
+  console.log(id);
   const [employeeInformation, setEmployeeInformation] = useState({
     address: "",
     applicant_name: "",
@@ -46,7 +48,6 @@ export default function EmployeeInfo({ id }) {
       setJobPositions(response.data);
     } catch (error) {
       console.error('Error fetching data jobpositons:', error);
-      throw error;
     }
   };
   const fetchData1 = async () => {
@@ -54,8 +55,7 @@ export default function EmployeeInfo({ id }) {
       const response = await axios.get(BaseUrl + '/getDepartment');
       setDep(response.data);
     } catch (error) {
-      console.error('Error fetching deps in empinfo:', error);
-      throw error;
+      console.error('Error fetching departments:', error);
     }
   };
   const fetchData2 = async () => {
@@ -64,13 +64,12 @@ export default function EmployeeInfo({ id }) {
       setRoles(response.data);
     } catch (error) {
       console.error('Error fetching roles :', error);
-      throw error;
     }
   };
   const fetchEmpData = async () => {
     if (id) {
       try {
-        const response = await axios.get(BaseUrl + `/getApplicant/${id}`)
+        const response = await axios.get(BaseUrl + `/getApplicant/${id}`, config)
         console.log(response.data[0]);
         console.log(response.data);
         setEmployeeInformation(response.data[0])
@@ -104,9 +103,9 @@ export default function EmployeeInfo({ id }) {
     //   });
     // } else {
 
-      setEmployeeInformation((prevState) => {
-        return { ...prevState, [name]: value};
-      });
+    setEmployeeInformation((prevState) => {
+      return { ...prevState, [name]: value };
+    });
     // }
   }
 
@@ -114,31 +113,28 @@ export default function EmployeeInfo({ id }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(employeeInformation);
-  
+
     for (const key in employeeInformation) {
       const value = employeeInformation[key];
-  
+
       if (value === '' || value === null) {
         Toast(`Fill All attributes.`);
         return;
       }
     }
-  
+
     setLoading(true);
-  
+
     try {
       let postData = {
         ...employeeInformation,
         cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
       };
-  
-      // If id prop is undefined, add emp_id to the postData
       if (typeof id === 'undefined') {
         postData.emp_id = employeeInformation.emp_id;
       }
-  
-      const response = await axios.post(BaseUrl + '/registerEmployee', postData);
-  
+
+      const response = await axios.post(BaseUrl + '/registerEmployee', postData,config);
       if (response.data.success) {
         Toast("Employee Registered Successfully!", 'info');
         navigate('/hrdash/manageEmployee');
@@ -148,12 +144,11 @@ export default function EmployeeInfo({ id }) {
     } catch (error) {
       Toast("Error in submission: check console for further Details", 'error');
       console.error('Error in submission:', error);
-      throw error;
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="col main pt-3 mt-3">
       <Navbar type="add employee" />

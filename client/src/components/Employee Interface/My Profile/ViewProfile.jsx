@@ -16,7 +16,7 @@ export default function ViewProfile() {
   const [password, setPassword] = useState(false)
 
   const handleChangePassword = async (e) => {
-    
+
     e.preventDefault();
 
     try {
@@ -51,10 +51,10 @@ export default function ViewProfile() {
   const [empInfo, setEmpInfo] = useState({});
   const fetchData = async () => {
     try {
-      const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', config);
-      const { email, phone_number, city, address, zipcode } = await response.data[0];
-      setEmpInfo(response.data[0]);
-      console.log(response.data[0]);
+      const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', {}, config);
+      const { email, phone_number, city, address, zipcode } = await response.data;
+      setEmpInfo(response.data);
+      console.log(response.data);
       setUpdateInfo({ email, phone_number, city, address, zipcode });
     } catch (error) {
       Toast('an Error Occured', 'error')
@@ -78,7 +78,7 @@ export default function ViewProfile() {
   const handleUpdate = async () => {
     console.log(updateInfo);
     try {
-      const response = await axios.put(BaseUrl + '/updateEmployeeInfo', { ...updateInfo},config)
+      const response = await axios.put(BaseUrl + '/updateEmployeeInfo', { ...updateInfo }, config)
       if (response.data.success) {
         Toast(`${response.data.message}`)
         await fetchData();
@@ -102,72 +102,72 @@ export default function ViewProfile() {
             alignItem: 'center',
             flexDirection: 'column'
           }}>
-          <div style={{ textAlign: 'center',marginLeft:"600px"}}>
-          </div>
-          <form style={{ maxWidth: '300px', margin: '0 auto', textAlign: 'center' }}>
-            <div style={{ background: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
-              <div style={{ marginBottom: '15px' }}>
-              Reset Password
-                <input
-                  type="password"
-                  name="current"
-                  value={current}
-                  onChange={(e) => setCurrent(e.target.value)}
-                  placeholder="Current Password"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    fontSize: '16px',
-                  }}
-                />
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <input
-                  type="password"
-                  name="newPass"
-                  value={newPass}
-                  onChange={(e) => setNewPass(e.target.value)}
-                  placeholder="New Password"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    fontSize: '16px',
-                  }}
-                />
-              </div>
-              <div style={{ marginBottom: '20px' }}>
-                <input
-                  type="password"
-                  name="confirm"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  placeholder="Confirm Password"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    fontSize: '16px',
-                  }}
-                />
-              </div>
-              <button
-                onClick={handleChangePassword}
-                style={{
-                  backgroundColor: '#007BFF',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  padding: '10px 20px',
-                  cursor: 'pointer',
-                  fontSize: '18px',
-                }}
-              >
-                Submit
-              </button>
+            <div style={{ textAlign: 'center', marginLeft: "600px" }}>
             </div>
-          </form>
+            <form style={{ maxWidth: '300px', margin: '0 auto', textAlign: 'center' }}>
+              <div style={{ background: '#f0f0f0', padding: '20px', borderRadius: '10px' }}>
+                <div style={{ marginBottom: '15px' }}>
+                  Reset Password
+                  <input
+                    type="password"
+                    name="current"
+                    value={current}
+                    onChange={(e) => setCurrent(e.target.value)}
+                    placeholder="Current Password"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      fontSize: '16px',
+                    }}
+                  />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                  <input
+                    type="password"
+                    name="newPass"
+                    value={newPass}
+                    onChange={(e) => setNewPass(e.target.value)}
+                    placeholder="New Password"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      fontSize: '16px',
+                    }}
+                  />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <input
+                    type="password"
+                    name="confirm"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    placeholder="Confirm Password"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      fontSize: '16px',
+                    }}
+                  />
+                </div>
+                <button
+                  onClick={handleChangePassword}
+                  style={{
+                    backgroundColor: '#007BFF',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '5px',
+                    padding: '10px 20px',
+                    cursor: 'pointer',
+                    fontSize: '18px',
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
         </>
       ) : (
@@ -197,7 +197,7 @@ export default function ViewProfile() {
                 {editMode ? (
                   <>
                     <h4>Only This Information is Allowed to change!</h4>
-                    <div className="mb-3 rounded-input">
+                    {/* <div className="mb-3 rounded-input">
                       <label htmlFor="email" className="form-label">Email:</label>
                       <input
                         type="email"
@@ -208,7 +208,7 @@ export default function ViewProfile() {
                         onChange={handleChange}
                         required
                       />
-                    </div>
+                    </div> */}
                     <div className="mb-3 rounded-input">
                       <label htmlFor="phoneNumber" className="form-label">Phone Number:</label>
                       <input
@@ -221,46 +221,7 @@ export default function ViewProfile() {
                         required
                       />
                     </div>
-                  </>
-                ) : (
-                  <Table striped bordered hover>
-                    <tbody>
-                      <tr>
-                        <td className="text-info"><strong>My Employee ID</strong></td>
-                        <td>{empInfo.emp_id}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>Full Name </strong></td>
-                        <td>{empInfo.name}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>Email </strong></td>
-                        <td>{empInfo.email}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>Phone Number </strong></td>
-                        <td>{empInfo.phone_number}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>City </strong></td>
-                        <td>{empInfo.city}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>Zip-Code </strong></td>
-                        <td>{empInfo.zipcode}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-info"><strong>Address </strong></td>
-                        <td>{empInfo.address}</td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                )}
-              </div>
-              {/* ------------------------------------------------- */}
-              <div id="second-half">
-                {editMode ? (
-                  <>
+
                     <div className="mb-3 rounded-input">
                       <label htmlFor="city" className="form-label">City:</label>
                       <input
@@ -297,71 +258,81 @@ export default function ViewProfile() {
                         required
                       />
                     </div>
-
+                    <div>
+                      <Button variant="success" onClick={() => {
+                        // setShowModal(true);
+                        setEditMode(false);
+                        handleUpdate();
+                      }}>
+                        Save
+                      </Button>
+                      <Button variant="secondary" onClick={() => {
+                        setEditMode(false)
+                      }}>
+                        Cancel
+                      </Button>
+                    </div>
 
                   </>
                 ) : (
                   <Table striped bordered hover>
                     <tbody>
                       <tr>
+                        <td className="text-info"><strong>My Employee ID</strong></td>
+                        <td>{empInfo.emp_id}</td>
                         <td className="text-info"><strong>CNIC</strong></td>
                         <td>{empInfo.cnic}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>Full Name </strong></td>
+                        <td>{empInfo.name}</td>
                         <td className="text-info"><strong>Hire Date</strong></td>
                         <td>{empInfo.hire_date?.toString().slice(0, 10)}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>Email </strong></td>
+                        <td>{empInfo.email}</td>
                         <td className="text-info"><strong>Date of Birth</strong></td>
                         <td>{empInfo.DOB?.toString().slice(0, 10)}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>Phone Number </strong></td>
+                        <td>{empInfo.phone_number}</td>
                         <td className="text-info"><strong>Salary</strong></td>
                         <td>{empInfo.salary}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>City </strong></td>
+                        <td>{empInfo.city}</td>
                         <td className="text-info"><strong>Department</strong></td>
                         <td>{empInfo.dep_name}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>Zip-Code </strong></td>
+                        <td>{empInfo.zipcode}</td>
                         <td className="text-info"><strong>My Job as a</strong></td>
                         <td>{empInfo.job_name}</td>
                       </tr>
                       <tr>
+                        <td className="text-info"><strong>Address </strong></td>
+                        <td>{empInfo.address}</td>
                         <td className="text-info"><strong>Gender</strong></td>
                         <td>{empInfo.gender}</td>
                       </tr>
                     </tbody>
+                    <tfoot>
+                      <Button variant="primary" onClick={() => { setEditMode(true) }}>
+                        Edit Profile
+                      </Button>
+                      <hr />
+                      <Button variant="primary" onClick={() => { setPassword(true) }} >
+                        Reset Password
+                      </Button>
+                    </tfoot>
                   </Table>
                 )}
               </div>
             </div>
-            {editMode ? (
-              <div>
-                <Button variant="success" onClick={() => {
-                  // setShowModal(true);
-                  setEditMode(false);
-                  handleUpdate();
-                }}>
-                  Save
-                </Button>
-                <Button variant="secondary" onClick={() => {
-                  setEditMode(false)
-                }}>
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <>
-                <Button variant="primary" onClick={() => { setEditMode(true) }}>
-                  Edit Profile
-                </Button>
-                <hr />
-                <Button variant="primary" onClick={() => { setPassword(true) }} >
-                  Reset Password
-                </Button>
-              </>
-            )}
           </div>
 
           <Modal show={showModal} onHide={() => { setShowModal(false); }}>

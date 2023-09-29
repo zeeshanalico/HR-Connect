@@ -7,6 +7,8 @@ import './ApplyNow.css';
 import { BaseUrl } from './../../constants.js';
 import Toast from '../../UIModules/Toast/Toast';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 export default function ApplyNow() {
@@ -18,13 +20,11 @@ export default function ApplyNow() {
   const jobTitleFromState = location.state && location.state.job_title;
   console.log(jobTitle, jobId);
 
-  // const [alljobs, setAllJobs] = useState([]);//get
   const [userDetails, setUserDetails] = useState({})
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    // console.log(name,value);
     if (type === 'file') {
       setUserDetails((prevState) => {
         return { ...prevState, [name]: files[0], job_id: jobId };
@@ -81,7 +81,7 @@ export default function ApplyNow() {
                 type="text"
                 name='applicant_name'
                 value={userDetails?.applicant_name}
-                placeholder='Full Name'
+                placeholder='Enter your Full Name here'
                 onChange={handleChange}
               />
             </div>
@@ -100,8 +100,10 @@ export default function ApplyNow() {
               <label>Phone no:</label>
               <input
                 className="form-control round"
-                type="tel"
+                type="number"
                 name='phone_number'
+                min='0'
+                maxlength="11" 
                 value={userDetails?.phone_number}
                 placeholder='Your Phone#'
                 onChange={handleChange}
@@ -112,7 +114,9 @@ export default function ApplyNow() {
               <input
                 className="form-control round"
                 type="number"
+                placeholder='Enter cnic without dashes'
                 name='cnic'
+                maxlength="13" 
                 value={userDetails?.cnic}
                 onChange={handleChange}
               />
@@ -173,6 +177,7 @@ export default function ApplyNow() {
                 className="form-control round"
                 type="number"
                 name='cgpa'
+                max={4}
                 value={userDetails?.cgpa}
                 placeholder='CGPA'
                 onChange={handleChange}
@@ -203,6 +208,8 @@ export default function ApplyNow() {
               <label>Zip-Code</label>
               <input
                 className="form-control round"
+                type='number'
+                min={0}
                 name='zipcode'
                 value={userDetails?.zipcode}
                 placeholder='Your zipcode'
@@ -260,6 +267,7 @@ export default function ApplyNow() {
               <input
                 className="form-control round"
                 type="number"
+                min={0}
                 name='desired_salary'
                 value={userDetails?.desired_salary}
                 placeholder='Desired Salary'
@@ -271,6 +279,7 @@ export default function ApplyNow() {
               <input
                 className="form-control round"
                 type="date"
+                max="2005-12-31"
                 name='dob'
                 value={userDetails?.dob}
                 onChange={handleChange}
@@ -285,6 +294,7 @@ export default function ApplyNow() {
                 type="file"
                 onChange={handleChange}
                 accept=".pdf,.doc,.docx"
+                required
               />
             </div>
             <button className="submit-button btn btn-primary mt-2 mb-2 p-2" type="submit">Apply</button>

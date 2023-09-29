@@ -1,0 +1,15 @@
+.custom-button {
+    background-color: #007bff; /* Your desired button color */
+    color: #fff; /* Text color for the button */
+    border-color: #007bff; /* Border color for the button */
+  
+    /* Add more styles as needed */
+  }
+  
+  .custom-button:disabled {
+    background-color: #007bff; /* Keep the same button color */
+    color: #fff; /* Text color for the disabled button */
+    border-color: #007bff; /* Border color for the disabled button */
+    opacity: 0.65; /* Adjust the opacity to control the dimmed appearance */
+    cursor: not-allowed; /* Change the cursor to indicate it's disabled */
+  }

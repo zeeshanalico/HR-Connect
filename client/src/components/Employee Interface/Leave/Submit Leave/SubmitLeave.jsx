@@ -12,6 +12,8 @@ export default function SubmitLeave() {
         reason: '',
         reasonDetail: '',
     });
+    const todayDate = new Date().toISOString().split('T')[0];
+    console.log(todayDate);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -24,22 +26,19 @@ export default function SubmitLeave() {
         e.preventDefault();
 
         // Get the current date in the format 'YYYY-MM-DD'
-        const todayDate = new Date().toISOString().split('T')[0];
 
         if (
             formData.toDate &&
             formData.fromDate &&
-            formData.reason.trim() !== '' &&
-            formData.reasonDetail.trim() !== ''
+            formData.reason.trim() !== ''
         ) {
-            if (formData.toDate > todayDate) {
+            if (formData.fromDate > todayDate) {
                 if (formData.toDate > formData.fromDate) {
                     try {
                         const data = {
                             leave_date: formData.fromDate,
                             toDate:formData.toDate,
                             reason: formData.reason,
-                            reasonDetail: formData.reasonDetail,
                         };
                         const response = await axios.put(BaseUrl + "/leaverequest", data, config);
                         if (response.data.success) {
@@ -48,7 +47,6 @@ export default function SubmitLeave() {
                                 fromDate: '',
                                 toDate: '',
                                 reason: '',
-                                reasonDetail: '',
                             });
                         } else {
                             Toast(`${response.data.message}`, "error");
@@ -58,10 +56,10 @@ export default function SubmitLeave() {
                     }
                     setFormData({});
                 } else {
-                    Toast(`Please enter a 'From Date' greater than 'To Date'`);
+                    Toast(`Please enter a 'to Date' greater than 'from Date'`);
                 }
             } else {
-                Toast(`Please enter a 'To Date' greater than today's date (${todayDate})`);
+                Toast(`Please enter a 'from Date' greater than today's date (${todayDate})`);
             }
         } else {
             Toast("Please fill in all the fields", "info");
@@ -97,22 +95,12 @@ export default function SubmitLeave() {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="reason">Subject:</label>
-                        <input
+                        <label htmlFor="reason">Reason:</label>
+                        <textarea
                             type="text"
                             id="reason"
                             name="reason"
                             value={formData.reason}
-                            onChange={handleChange}
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="reasonDetail">reason Detail:</label>
-                        <textarea
-                            id="reasonDetail"
-                            name="reasonDetail"
-                            value={formData.reasonDetail}
                             onChange={handleChange}
                             className="form-control"
                         />

@@ -1,45 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 import { Modal, Button, Form } from 'react-bootstrap';
 import '../../../BasicStyle.css';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
-import { Dropdown } from 'react-bootstrap';
-import { config } from './../../../../constants.js';
-const inputStyle = {
-  border: "none",
-  height: "30px",
-  outline: "none",
-  cursor: "pointer",
-  backgroundColor: "transparent",
-};
+import { config,increaseDateByOneDay } from './../../../../constants.js';
+import ReactPaginate from 'react-paginate';
+import styles from './PostJob.module.css'
+// import './PostJob.css'
 export default function PostJob() {
   const [showModal, setShowModal] = useState(false);
   const [jobDetails, setJobDetails] = useState([])
-  const [jobTitle, setJobTitle] = useState("")
-
-
   const [alljobs, setAllJobs] = useState([]);//get
   const [dep, setDep] = useState([])//get
 
   const [confirmationModal, setConfirmationModal] = useState(false); // State for the confirmation modal
   const [jobToRemove, setJobToRemove] = useState(null); // State to track the job to be removed
 
-  console.log(alljobs);
-
-
-
-  const [selectedDepartment, setSelectedDepartment] = useState('All');
-  const [selectedExpiryDate, setSelectedExpiryDate] = useState('');
-  const [selectedPostDate, setSelectedPostDate] = useState('');
-
-
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getJobs',config);
+      const response = await axios.get(BaseUrl + '/getJobs', config);
       setAllJobs(response.data);
     } catch (error) {
-      Toast ('catch error','error');
+      Toast('catch error', 'error');
       console.error('Error fetching data jobs:', error);
     }
   };
@@ -49,7 +33,7 @@ export default function PostJob() {
       const response = await axios.get(BaseUrl + '/getDepartment');
       setDep(response.data);
     } catch (error) {
-      Toast('error fetching departments','error')
+      Toast('error fetching departments', 'error')
       console.error('Error fetching data dep :', error);
     }
   };
@@ -72,9 +56,9 @@ export default function PostJob() {
     console.log(jobDetails);
 
     try {
-      const response = await axios.post(BaseUrl + '/jobPost', jobDetails,config);
+      const response = await axios.post(BaseUrl + '/jobPost', jobDetails, config);
       if (response.data.success) {
-        Toast('job posted succeessfuly', 'info');
+        Toast('Job posted succeessfuly', 'success');
         setShowModal(false);
         await fetchData();
         setJobDetails({});
@@ -96,10 +80,10 @@ export default function PostJob() {
     if (jobToRemove !== null) {
       console.log('Deleting job with ID:', jobToRemove);
       try {
-        const response = await axios.post(BaseUrl + '/deleteJob', { job_id: jobToRemove });
+        const response = await axios.post(BaseUrl + '/deleteJob', { job_id: jobToRemove },config);
         if (response.data.success) {
           console.log('Job with ID', jobToRemove, 'deleted successfully.');
-          Toast('Job Removed Successfully','success');
+          Toast('Job Removed Successfully', 'success');
           await fetchData()
         } else {
           console.error('Error deleting job:', response.data.error);
@@ -113,29 +97,49 @@ export default function PostJob() {
     setConfirmationModal(false);
     setJobToRemove(null);
   }
+  // --------------------------------------------------------------------------
+  const [filters, setFilters] = useState({
+    jobTitle: '',
+    experienceRequired: '',
+    datePosted: '',
+    expiryDate: '',
+    department: ''
+  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  // Handle filter input changes
+  const handleFilterChange = (e) => {
 
-  // pagination and itemsperpage
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+    const { name, value } = e.target;
+    console.log(name, value);
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    setCurrentPage(0);
+  };
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(alljobs.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  // Handle items per page change
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0);
+  };
 
+  // Filter jobs based on filters and current page
   const filteredJobs = alljobs
-    .filter(job => (selectedDepartment === 'All' || job.dep_name === selectedDepartment))
-    .filter(job => (selectedExpiryDate === '' || job.expiry_date.slice(0, 10) === new Date(selectedExpiryDate).toISOString().slice(0, 10)))
-    .filter(job => (selectedPostDate === '' || job.date_posted.slice(0, 10) === new Date(selectedPostDate).toISOString().slice(0, 10)))
-    .filter((job) => job.title.toLowerCase().includes(jobTitle.toLowerCase()));
+    .filter((job) =>
+      job.title.toLowerCase().includes(filters.jobTitle.toLowerCase()) &&
+      job.dep_name.toLowerCase().includes(filters.department.toLowerCase()) &&
+      job.date_posted.toLowerCase().includes(filters.datePosted.toLowerCase()) &&
+      job.expiry_date.toLowerCase().includes(filters.expiryDate.toLowerCase()) &&
+      job.experience.toLowerCase().includes(filters.experienceRequired.toLowerCase())
+    )
+  const offset = currentPage * itemsPerPage;
+  const currentJobs = filteredJobs.slice(offset, offset + itemsPerPage);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const displayedJobs = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
+  // --------------------------------------------------------------------------
 
   return (
     <div id="full-content">
-      <h2 className='mb-4'>Post a New Job</h2>
+      <h2 className='mb-4'>Posted Jobs</h2>
       <div id="content">
         {/* Modal for posting a new job */}
         <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -240,95 +244,138 @@ export default function PostJob() {
         </Modal>
 
         {/* Display the list of posted jobs */}
-        <h2 className='mb-4 mr-4'>Posted Jobs<Button className="float-right" style={{ width: '130px', alignSelf: 'center' }} variant="primary" onClick={() => setShowModal(true)}>
+        <Button className="float-right" style={{ width: '130px', alignSelf: 'left' }} variant="primary" onClick={() => setShowModal(true)}>
           Post a New Job
-        </Button></h2>
-        <div className="d-flex align-items-center mb-3">
-          <Form.Control
-            type="text"
-            name='title'
-            placeholder="Search job By Title"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            style={{ width: '300px', float: 'right' }}
-          />
-          <label htmlFor="itemsPerPage" className="form-label me-2" style={{ marginLeft: "530px" }}>
-            Items Per Page : &ensp;
-          </label>
-          <Dropdown>
-            <Dropdown.Toggle className='mr-4' variant="info" id="itemsPerPageDropdown" style={{ width: '70px' }}>
-              {itemsPerPage}
-            </Dropdown.Toggle>
-            <Dropdown.Menu style={{ minWidth: '70px' }}>
-              <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(50)}>50</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-        <table className="table">
+        </Button>
+
+        <Row className={`mb-3 ${styles.slideIn}`}>
+          <Col style={{ margin: '0px' }}>
+            <InputGroup className="filter-inputs">
+              <FormControl
+                className="formcont"
+                name="jobTitle"
+                placeholder="Filter by Job Title"
+                value={filters.jobTitle}
+                style={{ margin: '7px 7px 7px 0' }}
+                onChange={handleFilterChange}
+                autoComplete="off"
+              />
+              <FormControl
+                className="formcont"
+                name="experienceRequired"
+                style={{ margin: '7px 7px 7px 0' }}
+                placeholder="Search By Experience"
+                value={filters.experienceRequired}
+                onChange={handleFilterChange}
+                autoComplete="off"
+              />
+              <label htmlFor="itemsPerPage" style={{ marginTop: '10px', color: 'black' }}>
+                Items Per Page:&ensp;
+              </label>
+              <select
+                style={{ margin: '7px 7px 7px 0' }}
+                name="itemsPerPage"
+                id="itemsPerPage"
+                onChange={handleItemsPerPageChange}
+                value={itemsPerPage}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </InputGroup>
+          </Col>
+        </Row>
+
+        <Row className={`mb-2 ${styles.slideIn}`} style={{ marginTop: '-30px' }}>
+          <Col>
+            <InputGroup className="filter-inputs">
+              <select
+                name="department"
+                style={{ margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%' }}
+                className="formcont"
+                value={filters.department}
+                onChange={handleFilterChange}
+              >
+                <option value={''}>Department</option>
+                {dep.map((department, index) => (
+                  <option value={department.dep_name} key={index}>
+                    {department.dep_name}
+                  </option>
+                ))}
+              </select>
+              <InputGroup style={{ width: 'calc(37% - 20px)' }}>
+                <FormControl
+                  placeholder="Posted Date"
+                  style={{
+                    margin: '7px -30px 7px 0',
+                    paddingBottom: '6px',
+                    paddingRight: '0px',
+                    backgroundColor: '##F7D6A5',
+                    height: '40px',
+                    width: '20%',
+                  }}
+                  disabled
+                />
+                <FormControl
+                  type="date"
+                  style={{ margin: '7px 7px 7px 0' }}
+                  id="jobPostedDateFilter"
+                  placeholder="Posted Date"
+                  name="datePosted"
+                  className="formcont"
+                  value={filters.datePosted}
+                  onChange={handleFilterChange}
+                />
+              </InputGroup>
+              <InputGroup style={{ width: 'calc(36% - 20px)' }}>
+                <FormControl
+                  placeholder="Applying Date"
+                  style={{
+                    margin: '7px -30px 7px 0',
+                    paddingBottom: '6px',
+                    paddingRight: '0px',
+                    backgroundColor: '##F7D6A5',
+                    height: '40px',
+                    width: '20%',
+                  }}
+                  disabled
+                />
+                <FormControl
+                  type="date"
+                  id="applyingDateFilter"
+                  name="expiryDate"
+                  style={{ margin: '7px 7px 7px 0', borderRadius: '0px', width: '80%' }}
+                  className="formcont"
+                  value={filters.expiryDate}
+                  onChange={handleFilterChange}
+                />
+              </InputGroup>
+            </InputGroup>
+          </Col>
+        </Row>
+        <table className={`table ${styles.table}`}>
           <thead>
             <tr>
               <th>Job Title</th>
-              <th>
-                <select
-                  value={selectedDepartment}
-                  style={{
-                    border: "none",
-                    height: "40px",
-                    outline: "none",
-                    width: "150px",
-                    backgroundColor: "transparent",
-                  }}
-                  className="form-control round"
-                  onChange={(e) => setSelectedDepartment(e.target.value)}
-                >
-                  <option value={'All'}>Department</option>
-                  {dep.map((department => { return <option value={department.dep_name}>{department.dep_name}</option> }))}
-                </select>
-              </th>
+              <th>Department</th>
               <th>Experience Required</th>
-              <th>Date Posted
-                <input
-                  type="date"
-                  id="jobPostedDateFilter"
-                  placeholder='Posted Date'
-                  className="form-control"
-                  value={selectedPostDate}
-                  onChange={(e) => setSelectedPostDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </th>
-              <th>Expiry Date
-                <input
-                  type="date"
-                  id="applyingDateFilter"
-                  placeholder='Applying Date'
-                  className="form-control"
-                  value={selectedExpiryDate}
-                  onChange={(e) => setSelectedExpiryDate(e.target.value)}
-                  style={inputStyle}
-                />
-              </th>
+              <th>Date Posted</th>
+              <th>Expiry Date</th>
               <th></th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {
-              displayedJobs
-                .filter(job => (selectedDepartment === 'All' || job.dep_name === selectedDepartment))
-                .filter(job => (selectedExpiryDate === '' || job.expiry_date.slice(0, 10) === new Date(selectedExpiryDate).toISOString().slice(0, 10)))
-                .filter(job => (selectedPostDate === '' || job.date_posted.slice(0, 10) === new Date(selectedPostDate).toISOString().slice(0, 10)))
-                .filter((job) => job.title.toLowerCase().includes(jobTitle.toLowerCase()))
+              currentJobs
                 .map((job) => (
                   <tr key={job.job_id}>
                     <td>{job.title}</td>
                     <td>{job.dep_name}</td>
                     <td>{job.experience}</td>
-                    <td>{job.date_posted.slice(0, 10)}</td>
-                    <td>{job.expiry_date.slice(0, 10)}</td>
+                    <td>{increaseDateByOneDay(job?.date_posted.slice(0, 10))}</td>
+                    <td>{increaseDateByOneDay(job?.expiry_date?.slice(0, 10))}</td>
                     <td>{job?.status}</td>
                     <td>
                       <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>
@@ -340,18 +387,22 @@ export default function PostJob() {
             }
           </tbody>
         </table>
-        <div className="d-flex justify-content-center">
-          <ul className='pagination'>
-            {pageNumbers.map(number => (
-              <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
-                <button className="page-link" onClick={() => setCurrentPage(number)}>
-                  {number}
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div style={{ margin: 'auto' }}>
+          <ReactPaginate
+            previousLabel={'Previous'}
+            nextLabel={'Next'}
+            pageCount={Math.ceil(filteredJobs.length / itemsPerPage)}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+          />
         </div>
-
 
 
         {/* Confirmation Modal */}

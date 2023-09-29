@@ -26,6 +26,7 @@ export default function LeaveApplication() {
   const [empId, setEmpId] = useState('');
   const [dep, setDep] = useState([]);
   const [leaveDate, setLeaveDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const currentDate = new Date().toISOString().split('T')[0]
   const fetchData2 = async () => {
     try {
@@ -41,18 +42,19 @@ export default function LeaveApplication() {
     try {
       const response = await axios.get(BaseUrl + '/getApplications', config);
       setLeaveApplications(response?.data[0]);
+      console.log(response.data[0]);
     } catch (error) {
       console.error('Error fetching attendance:', error);
       Toast('cache error', 'error');
     }
   };
-  
+
   useEffect(() => {
     fetchData();
     fetchData2();
   }, []);
   // ------------------------------------------------------------------------------------------------
-  
+
   const [filters, setFilters] = useState({
     employeeName: '',
     department: '',
@@ -86,10 +88,11 @@ export default function LeaveApplication() {
   // ------------------------------------------------------------------------------------------------
   const handleApprove = async () => {
     try {
+      console.log('handleApprove', empId, leaveDate, toDate);
       const response = await axios.put(BaseUrl + '/leaveApproved', {
         emp_id: empId,
-        attendance_date: leaveDate,
-      });
+        attendance_date: leaveDate, toDate: toDate === 'NaN-NaN-NaN' ? '' : ''
+      }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`);
       } else {
@@ -144,13 +147,13 @@ export default function LeaveApplication() {
             className="form-control"
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
-            style={{ width:'300px', marginRight: '10px' }}
-            />
-            <div style={{margin:'0 0 10px 500px'}}>items per page &ensp;</div>
+            style={{ width: '300px', marginRight: '10px' }}
+          />
+          <div style={{ margin: '0 0 10px 500px' }}>items per page &ensp;</div>
           <select
             name="itemsPerPage"
             id="itemsPerPage"
-            style={{ borderRadius:'8px',outline:'none',padding:'9px',width: 'fitcontent',}}
+            style={{ borderRadius: '8px', outline: 'none', padding: '9px', width: 'fitcontent', }}
             onChange={handleItemsPerPageChange}
             value={itemsPerPage}
           >
@@ -177,7 +180,8 @@ export default function LeaveApplication() {
               </th>
               <th>Reason</th>
               <th>Applying Date</th>
-              <th>Leave Date</th>
+              <th>From/Leave Date</th>
+              <th>To Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -192,8 +196,9 @@ export default function LeaveApplication() {
                     <td>{application.emp_name}</td>
                     <td>{application.dep_name}</td>
                     <td>{application.reason}</td>
-                    <td>{increaseDateByOneDay(application.applying_date.slice(0, 10))}</td>
-                    <td>{increaseDateByOneDay(application.leave_date.slice(0, 10))}</td>
+                    <td>{increaseDateByOneDay(application?.applying_date?.slice(0, 10))}</td>
+                    <td>{increaseDateByOneDay(application?.leave_date?.slice(0, 10))}</td>
+                    <td>{application.toDate ? increaseDateByOneDay(application?.toDate?.slice(0, 10)) : 'N/A'}</td>
                     <td>{application.att_status}</td>
                     <td>
                       {application.att_status === 'Pending' && (
@@ -201,11 +206,14 @@ export default function LeaveApplication() {
                           <Button
                             variant="success"
                             size="sm"
+                            style={{ margin: '0px' }}
                             onClick={() => {
                               setShowModal(true);
                               setEmpId(application.emp_id);
                               setReqID(application.leave_req_id);
-                              setLeaveDate(increaseDateByOneDay(application.leave_date.slice(0, 10)));
+                              setLeaveDate(increaseDateByOneDay(application?.leave_date?.slice(0, 10)));
+                              setToDate(increaseDateByOneDay(application?.toDate?.slice(0, 10)));
+
                             }}
                           >
                             Approve
@@ -213,6 +221,7 @@ export default function LeaveApplication() {
                           <Button
                             variant="danger"
                             size="sm"
+                            style={{ margin: '0px' }}
                             onClick={() => {
                               setShowRejectModal(true);
                               setEmpId(application.emp_id);

@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-const uploadDirectory = `${__dirname}/../uploads`; 
+const uploadDirectory = `${__dirname}/../uploads`;
 const current_date = getCurrentDate();
 
 
@@ -64,7 +64,7 @@ router.get("/getAttendence", (req, res) => {
 });
 
 // get jobs by hr and employee
-router.get("/getJobs",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getJobs", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getJobs");
   mysql.query(
     "select * from jobs j inner join department d on d.dep_id=j.dep_id",
@@ -103,7 +103,7 @@ router.get("/getJobPositions", (req, res) => {
 });
 
 ///////------------------------hr-----------------------------
-router.get("/getDepInfo",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getDepInfo", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getDepInfo");
   mysql.query(`call GetDepartmentsWithTotalEmployees()`, (err, results) => {
     if (err) {
@@ -117,7 +117,7 @@ router.get("/getDepInfo",verifyToken,checkUserRole(1), (req, res) => {
 
 ///////------------------------hr-----------------------------
 
-router.get("/getEmployees",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getEmployees", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getEmployees");
   mysql.query(
     "SELECT * FROM employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id;",
@@ -133,7 +133,7 @@ router.get("/getEmployees",verifyToken,checkUserRole(1), (req, res) => {
 });
 
 // delete job by hr
-router.post("/deleteJob",verifyToken,checkUserRole(1), (req, res) => {
+router.post("/deleteJob", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/deleteJob");
   const { job_id } = req.body;
   mysql.query(
@@ -150,7 +150,7 @@ router.post("/deleteJob",verifyToken,checkUserRole(1), (req, res) => {
 });
 
 // job post by hr
-router.post("/jobPost",verifyToken,checkUserRole(1), (req, res) => {
+router.post("/jobPost", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/jobPost");
 
   const {
@@ -284,7 +284,7 @@ router.post("/getResume", (req, res) => {
 });
 
 //---------------------------------------------hiring/view job applications------------------------------------------------------------------------
-router.get("/getJobApplications",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getJobApplications", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getJobApplications");
   mysql.query(
     "select application_id, applicant_name, email,phone_number, status,j.job_id,title from applications a inner join jobs j on a.job_id=j.job_id;",
@@ -297,7 +297,7 @@ router.get("/getJobApplications",verifyToken,checkUserRole(1), (req, res) => {
     }
   );
 });
-router.post("/rejectApplication",verifyToken,checkUserRole(1), (req, res) => {
+router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/rejectApplication");
   const { rejectedApplicationId } = req.body;
   console.log(rejectedApplicationId);
@@ -346,7 +346,7 @@ router.post("/rejectApplication",verifyToken,checkUserRole(1), (req, res) => {
   );
 });
 
-router.post("/callForInterview",(req, res) => {
+router.post("/callForInterview", (req, res) => {
   console.log("callForInterview");
   const { callForInterviewId, interviewDate, interviewTime, email } = req.body;
 
@@ -444,7 +444,7 @@ router.post("/addDepartment", (req, res) => {
 });
 
 //// -----------------------------------------------------emplyees/addemployees---------------------------------------------------------------------------------------
-router.post("/registerEmployee", verifyToken,checkUserRole(1),async (req, res) => {
+router.post("/registerEmployee", verifyToken, checkUserRole(1), async (req, res) => {
   try {
     console.log("/registerEmployee");
     const {
@@ -618,10 +618,10 @@ TECHNOHUB`,
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-router.post("/removeEmployee", verifyToken,checkUserRole(1),async (req, res) => {
+router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) => {
   console.log("/removeEmployee");
   try {
-    const { emp_id}  = req.body;
+    const { emp_id } = req.body;
     const response = await axios.post(
       "http://localhost:3002/getEmpInfobyEmpId",
       { emp_id }
@@ -703,10 +703,10 @@ TECHNOHUB
 });
 
 // --------------------------------------------------------------------------emp/attendence---------------------------------------------------------------------------------
-router.post("/getAttendencebyEmp", verifyToken,checkUserRole(2), (req, res) => {
+router.post("/getAttendencebyEmp", verifyToken, checkUserRole(2), (req, res) => {
   console.log("getAttendencebyEmp");
   const { todayDate } = req.body;
-  const {emp_id }= req.user;
+  const { emp_id } = req.user;
   mysql.query(
     "select status from attendance where emp_id=? and attendance_date=?;",
     [emp_id, todayDate],
@@ -724,10 +724,10 @@ router.post("/getAttendencebyEmp", verifyToken,checkUserRole(2), (req, res) => {
   );
 });
 
-router.put("/updateAttendance", verifyToken,checkUserRole(2), async (req, res) => {
+router.put("/updateAttendance", verifyToken, checkUserRole(2), async (req, res) => {
   console.log("/updateAttendance");
   const { att_status } = req.body;
-  const {emp_id} = req.user;
+  const { emp_id } = req.user;
   // const allAttendance=await axios.get('http://localhost:3004/getAttendence');
   // const findAttendance=allAttendance.data((attendance)=>{ emp_id===attendance.emp_id && current_date===attendance.attendance_date})
   mysql.query(
@@ -744,16 +744,16 @@ router.put("/updateAttendance", verifyToken,checkUserRole(2), async (req, res) =
   );
 });
 
-router.put("/leaverequest", verifyToken,checkUserRole(2), async (req, res) => {
+router.put("/leaverequest", verifyToken, checkUserRole(2), async (req, res) => {
   console.log("/leaverequest");
-  const { reason, leave_date, toDate, reasonDetail } = req.body;
-  const {emp_id }= req.user;
+  const { reason, leave_date, toDate } = req.body;
+  const { emp_id } = req.user;
   console.log("/leaverequest");
   console.table({ emp_id, reason, leave_date });
   mysql.query(
-    "INSERT INTO leaverequest (emp_id, reason, leave_date, applying_date,toDate,reasonDetail ) VALUES (?,  ?, ?, ?, ?, ?) " +
+    "INSERT INTO leaverequest (emp_id, reason, leave_date, applying_date,toDate ) VALUES (  ?, ?, ?, ?, ?) " +
     "ON DUPLICATE KEY UPDATE reason = VALUES(reason), leave_date = VALUES(leave_date), applying_date = VALUES(applying_date)",
-    [emp_id, reason, leave_date, current_date, toDate, reasonDetail],
+    [emp_id, reason, leave_date, current_date, toDate],
     (error, result) => {
       if (error) {
         console.error(error);
@@ -763,6 +763,184 @@ router.put("/leaverequest", verifyToken,checkUserRole(2), async (req, res) => {
       }
     }
   );
+});
+
+router.post('/markAbsent', verifyToken, checkUserRole(2), (req, res) => {
+  console.log('mark attendance');
+  const query = `CALL markAbsentIntoAttendance()`
+
+  mysql.query(query, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result);
+      res.json(result);
+    }
+  })
+})
+
+// --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
+router.post("/getEmpInfobyEmpId", verifyToken, checkUserRole(2), (req, res) => {
+  console.log("/getEmpInfobyEmpId");
+  const { emp_id } = req.user;
+  console.log("getEmpInfobyEmpId emp Id", emp_id);
+  mysql.query(
+    "select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;",
+    [emp_id],
+    (err, result) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: "error in fetching attendace status",
+          err,
+        });
+      } else {
+        res.json(result[0]);
+      }
+    }
+  );
+});
+
+router.put("/updateEmployeeInfo", verifyToken, checkUserRole(2), async (req, res) => {
+  console.log("/updateEmployeeInfo");
+  try {
+    const { emp_id } = req.user;
+    const { email, phone_number, city, address, zipcode } = req.body;
+    const updateQuery = `UPDATE employee SET email = ?, phone_number = ?, city = ?, address = ?, zipcode = ? WHERE emp_id = ?; `;
+
+    mysql.query(
+      updateQuery,
+      [email, phone_number, city, address, zipcode, emp_id],
+      (error, results) => {
+        if (error) {
+          console.error("Error updating employee information:", error);
+          res.json({ success: false, message: "Internal server error." });
+        } else {
+          res.json({
+            success: true,
+            message: "Employee information updated successfully.",
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error updating employee information:", error);
+    res.json({ success: false, message: "Internal server error." });
+  }
+});
+
+router.get("/empLeaveHistory", verifyToken, checkUserRole(2), (req, res) => {
+  console.log("/employeeLeaveHistory");
+  const { emp_id } = req.user;
+
+  console.log("Employee ID: " + emp_id);
+
+  mysql.query(`CALL employeeLeaveHistory(${emp_id})`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json(result[0]);
+    }
+  });
+});
+
+router.get("/getAttendance/:id", (req, res) => {
+  console.log("/getAttendance");
+  const { id } = req.params;
+
+  console.log("Employee ID: " + id);
+
+  mysql.query(`CALL getAttendance(${id})`, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      console.log(result[0]);
+      res.json(result[0]);
+    }
+  });
+});
+
+router.get("/getApplicant/:id", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/getApplicant");
+  const { id } = req.params;
+
+  mysql.query(
+    `SELECT * FROM applications WHERE application_id = ${id}; `,
+    (err, result) => {
+      if (err) {
+        console.error("Internal server erro:", err);
+        res.json({ success: false, message: "Internal server error." });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+});
+
+// --------------------------------------------------------------------------hr/leaveapplication---------------------------------------------------------------------------------
+
+router.get("/getApplications", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/getApplications");
+  mysql.query("call getLeaveApplication();", (err, results) => {
+    if (err) {
+      console.error("Error fetching job leave Applications:", err);
+      res.json({ message: err.sqlMessage });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+router.get("/getTodayAttendance", verifyToken, checkUserRole(1), (req, res) => {
+  mysql.query(
+    "SELECT * FROM attendance WHERE attendance_date = DATE(NOW());",
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.json({ success: false, message: "An error occurred" });
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    }
+  );
+});
+
+router.put("/leaveApproved", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/leaveApproved");
+
+  const { emp_id, attendance_date, toDate } = req.body;
+  console.log(emp_id, attendance_date, toDate);
+  if (toDate == null || toDate === 'NaN-NaN-NaN'|| toDate==="") {
+    const status = "Leave";
+    mysql.query(
+      `call attendanceApproval(${emp_id}, '${status}', '${attendance_date}')`,
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          res.json({ success: false, message: "An error occurred" });
+        } else {
+          res.json({ success: true, message: "Attendence Approved" });
+        }
+      }
+    );
+  } else {
+    const status = "Leave";
+    mysql.query(
+      `call multipleAttendanceApproval(${emp_id}, '${status}', '${attendance_date}','${toDate}')`,
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          res.json({ success: false, message: "An error occurred" });
+        } else {
+          res.json({ success: true, message: "Attendence Approved" });
+        }
+      }
+    );
+  }
 });
 
 // router.post("/multipleLeavesRequest", async (req, res) => {
@@ -817,168 +995,7 @@ router.put("/leaverequest", verifyToken,checkUserRole(2), async (req, res) => {
 //   }
 // });
 
-router.post('/markAbsent',verifyToken,checkUserRole(2), (req, res) => {
-  console.log('mark attendance');
-  const query = `CALL markAbsentIntoAttendance()`
-
-  mysql.query(query, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.json({ success: false, message: "An error occurred" });
-    } else {
-      console.log(result);
-      res.json(result);
-    }
-  })
-})
-
-// --------------------------------------------------------------------------emp/myprofile---------------------------------------------------------------------------------
-router.post("/getEmpInfobyEmpId",verifyToken, checkUserRole(2), (req, res) => {
-  console.log("/getEmpInfobyEmpId");
-  // const emp_id =2345;
-  const { emp_id } = req.user;
-  mysql.query(
-    "select * from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id where emp_id=? ;",
-    [emp_id],
-    (err, result) => {
-      if (err) {
-        res.json({
-          success: false,
-          message: "error in fetching attendace status",
-          err,
-        });
-      } else {
-        res.json(result[0]);
-      }
-    }
-  );
-});
-
-router.put("/updateEmployeeInfo", verifyToken, checkUserRole(2), async (req, res) => {
-  console.log("/updateEmployeeInfo");
-  try {
-    const { emp_id } = req.user;
-    const { email, phone_number, city, address, zipcode } = req.body;
-    const updateQuery = `UPDATE employee SET email = ?, phone_number = ?, city = ?, address = ?, zipcode = ? WHERE emp_id = ?; `;
-
-    mysql.query(
-      updateQuery,
-      [email, phone_number, city, address, zipcode, emp_id],
-      (error, results) => {
-        if (error) {
-          console.error("Error updating employee information:", error);
-          res.json({ success: false, message: "Internal server error." });
-        } else {
-          res.json({
-            success: true,
-            message: "Employee information updated successfully.",
-          });
-        }
-      }
-    );
-  } catch (error) {
-    console.error("Error updating employee information:", error);
-    res.json({ success: false, message: "Internal server error." });
-  }
-});
-
-router.get("/empLeaveHistory",verifyToken, checkUserRole(2), (req, res) => {
-  console.log("/employeeLeaveHistory");
-  const id = req.emp;
-
-  console.log("Employee ID: " + id);
-
-  mysql.query(`CALL employeeLeaveHistory(${id})`, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.json({ success: false, message: "An error occurred" });
-    } else {
-      res.json(result[0]);
-    }
-  });
-});
-
-router.get("/getAttendance/:id", (req, res) => {
-  console.log("/getAttendance");
-  const { id } = req.params;
-
-  console.log("Employee ID: " + id);
-
-  mysql.query(`CALL getAttendance(${id})`, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.json({ success: false, message: "An error occurred" });
-    } else {
-      console.log(result[0]);
-      res.json(result[0]);
-    }
-  });
-});
-
-router.get("/getApplicant/:id",verifyToken, checkUserRole(1), (req, res) => {
-  console.log("/getApplicant");
-  const { id } = req.params;
-
-  mysql.query(
-    `SELECT * FROM applications WHERE application_id = ${id}; `,
-    (err, result) => {
-      if (err) {
-        console.error("Internal server erro:", err);
-        res.json({ success: false, message: "Internal server error." });
-      } else {
-        res.json(result);
-      }
-    }
-  );
-});
-
-// --------------------------------------------------------------------------hr/leaveapplication---------------------------------------------------------------------------------
-
-router.get("/getApplications", verifyToken, checkUserRole(1),(req, res) => {
-  console.log("/getApplications");
-  mysql.query("call getLeaveApplication();", (err, results) => {
-    if (err) {
-      console.error("Error fetching job leave Applications:", err);
-      res.json({ message: err.sqlMessage });
-    } else {
-      res.json(results);
-    }
-  });
-});
-
-router.get("/getTodayAttendance", verifyToken,checkUserRole(1),(req, res) => {
-  mysql.query(
-    "SELECT * FROM attendance WHERE attendance_date = DATE(NOW());",
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        res.json({ success: false, message: "An error occurred" });
-      } else {
-        console.log(result);
-        res.json(result);
-      }
-    }
-  );
-});
-
-router.put("/leaveApproved",verifyToken, checkUserRole(1), (req, res) => {
-  console.log("/leaveApproved");
-  const { emp_id, attendance_date } = req.body;
-  const status = "Leave";
-  mysql.query(
-    `call attendanceApproval(${emp_id}, '${status}', '${attendance_date}')`,
-    (error, result) => {
-      if (error) {
-        console.error(error);
-        res.json({ success: false, message: "An error occurred" });
-      } else {
-        res.json({ success: true, message: "Attendence Approved" });
-      }
-    }
-  );
-});
-
-router.put("/leaveRejected",verifyToken, checkUserRole(1), (req, res) => {
+router.put("/leaveRejected", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/leaveRejected");
   const { req_id } = req.body;
   console.log(req_id);
@@ -992,7 +1009,7 @@ router.put("/leaveRejected",verifyToken, checkUserRole(1), (req, res) => {
   });
 });
 
-router.get("/empLeaveHistory/:id",verifyToken, checkUserRole(1), (req, res) => {
+router.get("/empLeaveHistory/:id", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/employeeLeaveHistory");
   // const { id } = req.params;
 
@@ -1024,7 +1041,7 @@ router.get("/getDashboardData", verifyToken, checkUserRole(1), (req, res) => {
   });
 });
 // ---------------------------------------------get today attendce/hr---------------------------------------
-router.get("/getTodayAllAttendance",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getTodayAllAttendance", verifyToken, checkUserRole(1), (req, res) => {
   const query = `CALL getTodayAttendance()`;
 
   mysql.query(query, (err, results) => {
@@ -1037,7 +1054,7 @@ router.get("/getTodayAllAttendance",verifyToken,checkUserRole(1), (req, res) => 
   });
 });
 
-router.get("/getattendancehistory",verifyToken,checkUserRole(1), (req, res) => {
+router.get("/getattendancehistory", verifyToken, checkUserRole(1), (req, res) => {
   const query = `CALL getattendancehistory()`;
 
   mysql.query(query, (err, results) => {
@@ -1051,16 +1068,7 @@ router.get("/getattendancehistory",verifyToken,checkUserRole(1), (req, res) => {
 });
 
 // ----------------------------------------------------authentication----------------------------------------------------------------------
-// router.get("/users", (req, res) => {
-//   mysql.query("SELECT user_id, username FROM users", (err, results) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).json({ err, message: err.message });
-//       return;
-//     }
-//     res.json(results);
-//   });
-// });
+
 
 router.get("/logout", (req, res) => {
   console.log("/logout");
@@ -1120,7 +1128,7 @@ router.post('/login', async (req, res) => {
               expiresIn: '3h',
             });
             res.cookie('jwtToken', token);
-            res.status(200).json({ success: true, message: 'Login successful',token, role_id: user.role_id });
+            res.status(200).json({ success: true, message: 'Login successful', token, role_id: user.role_id });
           } else {
             res.status(401).json({ success: false, message: 'Invalid credentials' });
           }
@@ -1134,8 +1142,8 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.get('/decodeToken', verifyToken,(req, res) => {
-    const { user_id, role_id, emp_id } = req.user;
-    res.json({success:true, user_id, role_id, emp_id });
+router.get('/decodeToken', verifyToken, (req, res) => {
+  const { user_id, role_id, emp_id } = req.user;
+  res.json({ success: true, user_id, role_id, emp_id });
 });
 module.exports = router;

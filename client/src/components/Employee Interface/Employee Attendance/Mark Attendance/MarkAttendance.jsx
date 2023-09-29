@@ -94,9 +94,7 @@ export default function MarkAttendance() {
     if (leaveInfo.leave_date && leaveInfo.reason) {
       if (leaveInfo.leave_date > todayDate) {
         try {
-          const response = await axios.put(BaseUrl + "/leaverequest", {
-            ...leaveInfo,
-          }, config);
+          const response = await axios.put(BaseUrl + "/leaverequest", {...leaveInfo}, config);
           if (response.data.success) {
             Toast(`${response.data.message}`);
           } else {

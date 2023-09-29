@@ -3,7 +3,7 @@ import MainContent from './Department/MainContent';
 import SideBar from './SideBar';
 
 export default function HrDashboard(){
-
+  // window.location.reload()
 return (
   
   <div className="container-fluid" id="main">
