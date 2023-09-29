@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useHref } from 'react-router-dom';
 import './ApplyNow.css'; // Import your CSS file
-import '../BasicStyle.css';
+// import '../BasicStyle.css';
 import axios from 'axios'
 import './ApplyNow.css';
 import { BaseUrl } from './../../constants.js';
 import Toast from '../../UIModules/Toast/Toast';
-import Filter from '../../UIModules/Filter';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
 export default function ApplyNow() {
-  // const location = useLocation();
-  // const jobTitle = location.state?.jobTitle;
-
-  // const location = useLocation();
-  // const searchParams = new URLSearchParams(location.search);
-  // const jobTitle = searchParams.get('job_title');
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);

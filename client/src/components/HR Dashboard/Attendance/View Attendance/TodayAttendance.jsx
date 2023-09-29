@@ -21,7 +21,6 @@ const TodayAttendance = () => {
     }
   };
 
-
   useEffect(() => {
     fetchData();
     // console.log("connection:",navigator);

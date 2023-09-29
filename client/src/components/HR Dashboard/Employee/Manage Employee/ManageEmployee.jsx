@@ -1,15 +1,14 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { config } from './../../../../constants.js';
-import '../../BasicStyle.css'
+// import '../../BasicStyle.css'
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
-import { Dropdown } from 'react-bootstrap';
-import FilterSearch from '../../../../UIModules/FilterSearch';
-
-
+import ReactPaginate from 'react-paginate';
+// import './ManageEmployee.css'
+import styles from './ManageEmployee.module.css'
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
@@ -18,15 +17,11 @@ const ManageEmployee = () => {
   const [empId, setEmpId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const [selectedGender, setSelectedGender] = useState('All');
-  const [selectedDepartment, setSelectedDepartment] = useState('All');
-  const [selectedJobRole, setSelectedJobRole] = useState('All');
-  
-
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getEmployees',config);
+      const response = await axios.get(BaseUrl + '/getEmployees', config);
       setEmployees(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching roles :', error);
       Toast('Error catch :', 'error');
@@ -39,7 +34,6 @@ const ManageEmployee = () => {
       setJobPositions(response.data);
     } catch (error) {
       console.error('Error fetching data jobpositons:', error);
-      throw error;
     }
   };
   const fetchData2 = async () => {
@@ -57,7 +51,38 @@ const ManageEmployee = () => {
     fetchData2();
   }, [])
 
+  // ------------------------------------------------------------------------------------------------
 
+  const [filters, setFilters] = useState({
+    employeeName: '',
+    department: '',
+    gender: '',
+    jobPosition: '',
+    empId: '',
+  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const filteredEmployees = employees
+    .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
+    .filter((emp) => emp?.gender?.toLowerCase()?.includes(filters.gender.toLowerCase()))
+    .filter((emp) => emp?.job_name?.toLowerCase()?.includes(filters.jobPosition.toLowerCase()))
+    .filter((emp) => emp?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
+  const offset = currentPage * itemsPerPage;
+  const currentEmployees = filteredEmployees.slice(offset, offset + itemsPerPage);
+  console.log('filteredEmployee ', filteredEmployees);
+  const handleFilter = (filterType, value) => {
+    console.log(filterType, value);
+    setFilters({ ...filters, [filterType]: value });
+    setCurrentPage(0);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0);
+
+  };
+  // ------------------------------------------------------------------------------------------------
   const handleRemoveEmployee = async () => {
     console.log(empId);
     try {
@@ -77,63 +102,37 @@ const ManageEmployee = () => {
     }
     setShowConfirmation(false);
   };
-
-  const [searchName, setSearchName] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); 
-
-  const filteredEmployees = employees.filter((employee) =>
-    (selectedGender === 'All' || employee.gender === selectedGender) &&
-    (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
-    (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
-    (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
-  );
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const displayedEmployees = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
-
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredEmployees.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
+  
   return (
-    <div id="full-content" className="container mt-3">
+    <div id="full-content" className={`${styles.container}`}>
       <h2 className="mb-4">Manage Employee</h2>
-      <div className="content">
-        <div className="d-flex justify-content-start mb-3">
-          <div className="d-flex justify-content-start mb-3">
-            <input
-              type="text"
-              placeholder="Search by Name"
-              style={{ width: '350px', marginLeft: "-10px" }}
-
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-              className="form-control"
-            />
-          </div>
-
-          <label htmlFor="itemsPerPage" className="form-label me-2" style={{ marginLeft: "550px" }}>
-            Items Per Page:
-          </label>
-          <Dropdown>
-            <Dropdown.Toggle variant="info" id="itemsPerPageDropdown" style={{ width: '70px' }}>
-              {itemsPerPage}
-            </Dropdown.Toggle>
-            <Dropdown.Menu style={{ minWidth: '70px', left: 'auto', right: '0' }}>
-              <Dropdown.Item onClick={() => setItemsPerPage(5)}>5</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(10)}>10</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(20)}>20</Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(50)}>50</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <input
+          type="text"
+          id="employeeNameFilter"
+          placeholder="Search by Employee Name                 🔍"
+          className="form-control"
+          value={filters.employeeName}
+          onChange={(e) => handleFilter('employeeName', e.target.value)}
+          style={{ width: '300px', marginRight: '10px' }}
+        />
+        <div style={{ margin: '0 0 10px 500px' }}>items per page &ensp;</div>
+        <select
+          name="itemsPerPage"
+          id="itemsPerPage"
+          style={{ borderRadius: '8px', outline: 'none', padding: '9px', width: 'fitcontent', }}
+          onChange={handleItemsPerPageChange}
+          value={itemsPerPage}
+        >
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+        </select>
       </div>
 
+
       <table className="table">
-        <thead>
+        <thead className={`${styles.header}`}>
           <tr>
             <th>Emp ID</th>
             <th>Name</th>
@@ -141,7 +140,7 @@ const ManageEmployee = () => {
             <th style={{ lineHeight: '34px' }}>Ph. #</th>
             <th>
               <select
-                value={selectedJobRole}
+                value={filters.employeeName}
                 style={{
                   border: "none",
                   height: "40px",
@@ -150,16 +149,17 @@ const ManageEmployee = () => {
                   cursor: "pointer",
                   backgroundColor: "transparent",
                 }}
-                className="form-control round"
-                onChange={(e) => setSelectedJobRole(e.target.value)}
-              >                <option value={'All'}>Job Position</option>
-
+                autoComplete='off'
+                className={`form-control round ${styles.searchin}`}
+                onChange={(e) => handleFilter('jobPosition', e.target.value)}
+              >
+                <option value={'All'}>Job Position</option>
                 {jobPositions.map((job => { return <option value={job.job_name}>{job.job_name}</option> }))}
               </select>
             </th>
             <th>
               <select
-                value={selectedDepartment}
+                value={filters.department}
                 style={{
                   border: "none",
                   height: "40px",
@@ -168,25 +168,26 @@ const ManageEmployee = () => {
                   backgroundColor: "transparent",
                 }}
                 className="form-control round"
-                onChange={(e) => setSelectedDepartment(e.target.value)}
-              >                <option value={'All'}>Department</option>
-
+                onChange={(e) => handleFilter('department', e.target.value)}
+              >
+                <option value={'All'}>Department</option>
                 {dep.map((department => { return <option value={department.dep_name}>{department.dep_name}</option> }))}
               </select>
             </th>
             <th>
               <select
-                value={selectedGender}
+                value={filters.gender}
                 style={{
                   border: "none",
                   height: "35px",
                   outline: "none",
-                  width: "100px",
+                  width: "fitcontent",
                   cursor: "pointer",
                   backgroundColor: "transparent",
+
                 }}
                 className="form-control round"
-                onChange={(e) => setSelectedGender(e.target.value)}
+                onChange={(e) => handleFilter('gender', e.target.value)}
               >
                 <option value={'All'}>Gender</option>
                 <option value={'Male'}>Male</option>
@@ -197,13 +198,7 @@ const ManageEmployee = () => {
           </tr>
         </thead>
         <tbody>
-          {displayedEmployees
-            .filter((employee) =>
-              (selectedGender === 'All' || employee.gender === selectedGender) &&
-              (selectedDepartment === 'All' || employee.dep_name === selectedDepartment) &&
-              (selectedJobRole === 'All' || employee.job_name === selectedJobRole) &&
-              (searchName === '' || employee.name.toLowerCase().includes(searchName.toLowerCase()))
-            )
+          {currentEmployees
             .map(employee => (
               <tr key={employee.emp_id}>
                 <td>{employee.emp_id}</td>
@@ -230,6 +225,23 @@ const ManageEmployee = () => {
             ))}
         </tbody>
       </table>
+      <div style={{ margin: 'auto' }}>
+
+        <ReactPaginate
+          previousLabel={'Previous'}
+          nextLabel={'Next'}
+          pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)} // Use filteredApplications.length
+          onPageChange={({ selected }) => setCurrentPage(selected)}
+          containerClassName={'pagination'}
+          activeClassName={'active'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+          previousClassName={'page-item'}
+          previousLinkClassName={'page-link'}
+          nextClassName={'page-item'}
+          nextLinkClassName={'page-link'}
+        />
+      </div>
 
       {/* Confirmation Modal */}
       <Modal
@@ -252,16 +264,6 @@ const ManageEmployee = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <ul className="pagination">
-        {pageNumbers.map(number => (
-          <li key={number} className={`page-item ${number === currentPage ? 'active' : ''}`}>
-            <button className="page-link" onClick={() => setCurrentPage(number)}>
-              {number}
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

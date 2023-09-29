@@ -28,30 +28,27 @@ import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { config, BaseUrl } from "./constants";
 import axios from 'axios'
 import Toast from "./UIModules/Toast/Toast";
-
 export default function App() {
 
   const [loggedIn, updateStatus] = useState(false);
+  const [roleIDFetched, setRoleIDFetched] = useState(false);
   console.log('loggedIn',loggedIn);
   const [roleID, setRoleID] = useState(null);
 
   useEffect(()=>{
     const Authenticate = async () => {
-
       try {
         const response = await axios.get(BaseUrl + '/decodeToken', config);
         if (response.data.success) {
-          setRoleID(response.data.role_id)
+          setRoleID(response.data.role_id);
           updateStatus(true);
-          return true;
-        } else {
-          return false;
         }
+        setRoleIDFetched(true); // Set roleIDFetched to true even if fetching fails
       } catch (error) {
         console.error('Error while decoding token:', error);
-        return false;
+        setRoleIDFetched(true); // Set roleIDFetched to true in case of an error
       }
-    }
+    };
     Authenticate();
   }, []);
 
@@ -101,17 +98,17 @@ export default function App() {
           <Route path="/empdash/leaveStatus" element={renderRoute(<LeaveStatusPage />, 2)} />
 
 
-          <Route path="/hrdash/addEmployee" element={<AddEmployee />} />
-          <Route path="/hrdash/addEmployee" element={renderRoute(<AddEmployee />, 1)} />
-          <Route path="/hrdash/manageEmployee" element={renderRoute(<ManageEmployeePage />, 1)} />
-          <Route path="/hrdash/todayAttendance" element={renderRoute(<TodayAttendancePage />, 1)} />
-          <Route path="/hrdash/attendanceHistory" element={renderRoute(<AttendanceHistoryPage />, 1)} />
-          <Route path="/hrdash/viewDepartment" element={renderRoute(<ViewDepartmentPage />, 1)} />
-          <Route path="/hrdash/leaveApplication" element={renderRoute(<LeaveApplicationPage />, 1)} />
-          <Route path="/hrdash/viewApplications" element={renderRoute(<ViewApplicationsPage />, 1)} />
-          <Route path="/hrdash/postJob" element={renderRoute(<PostJobPage />, 1)} />
+          {roleIDFetched && <Route path="/hrdash/addEmployee" element={<AddEmployee />} />}
+          {roleIDFetched && <Route path="/hrdash/addEmployee" element={renderRoute(<AddEmployee />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/manageEmployee" element={renderRoute(<ManageEmployeePage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/todayAttendance" element={renderRoute(<TodayAttendancePage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/attendanceHistory" element={renderRoute(<AttendanceHistoryPage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/viewDepartment" element={renderRoute(<ViewDepartmentPage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/leaveApplication" element={renderRoute(<LeaveApplicationPage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/viewApplications" element={renderRoute(<ViewApplicationsPage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/postJob" element={renderRoute(<PostJobPage />, 1)} />}
 
-          <Route path="/RegisterEmployee" element={<RegisterUser />} />
+          {/* <Route path="/RegisterEmployee" element={<RegisterUser />} /> */}
 
           <Route path="*" element={<PageNotFound />} />
 

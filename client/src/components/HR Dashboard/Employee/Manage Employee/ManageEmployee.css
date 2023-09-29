@@ -1,0 +1,117 @@
+/* ManageEmployee.css */
+
+/* Header Styles */
+h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+  }
+  
+  /* Filter Section Styles */
+  .filter-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  #employeeNameFilter {
+    width: 300px;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  #employeeNameFilter::placeholder {
+    color: #999;
+  }
+  
+  .items-per-page {
+    margin-left: auto;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  #itemsPerPage {
+    border: none;
+    padding: 9px;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Table Styles */
+  .table th {
+    vertical-align: middle;
+    transition: all 0.3s ease;
+  }
+  
+  .table th select,
+  .table td select {
+    border: none;
+    height: 40px;
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Pagination Styles */
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination {
+    margin: 0;
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .page-item {
+    transition: all 0.3s ease;
+  }
+  
+  .page-link {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .page-link:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff !important;
+  }
+  
+  /* Button Styles */
+  .btn {
+    transition: all 0.3s ease;
+  }
+  
+  .btn:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Confirmation Modal Styles */
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .modal-body {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  /* Add more styles as needed */
+  
+  

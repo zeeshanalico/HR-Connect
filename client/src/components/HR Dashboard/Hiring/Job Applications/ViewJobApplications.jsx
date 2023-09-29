@@ -9,7 +9,7 @@ import ViewResume from "./ViewResume";
 import { Dropdown } from "react-bootstrap";
 import { Link } from 'react-router-dom'
 import Toast from "./../../../../UIModules/Toast/Toast.jsx";
-
+import ReactPaginate from "react-paginate";
 export default function ViewJobApplications() {
 
   const [jobApplications, setJobApplications] = useState([]);
@@ -17,12 +17,10 @@ export default function ViewJobApplications() {
   const [showAcceptModal, setShowAcceptModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [applicationId, setApplicationId] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [email, setEmail] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust this as needed
+
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
@@ -34,11 +32,11 @@ export default function ViewJobApplications() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + "/getJobApplications",config);
+      const response = await axios.get(BaseUrl + "/getJobApplications", config);
       setJobApplications(response.data);
       console.log(response.data);
     } catch (error) {
-      Toast('cache error','error')
+      Toast('cache error', 'error')
       console.error("Error fetching data jobs:", error);
     }
   };
@@ -47,6 +45,37 @@ export default function ViewJobApplications() {
     fetchData();
   }, []);
 
+  // ------------------------------------------------------------------------------------------------
+
+  const [filters, setFilters] = useState({
+    applicantName: '',
+    jobTitle: '',
+    status: '',
+  });
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const filteredApplications = jobApplications
+    .filter((app) => app?.applicant_name?.toLowerCase()?.includes(filters.applicantName.toLowerCase()))
+    .filter((app) => app?.title?.toLowerCase()?.includes(filters.jobTitle.toLowerCase()))
+    .filter((app) => app?.status?.toLowerCase()?.includes(filters.status.toLowerCase()))
+  const offset = currentPage * itemsPerPage;
+  const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
+
+  const handleFilter = (filterType, value) => {
+    console.log(filterType, value);
+    setFilters({ ...filters, [filterType]: value });
+    setCurrentPage(0);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0);
+
+  };
+  // ------------------------------------------------------------------------------------------------
 
   const handleCallForInterview = async () => {
     console.log(applicationId, selectedDate, selectedTime);
@@ -90,54 +119,43 @@ export default function ViewJobApplications() {
     setShowRejectModal(false);
   };
 
-  // pagination and itemsperpage
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const displayedApplication = jobApplications.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(jobApplications.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
-
-
-
-
   return (
     <div id="full-content" className="container mt-4">
       {/* <ToastContainer /> */}
       <h2 className="mb-4">Job Applications</h2>
 
       <div id="content">
-        <div className="d-flex justify-content-end align-items-center mb-3">
-          <label htmlFor="itemsPerPage" className="form-label me-2">
-            Items Per Page : &ensp;{" "}
-          </label>
-          <Dropdown>
-            <Dropdown.Toggle
-              variant="info"
-              id="itemsPerPageDropdown"
-              style={{ width: "70px" }}
-            >
-              {itemsPerPage}
-            </Dropdown.Toggle>
-            <Dropdown.Menu style={{ minWidth: "70px" }}>
-              <Dropdown.Item onClick={() => setItemsPerPage(5)}>
-                5
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(10)}>
-                10
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(20)}>
-                20
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => setItemsPerPage(50)}>
-                50
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Employee Name                 🔍"
+            className="form-control"
+            value={filters.applicantName}
+            onChange={(e) => handleFilter('applicantName', e.target.value)}
+            style={{ width: '300px', marginRight: '10px' }}
+          />
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Job Title                 🔍"
+            className="form-control"
+            value={filters.jobTitle}
+            onChange={(e) => handleFilter('jobTitle', e.target.value)}
+            style={{ width: '300px', marginRight: '10px' }}
+          />
+          <div style={{ margin: '20px 0 10px 200px' }}>items per page &ensp;</div>
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            style={{ borderRadius: '8px', outline: 'none', padding: '9px', width: 'fitcontent', }}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
         </div>
         <Table striped bordered hover responsive>
           <thead>
@@ -149,7 +167,7 @@ export default function ViewJobApplications() {
               <th>Resume</th>
               <th>Job Title</th>
               <th> <select
-                value={selectedStatus}
+                value={filters.status}
                 style={{
                   border: "none",
                   height: "30px",
@@ -159,7 +177,7 @@ export default function ViewJobApplications() {
                 }}
                 name="job_id"
                 className="form-control round"
-                onChange={(e) => setSelectedStatus(e.target.value)}
+                onChange={(e) => handleFilter('status', e.target.value)}
               >
                 <option value='All'>Status</option>
                 <option value="Pending">Pending</option>
@@ -172,10 +190,7 @@ export default function ViewJobApplications() {
             </tr>
           </thead>
           <tbody>
-            {jobApplications
-              .filter((application) =>
-                (selectedStatus === 'All' || application.status === selectedStatus)
-              )
+            {currentApplications
               .map((application) => (
                 <tr key={application.application_id}>
                   <td>{application.application_id}</td>
@@ -248,21 +263,23 @@ export default function ViewJobApplications() {
               ))}
           </tbody>
         </Table>
-        <ul className="pagination justify-content-center">
-          {pageNumbers.map((number) => (
-            <li
-              key={number}
-              className={`page-item ${number === currentPage ? "active" : ""}`}
-            >
-              <button
-                className="page-link"
-                onClick={() => setCurrentPage(number)}
-              >
-                {number}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div style={{ margin: 'auto' }}>
+
+          <ReactPaginate
+            previousLabel={'Previous'}
+            nextLabel={'Next'}
+            pageCount={Math.ceil(filteredApplications.length / itemsPerPage)} // Use filteredApplications.length
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+          />
+        </div>
 
         <Modal
           show={showInterviewModal}

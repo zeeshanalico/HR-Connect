@@ -5,13 +5,15 @@ import Table from 'react-bootstrap/Table';
 import './../../BasicStyle.css';
 import axios from 'axios';
 import Toast from '../../../../UIModules/Toast/Toast';
-import { BaseUrl,config } from '../../../../constants';
+import { BaseUrl, config } from '../../../../constants';
+import ReactPaginate from 'react-paginate';
+import SubmitLeavePage from '../../../Employee Interface/Leave/Submit Leave/SubmitLeavePage';
 
 const inputStyle = {
   border: 'none',
   height: '30px',
   outline: 'none',
-  width:'fitcontent',
+  width: 'fitcontent',
   cursor: 'pointer',
   backgroundColor: 'transparent',
 };
@@ -24,44 +26,64 @@ export default function LeaveApplication() {
   const [empId, setEmpId] = useState('');
   const [dep, setDep] = useState([]);
   const [leaveDate, setLeaveDate] = useState('');
-  const [filters, setFilters] = useState({
-    employeeName: '',
-    department: '',
-    applyingDateOrder: 'asc', 
-    leaveDateOrder: 'asc', 
-    applicationStatus: 'All',
-  });
-
+  const currentDate = new Date().toISOString().split('T')[0]
   const fetchData2 = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getDepartment');
       setDep(response.data);
     } catch (error) {
-      Toast('cache error','error');
+      Toast('cache error', 'error');
       console.error('Error fetching data dep:', error);
     }
   };
-  
+
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getApplications',config);
+      const response = await axios.get(BaseUrl + '/getApplications', config);
       setLeaveApplications(response?.data[0]);
     } catch (error) {
       console.error('Error fetching attendance:', error);
-      Toast('cache error','error');
+      Toast('cache error', 'error');
     }
   };
-
+  
   useEffect(() => {
     fetchData();
     fetchData2();
   }, []);
+  // ------------------------------------------------------------------------------------------------
+  
+  const [filters, setFilters] = useState({
+    employeeName: '',
+    department: '',
+    applyingDateOrder: 'asc',
+    leaveDateOrder: 'asc',
+    applicationStatus: 'All',
+  });
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const filteredApplications = leaveApplications
+    .filter((job) => job?.emp_name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
+    .filter((job) => job?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
+    .filter((job) => job?.leave_date >= currentDate);
+  const offset = currentPage * itemsPerPage;
+  const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
 
   const handleFilter = (filterType, value) => {
-    console.log(filterType,value);
+    console.log(filterType, value);
     setFilters({ ...filters, [filterType]: value });
+    setCurrentPage(0);
   };
 
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0);
+
+  };
+  // ------------------------------------------------------------------------------------------------
   const handleApprove = async () => {
     try {
       const response = await axios.put(BaseUrl + '/leaveApproved', {
@@ -107,38 +129,41 @@ export default function LeaveApplication() {
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
     const day = String(currentDate.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
   }
-
-  const applySorting = (list, order) => {
-    if (order === 'asc') {
-      return list.sort();
-    } else if (order === 'desc') {
-      return list.sort().reverse();
-    }
-    return list;
-  };
 
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Leave Applications</h2>
       <div id="content">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Employee Name                 🔍"
+            className="form-control"
+            value={filters.employeeName}
+            onChange={(e) => handleFilter('employeeName', e.target.value)}
+            style={{ width:'300px', marginRight: '10px' }}
+            />
+            <div style={{margin:'0 0 10px 500px'}}>items per page &ensp;</div>
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            style={{ borderRadius:'8px',outline:'none',padding:'9px',width: 'fitcontent',}}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
         <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>emp ID</th>
-              <th>
-                <input
-                  type="text"
-                  id="employeeNameFilter"
-                  placeholder="Employees"
-                  className="form-control"
-                  value={filters.employeeName}
-                  onChange={(e) => handleFilter('employeeName', e.target.value)}
-                  style={inputStyle}
-                />
-              </th>
+              <th>Emp ID</th>
+              <th>Employee Name</th>
               <th>
                 <select
                   className="form-control round"
@@ -147,115 +172,81 @@ export default function LeaveApplication() {
                   onChange={(e) => handleFilter('department', e.target.value)}
                 >
                   <option value="">Department</option>
-                  {dep.map((department) => (
-                    <option value={department.dep_name}>{department.dep_name}</option>
-                  ))}
+                  {dep.map((department) => (<option value={department.dep_name}>{department.dep_name}</option>))}
                 </select>
               </th>
               <th>Reason</th>
-              <th>
-                <select
-                  style={inputStyle}
-                  className="form-control round"
-                  value={filters.applyingDateOrder}
-                  onChange={(e) => handleFilter('applyingDateOrder', e.target.value)}
-                >
-                  <option value="asc" style={{display:'none'}}>Applying Date</option>
-                  <option value="asc">Asc</option>
-                  <option value="desc">Desc</option>
-                </select>
-              </th>
-              <th>
-                <select
-                  style={inputStyle}
-                  className="form-control round"
-                  value={filters.leaveDateOrder}
-                  onChange={(e) => handleFilter('leaveDateOrder', e.target.value)}
-                >
-                  <option value="asc" style={{display:'none'}}>Leave Date</option>
-                  <option value="asc">Asc</option>
-                  <option value="desc">Desc</option>
-                </select>
-              </th>
-              <th>
-                <select
-                  style={inputStyle}
-                  className="form-control round"
-                  value={filters.applicationStatus}
-                  onChange={(e) => handleFilter('applicationStatus', e.target.value)}
-                >
-                  <option value="All">Status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Approved">Approved</option>
-                </select>
-              </th>
+              <th>Applying Date</th>
+              <th>Leave Date</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {applySorting(
-              leaveApplications
-                .filter((application) => {
-                  const {
-                    employeeName,
-                    department,
-                    applyingDateOrder,
-                    leaveDateOrder,
-                    applicationStatus,
-                  } = filters;
+            {
+              currentApplications
+                .map((application) => {
 
-                  return (
-                    (employeeName === '' || application.emp_name.includes(employeeName)) &&
-                    (department === '' || application.dep_name.includes(department)) &&
-                    (applicationStatus === 'All' || application.att_status === applicationStatus)
-                  );
-                }),
-              filters.applyingDateOrder
-            )
-              .map((application) => (
-                <tr key={application.emp_id}>
-                  <td>{application.emp_id}</td>
-                  <td>{application.emp_name}</td>
-                  <td>{application.dep_name}</td>
-                  <td>{application.reason}</td>
-                  <td>{increaseDateByOneDay(application.applying_date.slice(0, 10))}</td>
-                  <td>{increaseDateByOneDay(application.leave_date.slice(0, 10))}</td>
-                  <td>{application.att_status}</td>
-                  <td>
-                    {application.att_status === 'Pending' && (
-                      <>
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => {
-                            setShowModal(true);
-                            setEmpId(application.emp_id);
-                            setReqID(application.leave_req_id);
-                            setLeaveDate(increaseDateByOneDay(application.leave_date.slice(0, 10)));
-                          }}
-                        >
-                          Approve
-                        </Button>{' '}
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => {
-                            setShowRejectModal(true);
-                            setEmpId(application.emp_id);
-                            setReqID(application.leave_req_id);
-                            setLeaveDate(increaseDateByOneDay(application.leave_date.slice(0, 10)));
-                          }}
-                        >
-                          Reject
-                        </Button>{' '}
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                  return <tr key={application.emp_id}>
+                    <td>{application.emp_id}</td>
+                    <td>{application.emp_name}</td>
+                    <td>{application.dep_name}</td>
+                    <td>{application.reason}</td>
+                    <td>{increaseDateByOneDay(application.applying_date.slice(0, 10))}</td>
+                    <td>{increaseDateByOneDay(application.leave_date.slice(0, 10))}</td>
+                    <td>{application.att_status}</td>
+                    <td>
+                      {application.att_status === 'Pending' && (
+                        <>
+                          <Button
+                            variant="success"
+                            size="sm"
+                            onClick={() => {
+                              setShowModal(true);
+                              setEmpId(application.emp_id);
+                              setReqID(application.leave_req_id);
+                              setLeaveDate(increaseDateByOneDay(application.leave_date.slice(0, 10)));
+                            }}
+                          >
+                            Approve
+                          </Button>{' '}
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => {
+                              setShowRejectModal(true);
+                              setEmpId(application.emp_id);
+                              setReqID(application.leave_req_id);
+                              setLeaveDate(increaseDateByOneDay(application.leave_date.slice(0, 10)));
+                            }}
+                          >
+                            Reject
+                          </Button>{' '}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                })
+            }
           </tbody>
         </Table>
+        <div style={{ margin: 'auto' }}>
+
+          <ReactPaginate
+            previousLabel={'Previous'}
+            nextLabel={'Next'}
+            pageCount={Math.ceil(filteredApplications.length / itemsPerPage)} // Use filteredApplications.length
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={'pagination'}
+            activeClassName={'active'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+          />
+        </div>
       </div>
 
       {/* Approval Modal */}
