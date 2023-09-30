@@ -1,5 +1,7 @@
+
+import styles from './ApplyNow.module.css';
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, useHref } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import './ApplyNow.css'; // Import your CSS file
 // import '../BasicStyle.css';
 import axios from 'axios'
@@ -7,9 +9,9 @@ import './ApplyNow.css';
 import { BaseUrl } from './../../constants.js';
 import Toast from '../../UIModules/Toast/Toast';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
+import { Formik, ErrorMessage, Form, Field } from 'formik';
+import { initialValues, validationSchema } from './ApplyNowFormSchema';
 
 export default function ApplyNow() {
 
@@ -18,289 +20,356 @@ export default function ApplyNow() {
   const jobTitle = searchParams.get('job_title');
   const jobId = searchParams.get('job_id');
   const jobTitleFromState = location.state && location.state.job_title;
-  console.log(jobTitle, jobId);
-
-  const [userDetails, setUserDetails] = useState({})
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    if (type === 'file') {
-      setUserDetails((prevState) => {
-        return { ...prevState, [name]: files[0], job_id: jobId };
-      });
-    } else {
-      setUserDetails((prevState) => {
-        return { ...prevState, [name]: value, job_id: jobId };
-      });
-    }
-  };
+  // const handleChange = (e) => {
+  //   const { name, value, type, files } = e.target;
+  //   if (type === 'file') {
+  //     setFile((prevState) => {
+  //       return { ...prevState, [name]: files[0], job_id: jobId };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log(userDetails);
-    if (Object.keys(userDetails).length >= 17) {
+  // const handleChange = (e) => {
+  //   const { name, value, type, files } = e.target;
+  //   if (type === 'file') {
+  //     setUserDetails((prevState) => {
+  //       return { ...prevState, [name]: files[0], job_id: jobId };
+  //     });
+  //   } else {
+  //     setUserDetails((prevState) => {
+  //       return { ...prevState, [name]: value, job_id: jobId };
+  //     });
+  //   }
+  // };
 
-      try {
-        const response = await axios.post(BaseUrl + '/submitJobApplication', userDetails, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        });
-        console.log(response.data);
-        if (response.data.success) {
-          Toast(`${response.data.message}`)
-          setUserDetails({});
-          navigate('/applypage');
-        } else {
-          Toast(`${response.data.message}`)
-        }
-      } catch (error) {
-        Toast('Error submitting job application:', error)
-        console.error('Error submitting job application:', error);
-        throw error;
+  const handleSubmit = async (values, { resetForm }) => {
+    console.log(values);
+    try {
+      const response = await axios.post(BaseUrl + '/submitJobApplication', values, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      console.log(response.data);
+      if (response.data.success) {
+        Toast(`${response.data.message}`)
+        resetForm();
+        navigate('/applypage');
+      } else {
+        Toast(`${response.data.message}`)
       }
-    } else {
-      Toast('Please fill all the inputs', 'info');
+    } catch (error) {
+      Toast('Error submitting job application:', error)
+      console.error('Error submitting job application:', error);
     }
+
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <RouterLink to="/applyPage">
         <i id="back-arrow" style={{ position: 'absolute', top: '35px', left: '40px', }} className="fa fa-arrow-left" aria-hidden="true" />
       </RouterLink>
-      <form id="full-content" className="apply-form" onSubmit={handleSubmit}>
-        <h2 className='mb-4'>Apply Now</h2>
-        <div className="content" id="content">
-          <div className="first-half">
-            <div className="form-group rounded-input">
-              <label>Full Name:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='applicant_name'
-                value={userDetails?.applicant_name}
-                placeholder='Enter your Full Name here'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Email:</label>
-              <input
-                className="form-control round"
-                type="email"
-                name='email'
-                value={userDetails?.email}
-                placeholder='Your Email'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Phone no:</label>
-              <input
-                className="form-control round"
-                type="number"
-                name='phone_number'
-                min='0'
-                maxlength="11" 
-                value={userDetails?.phone_number}
-                placeholder='Your Phone#'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>CNIC:(without dashes)</label>
-              <input
-                className="form-control round"
-                type="number"
-                placeholder='Enter cnic without dashes'
-                name='cnic'
-                maxlength="13" 
-                value={userDetails?.cnic}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>City:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='city'
-                value={userDetails?.city}
-                placeholder='Your City'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>GitHub Profile URL:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='github_profile_url'
-                value={userDetails?.github_profile_url}
-                placeholder='URL'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>LinkedIn Profile URL:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='linkedin_profile_url'
-                value={userDetails?.linkedin_profile_url}
-                placeholder='URL'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Work Experience:</label>
-              <select
-                name='experience'
-                value={userDetails.experience}
-                className="form-control round"
-                onChange={handleChange}
-                style={{ height: "42px" }}
-              >
-                <option >--select--</option>
-                <option value={'0 - 6 months'}>0 - 6 months</option>
-                <option value={'less than 1 year'}>less than 1 year</option>
-                <option value={'2 years'}>2 years</option>
-                <option value={'3-5 years'}>3-5 years</option>
-                <option value={'more than 5 years'}>more than 5 years</option>
-              </select>
-            </div>
-            <div className="form-group rounded-input">
-              <label>CGPA:</label>
-              <input
-                className="form-control round"
-                type="number"
-                name='cgpa'
-                max={4}
-                value={userDetails?.cgpa}
-                placeholder='CGPA'
-                onChange={handleChange}
-              />
-            </div>
-            <div id="gender-input">
-              <p>Gender:</p>
-              <input type="radio" id="male" name="gender" value="Male" checked={userDetails.gender === "Male"} onChange={handleChange} />
-              <label for="male">Male</label>
-              <input type="radio" id="female" name="gender" value='Female' checked={userDetails.gender === "Female"} onChange={handleChange} />
-              <label for="female">Female</label>
-            </div>
 
-          </div>
-          <div className="second-half">
-            <div className="form-group rounded-input">
-              <label>Address:</label>
-              <textarea
-                style={{ height: '125px' }}
-                className="form-control round"
-                name='address'
-                value={userDetails?.address}
-                placeholder='Your Address'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Zip-Code</label>
-              <input
-                className="form-control round"
-                type='number'
-                min={0}
-                name='zipcode'
-                value={userDetails?.zipcode}
-                placeholder='Your zipcode'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Select Job:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='job_id'
-                value={jobTitle}
-                placeholder='Desired Salary'
-                onChange={handleChange}
-              />
-              <label>University:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='university'
-                value={userDetails?.university}
-                placeholder='University'
-                onChange={handleChange}
-              />
-              <label>Degree:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='degree'
-                value={userDetails?.degree}
-                placeholder='Degree'
-                onChange={handleChange}
-              />
-              <label>Major:</label>
-              <input
-                className="form-control round"
-                type="text"
-                name='major'
-                value={userDetails?.major}
-                placeholder='major'
-                onChange={handleChange}
-              />
-              {/* <select name="job_id" className="form-control round" onChange={handleChange}>
-                <option value={null} >--select--</option>
-                {alljobs.map((job) => (
-                  <option key={job.job_id} value={job.job_id}>
-                    {job.title}
-                  </option>
-                ))}
-              </select> */}
-            </div>
-            <div className="form-group rounded-input">
-              <label>Desired Salary(PKR):</label>
-              <input
-                className="form-control round"
-                type="number"
-                min={0}
-                name='desired_salary'
-                value={userDetails?.desired_salary}
-                placeholder='Desired Salary'
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group rounded-input">
-              <label>Date of Birth:</label>
-              <input
-                className="form-control round"
-                type="date"
-                max="2005-12-31"
-                name='dob'
-                value={userDetails?.dob}
-                onChange={handleChange}
-              />
-            </div>
+      <Formik
+        initialValues={{ ...initialValues, job_id: jobId, job_title: jobTitle, cv_file: null }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}    >
+        {({ errors, touched, values,setFieldValue }) => (
+          <Form className={styles.form} method="post" enctype="multipart/form-data">
+            <label htmlFor="applicant_name">Applicant Name</label>
+            <Field
+              id='applicant_name'
+              name="applicant_name"
+              // className={styles.fieldGroup}
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              placeholder="Applicant Full Name"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="applicant_name" component="span" className="error-message" />
 
-            <div className="form-group rounded-input">
-              <label>Upload Resume/CV:</label>
-              <input
-                className="form-control round"
-                name='cv_file'
-                type="file"
-                onChange={handleChange}
-                accept=".pdf,.doc,.docx"
-                required
-              />
+
+            <label htmlFor="applicant_name">Email</label>
+            <Field name="email" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              placeholder="Enter your email" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="email" component="span" className="error-message" />
+
+            <label htmlFor="phone_number">Phone Number</label>
+            <Field style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              name="phone_number" type="number" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="phone_number" component="span" className={styles.error} />
+
+
+            <label htmlFor="cnic">CNIC</label>
+            <Field
+              id='cnic'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              name="cnic"
+              placeholder="XXXXX-XXXXXXX-X"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cnic" component="span" className="error-message" />
+
+            <label htmlFor="city">City</label>
+            <Field
+              id='city'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              name="city"
+              placeholder="Enter City Name"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="city" component="span" className="error-message" />
+
+            <label htmlFor="github_profile_url">Github Link</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='github_profile_url'
+              name="github_profile_url"
+              placeholder="Paste here GitHub Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="github_profile_url" component="span" className="error-message" />
+
+            <label htmlFor="linkedin_profile_url">LinkedIn Link</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='linkedin_profile_url'
+              name="linkedin_profile_url"
+              placeholder="Enter LinkeIn Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
+
+            <label htmlFor="experience">Experience</label>
+            <Field
+              id='experience'
+              name="experience"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+
+              placeholder="Experience"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="experience" component="span" className="error-message" />
+
+            <label htmlFor="cgpa">CGPA</label>
+            <Field
+              id='cgpa'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+
+              name="cgpa"
+              placeholder="CGPA"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cgpa" component="span" className="error-message" />
+
+            <label htmlFor="address">Address</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='address'
+              name="address"
+              placeholder="Enter your Full Address here!"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="address" component="span" className="error-message" />
+
+            <label htmlFor="zipcode">Zip-Code</label>
+            <Field
+              id='zipcode'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              name="zipcode"
+              placeholder="Zip Code"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="zipcode" component="span" className="error-message" />
+
+            <label htmlFor="zipcode">Job Position</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='job_id'
+              disabled
+              name="job_title"
+              placeholder="Enter LinkeIn Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="job_title" component="span" className="error-message" />
+
+            <label htmlFor="university">University</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='university'
+              name="university"
+              placeholder="Enter you Univery Name"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
+
+            <label htmlFor="degree">Qualification</label>
+            <Field
+              id='degree'
+              name="degree"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              placeholder="Qualification"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" />
+
+            <label htmlFor="major">Major</label>
+            <Field
+              id='major'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              name="major"
+              placeholder="Major e.g. CS,SE,IT,AI "
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="major" component="span" className="error-message" />
+
+            <label htmlFor="desired_salary">Desired Salary</label>
+            <Field
+              id='desired_salary'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+
+              name="desired_salary"
+              placeholder="Write here your Expected Salary"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="desired_salary" component="span" className="error-message" />
+
+
+            <label htmlFor="dob">Date-of-Birth</label>
+            <Field
+              id='dob'
+              type='date'
+              name="dob"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+
+              placeholder="Enter LinkeIn Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="dob" component="span" className="error-message" />
+
+            <div className={styles.radioGroup} style={{ marginTop: '10px' }} role="group" aria-labelledby="gender">
+              <label>
+                <Field type="radio" id="male" name="gender" value="Male" />
+                Male
+              </label>
+              <label>
+                <Field type="radio" id="female" name="gender" value="Female" />
+                Female
+              </label>
             </div>
-            <button className="submit-button btn btn-primary mt-2 mb-2 p-2" type="submit">Apply</button>
-          </div>
-        </div>
-      </form>
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="gender" component="span" className="error-message" />
+
+            <label htmlFor="cv_file">Upload Resume</label>
+            {/* <Field
+              type="file"
+              id="cv_file"
+              // onChange={handleChange}
+              onChange={(event) => {
+                setFieldValue("cv_file", event.currentTarget.files[0]);
+              }}
+              accept=".pdf,.doc,.docx"
+              required
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+
+            /> */}
+            <input id="file" name="cv_file" type="file" onChange={(event) => {
+              setFieldValue("cv_file", event.target.files[0]);
+            }} />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cv_file" component="div" className="error-message" />
+
+            <button className={styles.submitButton} style={{ marginTop: '10px' }} type="submit">Submit</button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }
+
+
+
+// import React from 'react';
+// import { Link as RouterLink } from 'react-router-dom';
+// import { Formik, Form, Field, ErrorMessage } from 'formik';
+// import * as Yup from 'yup';
+// import styles from './ApplyNow.module.css';
+
+// const validationSchema = Yup.object().shape({
+//   applicant_name: Yup.string().required('Full Name is required'),
+//   email: Yup.string().email('Invalid email address').required('Email is required'),
+//   phone_number: Yup.string()
+//     .matches(/^\d{11}$/, 'Phone number must be 11 digits')
+//     .required('Phone number is required'),
+//   // Add more validation rules for other fields here...
+// });
+
+// const ApplyNow = () => {
+//   return (
+//     <div className={styles.container}>
+//       <RouterLink to="/applyPage">
+//         <i
+//           id="back-arrow"
+//           className={`fa fa-arrow-left ${styles.backArrow}`}
+//           aria-hidden="true"
+//         />
+//       </RouterLink>
+
+//       <Formik
+//         initialValues={{
+//           applicant_name: '',
+//           email: '',
+//           phone_number: '',
+//           // Initialize other fields here...
+//         }}
+//         validationSchema={validationSchema}
+//         onSubmit={values => {
+//           console.log(values);
+//         }}
+//       >
+//         {({ errors, touched }) => (
+//           <Form className={styles.form}>
+//             <div className={styles.fieldGroup}>
+//               <label htmlFor="applicant_name">Applicant Name</label>
+//               <Field
+//                 id="applicant_name"
+//                 name="applicant_name"
+//                 placeholder="Applicant Full Name"
+//               />
+//               <ErrorMessage name="applicant_name" component="span" className={styles.error} />
+//             </div>
+
+//             <div className={styles.fieldGroup}>
+//               <label htmlFor="email">Email</label>
+//               <Field
+//                 id="email"
+//                 name="email"
+//                 placeholder="Enter your email"
+//               />
+//               <ErrorMessage name="email" component="span" className={styles.error} />
+//             </div>
+
+//             <div className={styles.fieldGroup}>
+//               <label htmlFor="phone_number">Phone Number</label>
+//               <Field
+//                 id="phone_number"
+//                 name="phone_number"
+//                 type="number"
+//               />
+//               <ErrorMessage name="phone_number" component="span" className={styles.error} />
+//             </div>
+
+//             {/* Add more field groups for other fields here... */}
+
+//             <div className={styles.radioGroup} role="group" aria-labelledby="gender">
+//               <label>
+//                 <Field type="radio" id="male" name="gender" value="Male" />
+//                 Male
+//               </label>
+//               <label>
+//                 <Field type="radio" id="female" name="gender" value="Female" />
+//                 Female
+//               </label>
+//             </div>
+//             <ErrorMessage name="gender" component="span" className={styles.error} />
+
+//             <div className={styles.fieldGroup}>
+//               <label htmlFor="cv_file">Upload Resume</label>
+//               <Field
+//                 type="file"
+//                 id="cv_file"
+//                 name="cv_file"
+//               />
+//               <ErrorMessage name="cv_file" component="div" className={styles.error} />
+//             </div>
+
+//             <button type="submit" className={styles.submitButton}>Submit</button>
+//           </Form>
+//         )}
+//       </Formik>
+//     </div>
+//   );
+// };
+
+// export default ApplyNow;
+

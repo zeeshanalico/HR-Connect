@@ -10,7 +10,7 @@ function ViewResume(props) {
         try {
             console.log(props.application_id,props.applicant_name);
             console.log(BaseUrl + '/pdf');
-            const response = await axios.post(BaseUrl+ "/pdf",{ responseType: 'blob',application_id:props.application_id,applicant_name:props.applicant_name});
+            const response = await axios.post(BaseUrl+ "/pdf",{ responseType: 'blob',application_id:props.application_id,applicant_name:props.applicant_name,job_id:props.job_id});
             if (response.status === 200) {
                 const pdfBlob = response.data;
                 const pdfObjectURL = URL.createObjectURL(pdfBlob);

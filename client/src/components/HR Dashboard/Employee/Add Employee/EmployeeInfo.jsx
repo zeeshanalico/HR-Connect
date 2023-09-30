@@ -40,7 +40,7 @@ export default function EmployeeInfo({ id }) {
   const [roles, setRoles] = useState([]);//get
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // Add a loading state
-
+  
 
   const fetchData = async () => {
     try {
@@ -91,38 +91,14 @@ export default function EmployeeInfo({ id }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // if (name === 'cnic') {
-    //   const numericInput = value.replace(/[^0-9]/g, '');
-    //   const formattedCNIC =
-    //     numericInput.slice(0, 5) +
-    //     (numericInput.length > 5 ? '-' + numericInput.slice(5, 12) : '') +
-    //     (numericInput.length > 12 ? '-' + numericInput.slice(12, 13) : '');
-
-    //   setEmployeeInformation((prevState) => {
-    //     return { ...prevState, [name]: formattedCNIC };
-    //   });
-    // } else {
-
     setEmployeeInformation((prevState) => {
       return { ...prevState, [name]: value };
     });
-    // }
   }
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(employeeInformation);
-
-    for (const key in employeeInformation) {
-      const value = employeeInformation[key];
-
-      if (value === '' || value === null) {
-        Toast(`Fill All attributes.`);
-        return;
-      }
-    }
-
     setLoading(true);
 
     try {
@@ -130,19 +106,28 @@ export default function EmployeeInfo({ id }) {
         ...employeeInformation,
         cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
       };
-      if (typeof id === 'undefined') {
-        postData.emp_id = employeeInformation.emp_id;
+      if (id) {
+        console.log(postData, id);
+        const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id }, config);
+        if (response.data.success) {
+          Toast("Employee Registered Successfully!", 'info');
+          navigate('/hrdash/manageEmployee');
+        } else {
+          Toast(`${response.data.message}`, 'error');
+        }
+      } else {
+        const response = await axios.post(BaseUrl + '/registerEmployee', postData, config);
+        if (response.data.success) {
+          Toast("Employee Registered Successfully!", 'info');
+          navigate('/hrdash/manageEmployee');
+        } else {
+          Toast(`${response.data.message}`, 'error');
+
+        }
       }
 
-      const response = await axios.post(BaseUrl + '/registerEmployee', postData,config);
-      if (response.data.success) {
-        Toast("Employee Registered Successfully!", 'info');
-        navigate('/hrdash/manageEmployee');
-      } else {
-        Toast(`${response.data.message}`, 'error');
-      }
     } catch (error) {
-      Toast("Error in submission: check console for further Details", 'error');
+      Toast("Error in registration: check console for further Details", 'error');
       console.error('Error in submission:', error);
     } finally {
       setLoading(false);
@@ -247,7 +232,7 @@ export default function EmployeeInfo({ id }) {
                     className="form-control round"
                     id="DateofBirth"
                     name='dob'
-                    value={employeeInformation?.dob}
+                    value={employeeInformation?.dob?.toString()?.slice(0, 10)}
                     onChange={handleChange}
                   />
                 </div>
@@ -255,7 +240,7 @@ export default function EmployeeInfo({ id }) {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="CNIC" className="form-label">CNIC:</label>
                   <input
-                    type="number"
+                    type="text"
                     className="form-control round"
                     id="CNIC"
                     placeholder="XXXXX-XXXXXXX-X"

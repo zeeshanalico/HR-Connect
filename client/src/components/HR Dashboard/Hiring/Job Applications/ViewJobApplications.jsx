@@ -6,7 +6,6 @@ import Modal from "react-bootstrap/Modal";
 import "./../../../BasicStyle.css";
 import { BaseUrl, config } from "./../../../../constants.js";
 import ViewResume from "./ViewResume";
-import { Dropdown } from "react-bootstrap";
 import { Link } from 'react-router-dom'
 import Toast from "./../../../../UIModules/Toast/Toast.jsx";
 import ReactPaginate from "react-paginate";
@@ -20,7 +19,31 @@ export default function ViewJobApplications() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [email, setEmail] = useState('');
+  const [offerLetter, setOfferLetter] = useState(`
+  Congratulations, 
+  Dear Candidate,
+      We are pleased to extend an offer of employment at HRConnect. We were impressed with your qualifications and experience, and we believe that you will be a valuable addition to our team.
+        
+  Sincerely,
+  Muhammad Ihtisham(HR)
+  HRConnect`);
+  const [showOfferLetterModal, setShowOfferLetterModal] = useState(false)
+  const sendOfferLetter = async () => {
+    try {
+      const response = await axios.post(BaseUrl + "/sendOfferLetter", { offerLetter, application_id: applicationId }, config);
+      if (response.data.success) {
+        Toast(`${response.data.message}`);
+      } else {
+        Toast(`${response.data.message}`);
+      }
+      console.log(response.data);
+    } catch (error) {
+      Toast('Error sending Offer Letter', 'error')
+      console.error("Error sending Offer Letter", error);
+    }
+    setShowOfferLetterModal(false)
 
+  }
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
   };
@@ -59,7 +82,7 @@ export default function ViewJobApplications() {
   const filteredApplications = jobApplications
     .filter((app) => app?.applicant_name?.toLowerCase()?.includes(filters.applicantName.toLowerCase()))
     .filter((app) => app?.title?.toLowerCase()?.includes(filters.jobTitle.toLowerCase()))
-    .filter((app) => app?.status?.toLowerCase()?.includes(filters.status.toLowerCase()))
+    .filter((app) => app?.status?.toLowerCase()?.includes(filters.status.toLowerCase())) || []
   const offset = currentPage * itemsPerPage;
   const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
 
@@ -105,9 +128,11 @@ export default function ViewJobApplications() {
     try {
       const response = await axios.post(BaseUrl + "/rejectApplication", {
         rejectedApplicationId: applicationId,
-      });
+      }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`, 'success')
+        console.log(`${response.data.message}`, 'success')
+
         await fetchData();
       } else {
         console.log("Error occured", response.data.message);
@@ -129,7 +154,7 @@ export default function ViewJobApplications() {
           <input
             type="text"
             id="employeeNameFilter"
-            placeholder="Search by Employee Name                 🔍"
+            placeholder="Search by Employee Name                 "
             className="form-control"
             value={filters.applicantName}
             onChange={(e) => handleFilter('applicantName', e.target.value)}
@@ -138,7 +163,7 @@ export default function ViewJobApplications() {
           <input
             type="text"
             id="employeeNameFilter"
-            placeholder="Search by Job Title                 🔍"
+            placeholder="Search by Job Title                 "
             className="form-control"
             value={filters.jobTitle}
             onChange={(e) => handleFilter('jobTitle', e.target.value)}
@@ -198,7 +223,7 @@ export default function ViewJobApplications() {
                   <td>{application.email}</td>
                   <td>{application.phone_number}</td>
                   <td>
-                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} />
+                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
                   </td>
                   <td>{application.title}</td>
                   <td>{application.status}</td>
@@ -240,7 +265,8 @@ export default function ViewJobApplications() {
                             }}
                             style={{
                               color: "black",
-                              backgroundColor: 'yellow'
+                              backgroundColor: 'yellow',
+                              // marginBottom:'3px'
                             }}
                           >
                             Accepted For Job
@@ -252,8 +278,19 @@ export default function ViewJobApplications() {
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
                             }}
+                            style={{ margin: '4px' }}
                           >
                             Reject
+                          </Button>
+                          <Button
+                            variant="info"
+                            size="sm"
+                            onClick={() => {
+                              setApplicationId(application.application_id);
+                              setShowOfferLetterModal(true);
+                            }}
+                          >
+                            Offer letter
                           </Button>
                         </div>
                       )
@@ -290,7 +327,6 @@ export default function ViewJobApplications() {
           </Modal.Header>
           <Modal.Body>
             Are you sure you want to call this applicant for an interview?
-            <h2>Date and Time Picker</h2>
             <div>
               <label>Date:</label>
               <input
@@ -356,8 +392,30 @@ export default function ViewJobApplications() {
             >
               Cancel
             </Button>
-            <Button variant="danger" as={Link} to={`/hrdash/addEmployee/${applicationId}`} >
+            <Button variant="danger" as={Link} to={`/ hrdash / addEmployee / ${applicationId}`} >
               Accept
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+
+        <Modal show={showOfferLetterModal} onHide={() => setShowOfferLetterModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Offer Letter</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <textarea name="" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} />
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowOfferLetterModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="success" onClick={sendOfferLetter} >
+              Send
             </Button>
           </Modal.Footer>
         </Modal>

@@ -1,0 +1,299 @@
+c_code,class_name,maj_id,major,d_id
+7,"MASTER OF PHILOSOPHY (Evening)",1,"Master of Philosophy in Biotechnology",6
+8,"DOCTORIATE PROGRAM",1,NULL,6
+21,"BACHELOR OF HONS (MORNING)",1,"Bachelor of Science (Hons.) in Biotechnology",6
+40,"BACHELOR OF HONS (EVENING)",1,"Bachelor of Science (Hons.) in Biotechnology",6
+61,"BACHELOR OF HONS (MORNING) [SPRING]",1,"Bachelor of Science (Hons.) in Biotechnology (Morning)",6
+65,"BACHELOR OF HONS (EVENING) [SPRING]",1,"Bachelor of Science (Hons.) in Biotechnology (Morning)",6
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",1,"Master of Philosophy in Biotechnology",6
+7,"MASTER OF PHILOSOPHY (Evening)",2,"Master of Philosophy in Botany ",7
+8,"DOCTORIATE PROGRAM",2,NULL,7
+21,"BACHELOR OF HONS (MORNING)",2,"Bachelor of Science (Hons.) in Botany",7
+29,"MSC BOTANY",2,"Master of Science in Botany",7
+40,"BACHELOR OF HONS (EVENING)",2,"Bachelor of Science (Hons.) in Botany",7
+50,"MASTER OF PHILOSOPHY (Morning) ",2,"Master of Philosophy in Botany ",7
+61,"BACHELOR OF HONS (MORNING) [SPRING]",2,"Bachelor of Science (Hons.) in Botany (Morning)",7
+65,"BACHELOR OF HONS (EVENING) [SPRING]",2,"Bachelor of Science (Hons.) in Botany (Morning)",7
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",2,"Master of Philosophy in Botany (Evening)",7
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",2,"Master of Philosophy in Botany (Morning)",7
+7,"MASTER OF PHILOSOPHY (Evening)",3,"Master of Philosophy in Chemistry ",1
+8,"DOCTORIATE PROGRAM",3,NULL,1
+21,"BACHELOR OF HONS (MORNING)",3,"Bachelor of Science (Hons.) in Chemistry",1
+40,"BACHELOR OF HONS (EVENING)",3,"Bachelor of Science (Hons.) in Chemistry",1
+50,"MASTER OF PHILOSOPHY (Morning) ",3,"Master of Philosophy in Chemistry",1
+61,"BACHELOR OF HONS (MORNING) [SPRING]",3,"Bachelor of Science (Hons.) in Chemistry",1
+65,"BACHELOR OF HONS (EVENING) [SPRING]",3,"Bachelor of Science (Hons.) in Chemistry",1
+75,"MSC CHEMISTRY",3,"Master of Science in Chemistry",1
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",3,"Master of Philosophy in Chemistry ",1
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",3,"Master of Philosophy in Chemistry(Morning)",1
+7,"MASTER OF PHILOSOPHY (Evening)",4,"Master of Philosophy in Electronics",12
+21,"BACHELOR OF HONS (MORNING)",4,"Bachelor of Science (Hons.) in Electronics ",12
+40,"BACHELOR OF HONS (EVENING)",4,"Bachelor of Science (Hons.) in Electronics",12
+61,"BACHELOR OF HONS (MORNING) [SPRING]",4,"Bachelor of Science (Hons.) in Electronics (Morning)",12
+65,"BACHELOR OF HONS (EVENING) [SPRING]",4,"Bachelor of Science (Hons.) in Electronics (Morning)",12
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",4,"Master of Philosophy in Electronics",12
+7,"MASTER OF PHILOSOPHY (Evening)",5,"Master of Philosophy in Environmental Science",9
+21,"BACHELOR OF HONS (MORNING)",5,"Bachelor of Science (Hons.) in Environmental Science",9
+40,"BACHELOR OF HONS (EVENING)",5,"Bachelor of Science (Hons.) in Environmental Science",9
+50,"MASTER OF PHILOSOPHY (Morning) ",5,"Master of Philosophy in Environmental Science",9
+61,"BACHELOR OF HONS (MORNING) [SPRING]",5,"B.Sc. (Hons.) in Environmental Science (Spring)",9
+65,"BACHELOR OF HONS (EVENING) [SPRING]",5,"Bachelor of Science (Hons.) in Environmental Science (Spring)",9
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",5,"Master of Philosophy in Environmental Science (E)",9
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",5,"Master of Philosophy in Environmental Science",9
+7,"MASTER OF PHILOSOPHY (Evening)",6,"Master of Philosophy in Mathematics",3
+21,"BACHELOR OF HONS (MORNING)",6,"Bachelor of Science (Hons.) in Mathematics",3
+40,"BACHELOR OF HONS (EVENING)",6,"Bachelor of Science (Hons.) in Mathematics ",3
+61,"BACHELOR OF HONS (MORNING) [SPRING]",6,"Bachelor of Science (Hons.) in Mathematics (Morning)",3
+65,"BACHELOR OF HONS (EVENING) [SPRING]",6,"Bachelor of Science (Hons.) in Mathematics",3
+72,"MSC MATHEMATICS",6,"Master of Science in Mathematics",3
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",6,"Master of Philosophy in Mathematics",3
+7,"MASTER OF PHILOSOPHY (Evening)",7,"Master of Philosophy in Microbiology",6
+21,"BACHELOR OF HONS (MORNING)",7,"Bachelor of Science (Hons.) in Microbiology ",6
+40,"BACHELOR OF HONS (EVENING)",7,"Bachelor of Science (Hons.) in Microbiology",6
+61,"BACHELOR OF HONS (MORNING) [SPRING]",7,"Bachelor of Science (Hons.) in Microbiology (Morning)",6
+65,"BACHELOR OF HONS (EVENING) [SPRING]",7,"B.Sc. (Hons.) in Microbiology (Spring)",6
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",7,"Master of Philosophy in Microbiology",6
+7,"MASTER OF PHILOSOPHY (Evening)",8,"Master of Philosophy in Physics",4
+8,"DOCTORIATE PROGRAM",8,NULL,4
+21,"BACHELOR OF HONS (MORNING)",8,"Bachelor of Science (Hons.) in Physics",4
+40,"BACHELOR OF HONS (EVENING)",8,"Bachelor of Science (Hons.) in Physics",4
+61,"BACHELOR OF HONS (MORNING) [SPRING]",8,"B.Sc. (Hons.) in Physics (Spring)",8
+65,"BACHELOR OF HONS (EVENING) [SPRING]",8,"B.Sc. (Hons.) in Physics (Spring)",4
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",8,"Master of Philosophy in Physics",4
+7,"MASTER OF PHILOSOPHY (Evening)",9,"Master of Philosophy in Zoology ",5
+8,"DOCTORIATE PROGRAM",9,NULL,5
+21,"BACHELOR OF HONS (MORNING)",9,"Bachelor of Science (Hons.) in Zoology ",5
+40,"BACHELOR OF HONS (EVENING)",9,"Bachelor of Science (Hons.) in Zoology",5
+50,"MASTER OF PHILOSOPHY (Morning) ",9,"Master of Philosophy in Zoology",5
+61,"BACHELOR OF HONS (MORNING) [SPRING]",9,"Bachelor of Science (Hons.) in Zoology (Morning)",5
+65,"BACHELOR OF HONS (EVENING) [SPRING]",9,"Bachelor of Science (Hons.) in Zoology (Morning)",5
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",9,"Master of Philosophy in Zoology (Evening)",5
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",9,"Master of Philosophy in Zoology (Morning)",5
+21,"BACHELOR OF HONS (MORNING)",10,"Bachelor of Science (Hons.) in Business Accounting and Finance",90
+40,"BACHELOR OF HONS (EVENING)",10,"Bachelor of Science (Hons.) in Business Accounting & Finance",90
+61,"BACHELOR OF HONS (MORNING) [SPRING]",10,"B.Sc. (Hons.) in Business Accounting and Finance (Morning)",90
+65,"BACHELOR OF HONS (EVENING) [SPRING]",10,"B.Sc. (Hons.) in Business Accounting and Finance (Morning)",90
+7,"MASTER OF PHILOSOPHY (Evening)",11,"Master of Philosophy in Economics",41
+8,"DOCTORIATE PROGRAM",11,NULL,41
+21,"BACHELOR OF HONS (MORNING)",11,"Bachelor of Science (Hons.) in Economics",41
+40,"BACHELOR OF HONS (EVENING)",11,"Bachelor of Science (Hons.) in Economics",41
+61,"BACHELOR OF HONS (MORNING) [SPRING]",11,"Bachelor of Science (Hons.) in Economics",41
+65,"BACHELOR OF HONS (EVENING) [SPRING]",11,"Bachelor of Science (Hons.) in Economics",41
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",11,"Master of Philosophy in Economics",41
+21,"BACHELOR OF HONS (MORNING)",12,"Bachelor of Science (Hons.) in Geography",48
+40,"BACHELOR OF HONS (EVENING)",12,"Bachelor of Science (Hons.) in Geography ",48
+61,"BACHELOR OF HONS (MORNING) [SPRING]",12,"B.Sc. (Hons.) in Geography (Spring)",48
+65,"BACHELOR OF HONS (EVENING) [SPRING]",12,"B.Sc. (Hons.) in Geography (Spring)",48
+7,"MASTER OF PHILOSOPHY (Evening)",13,"Master of Philosophy in History",42
+8,"DOCTORIATE PROGRAM",13,NULL,42
+21,"BACHELOR OF HONS (MORNING)",13,"Bachelor of Arts (Hons.) in History",42
+40,"BACHELOR OF HONS (EVENING)",13,"Bachelor of Arts (Hons.) in History",42
+51,"MA HISTORY",13,"Master of Arts in History",42
+61,"BACHELOR OF HONS (MORNING) [SPRING]",13,"B.A. (Hons.) in History (Spring)",42
+65,"BACHELOR OF HONS (EVENING) [SPRING]",13,"B.A. (Hons.) in History (Spring)",42
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",13,"Master of Philosophy in History",42
+7,"MASTER OF PHILOSOPHY (Evening)",14,"Master of Philosophy in Philosophy",44
+21,"BACHELOR OF HONS (MORNING)",14,"Bachelor of Arts (Hons.) in Philosophy",44
+40,"BACHELOR OF HONS (EVENING)",14,"Bachelor of Arts (Hons.) in Philosophy",44
+61,"BACHELOR OF HONS (MORNING) [SPRING]",14,"Bachelor of Arts (Hons.) in Philosophy (Morning)",44
+65,"BACHELOR OF HONS (EVENING) [SPRING]",14,"Bachelor of Arts (Hons.) in Philosophy (Morning)",44
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",14,"Master of Philosophy in Philosophy",44
+7,"MASTER OF PHILOSOPHY (Evening)",15,"Master of Philosophy in Political Science",45
+8,"DOCTORIATE PROGRAM",15,NULL,45
+21,"BACHELOR OF HONS (MORNING)",15,"Bachelor of Arts (Hons.) in Political Science",45
+40,"BACHELOR OF HONS (EVENING)",15,"Bachelor of Arts (Hons.) in Political Science",45
+55,"MA POLITICAL SCIENCE",15,"Master of Arts in Political Science",45
+61,"BACHELOR OF HONS (MORNING) [SPRING]",15,"Bachelor of Arts (Hons.) in Political Science (Morning)",45
+65,"BACHELOR OF HONS (EVENING) [SPRING]",15,"Bachelor of Arts (Hons.) in Political Science (Morning)",45
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",15,"Master of Philosophy in Political Science",45
+7,"MASTER OF PHILOSOPHY (Evening)",16,"Master of Philosophy in Psychology",46
+8,"DOCTORIATE PROGRAM",16,NULL,46
+21,"BACHELOR OF HONS (MORNING)",16,"Bachelor of Science (Hons.) in Psychology",46
+40,"BACHELOR OF HONS (EVENING)",16,"Bachelor of Science (Hons) in Psychology",46
+61,"BACHELOR OF HONS (MORNING) [SPRING]",16,"B.Sc. (Hons.) in Psychology (Morning)",46
+65,"BACHELOR OF HONS (EVENING) [SPRING]",16,"B.Sc. (Hons.) in Psychology (Morning)",46
+73,"MSC PSYCHOLOGY",16,"Master of Science in Psychology",46
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",16,"Master of Philosophy in Psychology",46
+7,"MASTER OF PHILOSOPHY (Evening)",17,"Master of Philosophy in Statistics",47
+8,"DOCTORIATE PROGRAM",17,NULL,47
+21,"BACHELOR OF HONS (MORNING)",17,"Bachelor of Science (Hons.) in Statistics ",47
+37,"MSC STATISTICS",17,"Master of Science in Statistics",47
+40,"BACHELOR OF HONS (EVENING)",17,"Bachelor of Science (Hons.) in Statistics",47
+61,"BACHELOR OF HONS (MORNING) [SPRING]",17,"Bachelor of Science (Hons.) in Statistics (Morning)",47
+65,"BACHELOR OF HONS (EVENING) [SPRING]",17,"Bachelor of Science (Hons.) in Statistics (Morning)",47
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",17,"Master of Philosophy in Statistics",47
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",17,"Master of Philosophy in Statistics(Morning)",47
+7,"MASTER OF PHILOSOPHY (Evening)",18,"Master of Philosophy in English",82
+21,"BACHELOR OF HONS (MORNING)",18,"Bachelor of Arts (Hons.) in English Literature ",82
+40,"BACHELOR OF HONS (EVENING)",18,"Bachelor of Arts (Hons.) in English Literature",82
+61,"BACHELOR OF HONS (MORNING) [SPRING]",18,"B.A. (Hons.) in English Literature (Morning)",82
+65,"BACHELOR OF HONS (EVENING) [SPRING]",18,"B.A. (Hons.) in English Literature (Morning)",82
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",18,"Master of Philosophy in English",82
+7,"MASTER OF PHILOSOPHY (Evening)",19,"Master of Philosophy in Islamic Studies",81
+21,"BACHELOR OF HONS (MORNING)",19,"Bachelor of Arts (Hons.) in Islamic Studies ",81
+40,"BACHELOR OF HONS (EVENING)",19,"Bachelor of Arts (Hons.) in Islamic Studies",81
+61,"BACHELOR OF HONS (MORNING) [SPRING]",19,"Bachelor of Arts (Hons.) in Islamic Studies (Morning)",81
+65,"BACHELOR OF HONS (EVENING) [SPRING]",19,"Bachelor of Arts (Hons.) in Islamic Studies (Morning)",81
+76,"MA ISLAMIC STUDIES",19,"Master of Arts in Islamic Studies",81
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",19,"Master of Philosophy in Islamic Studies",81
+7,"MASTER OF PHILOSOPHY (Evening)",20,"Master of Philosophy in Persian",83
+8,"DOCTORIATE PROGRAM",20,NULL,83
+21,"BACHELOR OF HONS (MORNING)",20,"Bachelor of Arts (Hons.) in Persian",83
+40,"BACHELOR OF HONS (EVENING)",20,"Bachelor of Arts (Hons.) in Persian",83
+61,"BACHELOR OF HONS (MORNING) [SPRING]",20,"Bachelor of Arts (Hons.) in Persian",83
+65,"BACHELOR OF HONS (EVENING) [SPRING]",20,"Bachelor of Arts (Hons.) in Persian",83
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",20,"Master of Philosophy in Persian",83
+7,"MASTER OF PHILOSOPHY (Evening)",21,"Master of Philosophy in Urdu",84
+8,"DOCTORIATE PROGRAM",21,NULL,84
+21,"BACHELOR OF HONS (MORNING)",21,"Bachelor of Arts (Hons.) in Urdu",84
+40,"BACHELOR OF HONS (EVENING)",21,"Bachelor of Arts (Hons.) in Urdu ",84
+61,"BACHELOR OF HONS (MORNING) [SPRING]",21,"Bachelor of Arts (Hons.) in Urdu (Morning)",84
+65,"BACHELOR OF HONS (EVENING) [SPRING]",21,"Bachelor of Arts (Hons.) in Urdu (Morning)",84
+70,"MA URDU",21,"Master of Arts in Urdu",84
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",21,"Master of Philosophy in Urdu",84
+71,"MA ENGLISH",22,"Master of Arts in English Literature",82
+98,"ENGLISH COMMUNICATION SKILL",22,"English Communication Skills",82
+7,"MASTER OF PHILOSOPHY (Evening)",23,NULL,121
+8,"DOCTORIATE PROGRAM",23,NULL,121
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",23,NULL,121
+13,"MASTER BUSINESS ADMINISTRATION",24,"Master of Business Administration",43
+30,"B.SC. IN APPLIED MANAGEMENT",25,"B.Sc.(Hons.) in Applied Management",43
+21,"BACHELOR OF HONS (MORNING)",26,"B.A./ B.Sc. (Hons.)",54
+61,"BACHELOR OF HONS (MORNING) [SPRING]",26,"B.A./ B.Sc. (Hons.)",54
+65,"BACHELOR OF HONS (EVENING) [SPRING]",26,"B.A./ B.Sc. (Hons.)",54
+19,E.M.B.A.,27,"Executive Master of Business Administration",43
+14,"MS BANKING & FINANCIAL ECONOMICS",28,"MS Banking & Financial Economics",90
+16,"MS COMPUTER SCIENCE",29,"MS Computer Science",2
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",29,"MS Computer Science",2
+15,"MS ENTREPRENEURSHIP & SME MANAGEMENT",30,"MS Entrepreneurship & SME Management",41
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",30,"Entrepreneurship & SME Management",41
+17,"MS CLINICAL PSYCHOLOGY",37,"MS Clinical Psychology",50
+12,"MS PHARMACEUTICAL CHEMISTRY",38,"MS Pharmaceutical Chemistry",1
+18,"MS ELECTRICAL ENGINEERING",39,"MS Electrical Engineering",121
+50,"MASTER OF PHILOSOPHY (Morning) ",39,"MS ELECTRICAL ENGINEERING",121
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",39,,121
+10,"MS FORENSIC CHEMISTRY",40,"MS Forensic Chemistry",1
+2,"BACHELOR IN COMMERCE",41,"Bachelor of Commerce (Hons.)",90
+42,"CERTIFICATE IN FRENCH",42,"CERTIFICATE IN FRENCH",87
+43,"CERTIFICATE IN PERSIAN",43,"CERTIFICATE IN PERSIAN",83
+44,"CERTIFICATE IN PUNJABI/GORMUKHI",44,"CERTIFICATE IN PUNJABI",85
+46,"CERTIFICATE IN URDU",46,"CERTIFICATE IN URDU",84
+47,"CERTIFICATE IN ENGLISH",47,"CERTIFICATE IN ENGLISH",82
+41,"CERTIFICATE IN TURKISH",48,"Certificate in Turkish",84
+26,"CERTIFICATE IN ARCHIVE STUDIES",51,NULL,50
+11,"BS COMPUTER SCIENCE (HONS.)",52,"Bachelor of Computer Science (Hons.)",2
+27,"B.Sc. ELECTRICAL ENGINEERING",53,"B.Sc. Electrical Engineering",121
+28,"TOPUP PROGRAMME FOR MS IN CLINICAL PSYCHOLOGY",54,"MS TOP UP Clinical Psychology",50
+32,"PGD IN ELT",55,"PGD IN ENGLISH LANGUAGE AND TEACHING",82
+34,"DIPLOMA IN CHILD GUIDANCE AND EDUCATIONAL COUNSELING",56,"Diploma in Child Guidance and Education Counseling",50
+35,"DIPLOMA IN PAKISTAN AFFAIRS",57,"DIPLOMA IN PAKISTAN AFFAIRS",45
+1,INTERMEDIATE,58,ARTS,100
+111,"INTERMEDIATE (Evening)",58,ARTS,100
+1,INTERMEDIATE,59,ICOM,100
+111,"INTERMEDIATE (Evening)",59,ICOM,100
+1,INTERMEDIATE,60,PRE-ENGINEERING,100
+111,"INTERMEDIATE (Evening)",60,PRE-ENGINEERING,100
+1,INTERMEDIATE,61,PRE-MEDICAL,100
+111,"INTERMEDIATE (Evening)",61,PRE-MEDICAL,100
+1,INTERMEDIATE,62,"GENERAL SCIENCE",100
+111,"INTERMEDIATE (Evening)",62,"GENERAL SCIENCE",100
+1,INTERMEDIATE,63,"COMPUTER SCIENCE",100
+111,"INTERMEDIATE (Evening)",63,"COMPUTER SCIENCE",100
+56,"M. PHIL APPLIED PHYSICS",64,"Master of Philosophy in Applied Physics",8
+57,"M. PHIL APPLIED PHYSICS (MORNING)",64,"Master of Philosophy in Applied Physics",8
+36,"BFA GRAPHIC DESIGN",65,"Bachelor of Fine Arts Graphic Design",54
+48,"BFA GRAPHIC DESIGN (EVENING)",65,"Bachelor of Fine Arts Graphic Design (Evening)",54
+53,"MS INDUSTRIAL/ORGANIZATIONAL PSYCHOLOGY",66,"MS Industrial/Organizational Psychology",46
+5,"M.SC. PHYSICAL EDUCATION",67,"M.Sc in Physical Education",55
+7,"MASTER OF PHILOSOPHY (Evening)",67,"Master Of Philosphy in Physical Education",55
+21,"BACHELOR OF HONS (MORNING)",67,"Bachelor of Science (Hons.) in Physical Education",55
+40,"BACHELOR OF HONS (EVENING)",67,"Bachelor of Science (Hons.) in Physical Education ",55
+61,"BACHELOR OF HONS (MORNING) [SPRING]",67,"Bachelor of Science (Hons.) in Physical Education (Spring)",55
+65,"BACHELOR OF HONS (EVENING) [SPRING]",67,"Bachelor of Science (Hons.) in Physical Education (Spring)",55
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",67,"Master Of Philosphy in Physical Education",55
+106,"MASTER OF PHILOSOPHY (Morning) [SPRING]",67,"Master of Philosophy in Physical Education (Morning)",55
+54,"MS IN GEOGRAPHY",68,"MS Geography",48
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",68,"MS Geography",48
+81,"CERTIFICATE IN FORENSIC SCIENCE",69,"CERTIFICATE IN FORENSIC SCIENCE",1
+7,"MASTER OF PHILOSOPHY (Evening)",70,"Master of Philosophy in Punjabi",85
+21,"BACHELOR OF HONS (MORNING)",70,"Bachelor of Arts (Hons.) in Punjabi",85
+40,"BACHELOR OF HONS (EVENING)",70,"Bachelor of Arts (Hons.) in Punjabi ",85
+61,"BACHELOR OF HONS (MORNING) [SPRING]",70,"Bachelor of Arts (Hons.) in Punjabi (Morning)",85
+65,"BACHELOR OF HONS (EVENING) [SPRING]",70,"Bachelor of Arts (Hons.) in Punjabi (Morning)",85
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",70,"Master of Philosophy in Punjabi",85
+33,"DIPLOMA IN FORENSIC SCIENCE",71,"DIPLOMA IN FORENSIC SCIENCE",1
+77,"MS IN CHILD GUIDANCE AND  EDUCATIONAL COUNSELING",72,"MS Child Guidance and Educational Counseling",50
+89,"URDU DIPLOMA COURSE FOR FOREIGNERS",73,"DIPLOMA IN URDU LITERATURE",84
+38,"MA ELT",74,"Master of Arts in English Language Teaching",82
+7,"MASTER OF PHILOSOPHY (Evening)",76,"Master of Philosophy in ASSMS (Mathematics)",120
+8,"DOCTORIATE PROGRAM",76,"Ph.D. in Mathematics",10
+9,"M.PHIL LEADING TO PH.D.",76,"Master of Philosophy in Mathematics (ASSMS)",120
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",76,"Master of Philosophy in ASSMS (Mathematics)",120
+39,"MSC PHYSICAL EDUCATION",79,"Master of Science in Physical Education",55
+7,"MASTER OF PHILOSOPHY (Evening)",80,"Master of Philosophy in Art History",42
+21,"BACHELOR OF HONS (MORNING)",80,"B.A. (Hons.) in Art History",42
+40,"BACHELOR OF HONS (EVENING)",80,"B.A. (Hons.) in Art History",42
+61,"BACHELOR OF HONS (MORNING) [SPRING]",80,"B.Sc. (Hons.) in Art History",42
+65,"BACHELOR OF HONS (EVENING) [SPRING]",80,"B.Sc. (Hons.) in Art History",42
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",80,"MASTER OF PHILOSPHY IN ARTS HISTORY",42
+49,"BFA PAINTING (REGULAR)",81,"BFA PAINTING",54
+58,"LLB (REGULAR)",82,LLB,53
+21,"BACHELOR OF HONS (MORNING)",84,"Bachelor of Science (Hons.) in Management",43
+40,"BACHELOR OF HONS (EVENING)",84,"B.Sc. (Hons.) in Management",43
+61,"BACHELOR OF HONS (MORNING) [SPRING]",84,"B.Sc. (Hons.) in Management (Spring)",43
+65,"BACHELOR OF HONS (EVENING) [SPRING]",84,"B.Sc. (Hons.) in Managment (Spring)",43
+101,"DIPLOMA IN FORGIVENESS PSYCHOLOGY",101,"Diploma in Forgiveness Psychology",46
+80,"CERTIFICATE IN URDU FOR FOREIGNER",113,"Certificate in Urdu for Foreigners",84
+79,"CHINESE LANGUAGE CERTIFICATE",114,"CHINESE LANGUAGE CERTIFICATE",82
+67,"CERTIFICATE IN NLP AND HYPNOSIS IN PSYCHOTHERAPY",115,"NLP and Hypnosis in Psychotherapy (Certificate Course)",50
+78,"POST GRADUATE DIPLOMA IN CHILD AND ADULT PSYCHOTHERAPY",117,"PGD in Child and Adult Psychotherapy",50
+69,"MS TOP UP IN CHILD GUIDANCE AND EDUCATIONAL COUNSELING",119,"MS TOP UP Child Guidance and Educational Counseling",50
+7,"MASTER OF PHILOSOPHY (Evening)",121,"Master of Philosophy in Sociology",51
+21,"BACHELOR OF HONS (MORNING)",121,"Bachelor of Arts (Hons.) in Sociology",51
+61,"BACHELOR OF HONS (MORNING) [SPRING]",121,"B.A. (Hons.) in Sociology",51
+65,"BACHELOR OF HONS (EVENING) [SPRING]",121,"B.A. (Hons.) in Sociology",51
+21,"BACHELOR OF HONS (MORNING)",124,"BS EDUCATION",52
+21,"BACHELOR OF HONS (MORNING)",125,"Bachelor of Science (Hons.) in Medical Laboratory Technology",6
+40,"BACHELOR OF HONS (EVENING)",125,"B.Sc. (Hons.) in Medical Laboratory Technology",6
+61,"BACHELOR OF HONS (MORNING) [SPRING]",125,"B.Sc. (Hons.) in Medical Laboratory Technology",6
+65,"BACHELOR OF HONS (EVENING) [SPRING]",125,"B.Sc. (Hons.) in Medical Laboratory Technology",6
+21,"BACHELOR OF HONS (MORNING)",126,"B.Sc. (Hons.) in Media & Communication Studies",49
+40,"BACHELOR OF HONS (EVENING)",126,"B.Sc. (Hons.) in Media & Communication Studies",49
+65,"BACHELOR OF HONS (EVENING) [SPRING]",126,"B.Sc. (Hons.) in Media & Communication Studies (Spring)",49
+59,"CERTIFICATE OF FORGIVENESS EDUCATION",128,"CERTIFICATE OF FORGIVENESS EDUCATION",46
+26,"CERTIFICATE IN ARCHIVE STUDIES",129,"CERTIFICATE OF ARCHIVE STUDIES",42
+7,"MASTER OF PHILOSOPHY (Evening)",130,"Master of Philosophy in Freshwater Biology, Fisheries and Aquaculture",5
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",130,"Master of Philosophy in Freshwater Biology, Fisheries and Aquaculture",5
+94,"CERTIFICATE IN GERMAN",131,"CERTIFICATE IN GERMAN",82
+7,"MASTER OF PHILOSOPHY (Evening)",132,"MASTER OF PHILOSPHY IN ARCHIVE STUDIES",42
+21,"BACHELOR OF HONS (MORNING)",132,"BS ARCHIVE STUDIES",42
+105,"MASTER OF PHILOSOPHY (Evening) [SPRING]",132,"MASTER OF PHILOSPHY IN ARCHIVE STUDIES",42
+21,"BACHELOR OF HONS (MORNING)",133,"B.Sc. (Hons.) in International Relations",14
+40,"BACHELOR OF HONS (EVENING)",133,"B.Sc. (Hons.) in International Relations (Evening)",14
+7,"MASTER OF PHILOSOPHY (Evening)",134,"Master of Philosophy in Disaster Management",48
+21,"BACHELOR OF HONS (MORNING)",134,"Bachelor of Science (Hons.) in Disaster Management",48
+40,"BACHELOR OF HONS (EVENING)",134,"Bachelor of Science (Hons.) in Disaster Management",48
+61,"BACHELOR OF HONS (MORNING) [SPRING]",134,"Bachelor of Science (Hons.) in Disaster Management",48
+65,"BACHELOR OF HONS (EVENING) [SPRING]",134,"Bachelor of Science (Hons.) in Disaster Management",48
+21,"BACHELOR OF HONS (MORNING)",135,"Bachelor of Science (Hons.) in Gender And Climate Change",9
+40,"BACHELOR OF HONS (EVENING)",135,"B.Sc. (Hons.) in Gender And Climate Change",9
+61,"BACHELOR OF HONS (MORNING) [SPRING]",135,"B.Sc. (Hons.) in Gender And Climate Change",9
+65,"BACHELOR OF HONS (EVENING) [SPRING]",135,"B.Sc. (Hons.) in Gender And Climate Change",9
+64,"PGD IN GIS AND REMOTE SENSORY",136,"PGD in GIS and Remote Sensing",48
+7,"MASTER OF PHILOSOPHY (Evening)",137,"Master of Philosophy in Public Policy & Governance",41
+21,"BACHELOR OF HONS (MORNING)",137,"BS Public Policy",41
+21,"BACHELOR OF HONS (MORNING)",139,"BS ENTREPRENEURSHIP",41
+21,"BACHELOR OF HONS (MORNING)",140,"BS AGRICULTURE",132
+40,"BACHELOR OF HONS (EVENING)",140,"BS AGRICULTURE",132
+21,"BACHELOR OF HONS (MORNING)",141,"BS TURKISH LANGUAGE AND LITERATURES",141
+40,"BACHELOR OF HONS (EVENING)",141,"BS TURKISH LANGUAGE AND LITERATURES",141
+21,"BACHELOR OF HONS (MORNING)",142,"BS TRANSLATION STUDIES",142
+40,"BACHELOR OF HONS (EVENING)",142,"BS TRANSLATION STUDIES",142
+21,"BACHELOR OF HONS (MORNING)",143,"GLOBAL STUDIES",42
+21,"BACHELOR OF HONS (MORNING)",144,"BS REMOTE SENSING AND GEOGRAPHIC INFORMATION SYSTEM",48
+40,"BACHELOR OF HONS (EVENING)",144,"BS REMOTE SENSING AND GEOGRAPHIC INFORMATION SYSTEM",48
+21,"BACHELOR OF HONS (MORNING)",145,"BS BIOLOGY",7
+40,"BACHELOR OF HONS (EVENING)",145,"BS BIOLOGY",7
+21,"BACHELOR OF HONS (MORNING)",146,"BS DIGITAL COMMUNICATION & MEDIA",49
+11,"BS COMPUTER SCIENCE (HONS.)",147,"BS ARTIFICIAL INTELLIGNCE",2
+11,"BS COMPUTER SCIENCE (HONS.)",148,"BS SOFTWARE ENGINEERING",2

@@ -314,10 +314,10 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
           // to: email,
           to: "hmic828@gmail.com",
           subject: "Job Application Rejected",
-          text: `Better luck next time! Your Job Application Rejected.
+          text: `Better luck next time! We have Regret to inform you that your Job Application Rejected.
 
                     Sincerely,
-                    Zeeshan Ali(HR) 
+                    Ali Arshand(HR) 
                     TECHNOHUB  
                 `,
         };
@@ -401,7 +401,8 @@ router.post("/callForInterview", (req, res) => {
 
 router.post('/pdf', (req, res) => {
   console.log('/pdf');
-  const job_id = req.body.application_id;
+  console.log(req.body);
+  const job_id = req.body.job_id;
   const applicant_name = req.body.applicant_name;
   console.log(job_id, applicant_name);
   const fileName = `${job_id}_${applicant_name}.pdf`;
@@ -444,9 +445,183 @@ router.post("/addDepartment", (req, res) => {
 });
 
 //// -----------------------------------------------------emplyees/addemployees---------------------------------------------------------------------------------------
-router.post("/registerEmployee", verifyToken, checkUserRole(1), async (req, res) => {
+// router.post("/registerEmployee", verifyToken, checkUserRole(1), async (req, res) => {
+//   try {
+//     console.log("/registerEmployee ",req.body.cnic,typeof req.body.cnic);
+//     const {
+//       address,
+//       applicant_name,
+//       cgpa,
+//       city,
+//       cnic,
+//       degree,
+//       dep_id,
+//       dob,
+//       email,
+//       emp_id,
+//       gender,
+//       github_profile_url,
+//       hire_date,
+//       job_id,
+//       linkedin_profile_url,
+//       major,
+//       phone_number,
+//       role_id,
+//       salary,
+//       university,
+//       zipcode,
+//     } = req.body;
+//     // const cnic_no=cnic;
+//     // const DOB=dob;
+//     // console.log(typeof cnic)
+//     const cnic_no = cnic?.toString();
+//     const DOB = dob.toString().slice(0, 10);
+
+//     mysql.beginTransaction(async (err) => {
+//       if (err) {
+//         console.error("Error starting transaction:", err);
+//         return res.status(500).json({
+//           success: false,
+//           message: "Error starting transaction",
+//         });
+//       }
+
+//       // Insert data into the employee table
+//       mysql.query(
+//         "INSERT INTO employee (address, name, cgpa, city, cnic, degree, dep_id, dob, email, emp_id, gender, github_profile_url, hire_date, job_id, linkedin_profile_url, major, phone_number, role_id, salary, university, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+//         [
+//           address,
+//           applicant_name,
+//           cgpa,
+//           city,
+//           cnic_no,
+//           degree,
+//           dep_id,
+//           DOB,
+//           email,
+//           emp_id,
+//           gender,
+//           github_profile_url,
+//           hire_date, // Use hire_date as attendance_date
+//           job_id,
+//           linkedin_profile_url,
+//           major,
+//           phone_number,
+//           role_id,
+//           salary,
+//           university,
+//           zipcode,
+//         ],
+//         async (employeeErr, employeeResult) => {
+//           if (employeeErr) {
+//             console.error("Error inserting employee data:", employeeErr);
+//             mysql.rollback(() => {
+//               return res.status(500).json({
+//                 success: false,
+//                 message: employeeErr.sqlMessage,
+//                 error: "Error inserting employee data",
+//               });
+//             });
+//           }
+
+//           console.log("Employee data inserted successfully:", employeeResult);
+
+//           const salt = await bcrypt.genSalt(10);
+//           const hashed_password = await bcrypt.hash(cnic_no?.toString() ?? '', salt);
+//           // Insert data into the users table
+//           mysql.query(
+//             "INSERT INTO users (user_email, user_password, role_id, emp_id) VALUES (?, ?, ?, ?);",
+//             [email, hashed_password, role_id, emp_id],
+//             async (userErr, userResult) => {
+//               if (userErr) {
+//                 console.error("Error inserting user data:", userErr);
+//                 mysql.rollback(() => {
+//                   return res.status(500).json({
+//                     success: false,
+//                     message: userErr.sqlMessage,
+//                     error: "Error inserting user data",
+//                   });
+//                 });
+//               }
+
+//               console.log("User data inserted successfully:", userResult);
+
+//               // Insert data into the attendance table
+//               mysql.query(
+//                 "INSERT INTO attendance (emp_id, attendance_date, status) VALUES (?, ?, ?);",
+//                 [emp_id, hire_date, 'Present'], // Use hire_date as attendance_date
+//                 async (attendanceErr, attendanceResult) => {
+//                   if (attendanceErr) {
+//                     console.error("Error inserting attendance data:", attendanceErr);
+//                     mysql.rollback(() => {
+//                       return res.status(500).json({
+//                         success: false, message: attendanceErr.sqlMessage, error: "Error inserting attendance data",
+//                       });
+//                     });
+//                   }
+
+//                   console.log("Attendance data inserted successfully:", attendanceResult);
+
+//                   mysql.commit((commitErr) => {
+//                     if (commitErr) {
+//                       console.error("Error committing transaction:", commitErr);
+//                       mysql.rollback(() => {
+//                         return res.status(500).json({
+//                           success: false,
+//                           message: "Error committing transaction",
+//                         });
+//                       });
+//                     }
+
+//                     const mailOptions = {
+//                       from: process.env.EMAIL_USERNAME,
+//                       to: "hmic828@gmail.com", // Change this to 'email' if you want to send it to the employee's email
+//                       subject: "Job Offer Letter",
+//                       text: `Congratulations, you are hired at TechoHub! You can join us from the specified date.
+
+// Sincerely,
+// Zeeshan Ali (HR)
+// TECHNOHUB`,
+//                     };
+
+//                     transporter.sendMail(mailOptions, (emailError, info) => {
+//                       if (emailError) {
+//                         console.error("Error sending email:", emailError);
+//                         return res.status(500).json({
+//                           success: false,
+//                           message: "Failed to send the Hiring Offer letter via email",
+//                         });
+//                       }
+
+//                       console.log("Email sent:", info.response);
+
+//                       // Return a success response
+//                       return res.status(200).json({
+//                         success: true,
+//                         message: "Employee Data inserted successfully & Offer Letter sent",
+//                       });
+//                     });
+//                   });
+//                 }
+//               );
+//             }
+//           );
+//         }
+//       );
+//     });
+//   } catch (error) {
+//     console.error("Unexpected error:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Unexpected error occurred",
+//     });
+//   }
+// });
+
+
+router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res) => {
   try {
-    console.log("/registerEmployee");
+
     const {
       address,
       applicant_name,
@@ -470,150 +645,99 @@ router.post("/registerEmployee", verifyToken, checkUserRole(1), async (req, res)
       university,
       zipcode,
     } = req.body;
+    const DOB = dob?.toString()?.slice(0, 10)
+    const salt = await bcrypt.genSalt(10);
+    const hashed_password = await bcrypt.hash(cnic?.toString(), salt);
 
-    const cnic_no = cnic.toString();
-    const DOB = dob.toString().slice(0, 10);
+    mysql.query('CALL registerEmployee(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        address,
+        applicant_name,
+        cgpa,
+        city,
+        cnic,
+        degree,
+        dep_id,
+        DOB,
+        email,
+        hashed_password,
+        emp_id,
+        gender,
+        github_profile_url,
+        hire_date,
+        job_id,
+        linkedin_profile_url,
+        major,
+        phone_number,
+        role_id,
+        salary,
+        university,
+        zipcode], (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: "Failed to Register employee" });
+          } else {
+            const mailOptions = {
+              from: process.env.EMAIL_USERNAME,
+              to: "hmic828@gmail.com", // Change this to 'email' if you want to send it to the employee's email
+              subject: "Job Offer Letter",
+              text: `Congratulations, you are hired at TechoHub! You can join us from the specified date.
+              
+              Sincerely,
+              Zeeshan Ali (HR)
+              TECHNOHUB`,
+            };
 
-    mysql.beginTransaction(async (err) => {
-      if (err) {
-        console.error("Error starting transaction:", err);
-        return res.status(500).json({
-          success: false,
-          message: "Error starting transaction",
-        });
-      }
-
-      // Insert data into the employee table
-      mysql.query(
-        "INSERT INTO employee (address, name, cgpa, city, cnic, degree, dep_id, dob, email, emp_id, gender, github_profile_url, hire_date, job_id, linkedin_profile_url, major, phone_number, role_id, salary, university, zipcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-        [
-          address,
-          applicant_name,
-          cgpa,
-          city,
-          cnic_no,
-          degree,
-          dep_id,
-          DOB,
-          email,
-          emp_id,
-          gender,
-          github_profile_url,
-          hire_date, // Use hire_date as attendance_date
-          job_id,
-          linkedin_profile_url,
-          major,
-          phone_number,
-          role_id,
-          salary,
-          university,
-          zipcode,
-        ],
-        async (employeeErr, employeeResult) => {
-          if (employeeErr) {
-            console.error("Error inserting employee data:", employeeErr);
-            mysql.rollback(() => {
-              return res.status(500).json({
-                success: false,
-                message: employeeErr.sqlMessage,
-                error: "Error inserting employee data",
-              });
-            });
-          }
-
-          console.log("Employee data inserted successfully:", employeeResult);
-
-          const salt = await bcrypt.genSalt(10);
-          const hashed_password = await bcrypt.hash(cnic_no, salt);
-
-          // Insert data into the users table
-          mysql.query(
-            "INSERT INTO users (user_email, user_password, role_id, emp_id) VALUES (?, ?, ?, ?);",
-            [email, hashed_password, role_id, emp_id],
-            async (userErr, userResult) => {
-              if (userErr) {
-                console.error("Error inserting user data:", userErr);
-                mysql.rollback(() => {
-                  return res.status(500).json({
-                    success: false,
-                    message: userErr.sqlMessage,
-                    error: "Error inserting user data",
-                  });
-                });
+            transporter.sendMail(mailOptions, (emailError, info) => {
+              if (emailError) {
+                console.error("Error sending email:", emailError);
+                return res.status(500).json({ success: false, message: "Failed to send the Hiring Offer letter via email", });
+              } else {
+                console.log("Email sent:", info.response);
+                return res.status(200).json({ success: true, message: "Employee Data inserted successfully & Offer Letter sent", });
               }
-
-              console.log("User data inserted successfully:", userResult);
-
-              // Insert data into the attendance table
-              mysql.query(
-                "INSERT INTO attendance (emp_id, attendance_date, status) VALUES (?, ?, ?);",
-                [emp_id, hire_date, 'Present'], // Use hire_date as attendance_date
-                async (attendanceErr, attendanceResult) => {
-                  if (attendanceErr) {
-                    console.error("Error inserting attendance data:", attendanceErr);
-                    mysql.rollback(() => {
-                      return res.status(500).json({
-                        success: false, message: attendanceErr.sqlMessage, error: "Error inserting attendance data",
-                      });
-                    });
-                  }
-
-                  console.log("Attendance data inserted successfully:", attendanceResult);
-
-                  mysql.commit((commitErr) => {
-                    if (commitErr) {
-                      console.error("Error committing transaction:", commitErr);
-                      mysql.rollback(() => {
-                        return res.status(500).json({
-                          success: false,
-                          message: "Error committing transaction",
-                        });
-                      });
-                    }
-
-                    const mailOptions = {
-                      from: process.env.EMAIL_USERNAME,
-                      to: "hmic828@gmail.com", // Change this to 'email' if you want to send it to the employee's email
-                      subject: "Job Offer Letter",
-                      text: `Congratulations, you are hired at TechoHub! You can join us from the specified date.
-
-Sincerely,
-Zeeshan Ali (HR)
-TECHNOHUB`,
-                    };
-
-                    transporter.sendMail(mailOptions, (emailError, info) => {
-                      if (emailError) {
-                        console.error("Error sending email:", emailError);
-                        return res.status(500).json({
-                          success: false,
-                          message: "Failed to send the Hiring Offer letter via email",
-                        });
-                      }
-
-                      console.log("Email sent:", info.response);
-
-                      // Return a success response
-                      return res.status(200).json({
-                        success: true,
-                        message: "Employee Data inserted successfully & Offer Letter sent",
-                      });
-                    });
-                  });
-                }
-              );
-            }
-          );
-        }
-      );
-    });
+            })
+          }
+        })
   } catch (error) {
-    console.error("Unexpected error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Unexpected error occurred",
-    });
+    console.log(error);
+    res.json({ message: 'catch error', error, success: false })
   }
+});
+
+router.post('/sendOfferLetter', (req, res) => {
+  const { application_id, offerLetter } = req.body;
+
+  // Query the database for the applicant's email
+  mysql.query('SELECT email FROM applications WHERE application_id = ?', [application_id], (err, result) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ success: false, message: 'Error querying the database' });
+    } else {
+      if (result.length === 0) {
+        return res.status(404).json({ success: false, message: 'Application not found' });
+      }
+      const recipientEmail = result[0].email;
+      console.log(recipientEmail);
+      const mailOptions = {
+        from: process.env.EMAIL_USERNAME,
+        // to: recipientEmail, 
+        to: 'hmic828@gmail.com', 
+        subject: "Job Offer Letter",
+        text: offerLetter,
+      };
+
+      transporter.sendMail(mailOptions, (emailError, info) => {
+        if (emailError) {
+          console.error("Error sending email:", emailError);
+          return res.status(500).json({ success: false, message: "Failed to send the Offer letter via email" });
+        } else {
+          console.log("Email sent:", info.response);
+          return res.status(200).json({ success: true, message: "Offer Letter sent" });
+        }
+      });
+    }
+  });
 });
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -640,9 +764,10 @@ router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) =
         } else {
           const mailOptions = {
             from: process.env.EMAIL_USERNAME,
-            to: "muhammadihtisham60@gmail.com",
+            // to: "muhammadihtisham60@gmail.com",
+            to: employee.email,
             subject: "Offer Letter",
-            text: `Subject: Job Offer - [Your Company Name]
+            text: `Subject: Job Offer - HR Connect
 
           [Date]
           
@@ -914,7 +1039,7 @@ router.put("/leaveApproved", verifyToken, checkUserRole(1), (req, res) => {
 
   const { emp_id, attendance_date, toDate } = req.body;
   console.log(emp_id, attendance_date, toDate);
-  if (toDate == null || toDate === 'NaN-NaN-NaN'|| toDate==="") {
+  if (toDate == null || toDate === 'NaN-NaN-NaN' || toDate === "") {
     const status = "Leave";
     mysql.query(
       `call attendanceApproval(${emp_id}, '${status}', '${attendance_date}')`,
