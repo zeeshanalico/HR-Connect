@@ -643,8 +643,34 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
       role_id,
       salary,
       university,
-      zipcode,
+      zipcode
     } = req.body;
+    // const requiredFields = [address,
+    //   applicant_name,
+    //   cgpa,
+    //   city,
+    //   cnic,
+    //   degree,
+    //   dep_id,
+    //   dob,
+    //   email,
+    //   emp_id,
+    //   gender,
+    //   github_profile_url,
+    //   hire_date,
+    //   job_id,
+    //   linkedin_profile_url,
+    //   major,
+    //   phone_number,
+    //   role_id,
+    //   salary,
+    //   university,
+    //   zipcode]
+    // for (const field of requiredFields) {
+    //   if (req.body[field] === undefined || req.body[field].trim() === '') {
+    //     return res.status(400).json({ success: false, message: `Field '${field}' is required.` });
+    //   }
+    // }
     const DOB = dob?.toString()?.slice(0, 10)
     const salt = await bcrypt.genSalt(10);
     const hashed_password = await bcrypt.hash(cnic?.toString(), salt);
@@ -679,7 +705,8 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
           } else {
             const mailOptions = {
               from: process.env.EMAIL_USERNAME,
-              to: "hmic828@gmail.com", // Change this to 'email' if you want to send it to the employee's email
+              to: email, // Change this to 'email' if you want to send it to the employee's email
+              // to: "hmic828@gmail.com", // Change this to 'email' if you want to send it to the employee's email
               subject: "Job Offer Letter",
               text: `Congratulations, you are hired at TechoHub! You can join us from the specified date.
               
@@ -722,7 +749,7 @@ router.post('/sendOfferLetter', (req, res) => {
       const mailOptions = {
         from: process.env.EMAIL_USERNAME,
         // to: recipientEmail, 
-        to: 'hmic828@gmail.com', 
+        to: 'hmic828@gmail.com',
         subject: "Job Offer Letter",
         text: offerLetter,
       };
@@ -1203,6 +1230,53 @@ router.get("/logout", (req, res) => {
   });
 });
 
+async function getUserByEmail(email) {
+
+  const user = await mysql.query('SELECT * FROM users WHERE user_email = ?', [email]);
+  return user[0];
+}
+
+async function updateUserPassword(userId, newPassword) {
+  await db.query('', [newPassword, userId]);
+}
+
+router.post('/resetPassword', verifyToken, checkUserRole(2), async (req, res) => {
+  const { email, currentPassword, password } = req.body;
+  const { user_id } = req.user;
+  console.log(user_id);
+  try {
+    mysql.query('select * from users where user_id=?;', [user_id], async (err, result) => {
+      if (err) {
+        res.json({ success: false, err, message: 'Their is an issue' });
+        console.log(err);
+      } else {
+        user = result[0];
+        if (!user) {
+          return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const passwordMatch = await bcrypt.compare(currentPassword, user.user_password);
+        if (!passwordMatch) {
+          return res.status(401).json({ success: false, message: 'Incorrect current password' });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(password, salt);
+        mysql.query('UPDATE users SET user_password = ? WHERE user_id = ?', [hashedNewPassword, user_id], (error, result) => {
+          if (error) {
+            res.json({ success: false, error, message: 'Their is an issue' });
+            console.log(error);
+          } else {
+            res.status(200).json({ success: true, message: 'Password reset successfully' });
+          }
+        })
+
+      }
+    })
+  }
+  catch (error) {
+    console.log(error);
+    res.json({ success: false, error, message: 'Catch Issue' });
+  }
+})
 
 router.put("/resetPassword", verifyToken, checkUserRole(2), (req, res) => {
   console.log("/reset password");

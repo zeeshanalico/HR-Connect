@@ -26,8 +26,32 @@ export default function ViewJobApplications() {
         
   Sincerely,
   Muhammad Ihtisham(HR)
-  HRConnect`);
+  HRConnect
+                                                 Signed By:_____________________`);
+
   const [showOfferLetterModal, setShowOfferLetterModal] = useState(false)
+  const handlePrint = () => {
+    const printableContent = document.querySelector(".printable-content"); // Replace with an appropriate class or ID
+    if (printableContent) {
+      const printWindow = window.open("", "_blank");
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print</title>
+          </head>
+          <body>
+            ${printableContent.innerHTML}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+      setShowOfferLetterModal(false)
+    }
+  };
+
   const sendOfferLetter = async () => {
     try {
       const response = await axios.post(BaseUrl + "/sendOfferLetter", { offerLetter, application_id: applicationId }, config);
@@ -392,7 +416,7 @@ export default function ViewJobApplications() {
             >
               Cancel
             </Button>
-            <Button variant="danger" as={Link} to={`/ hrdash / addEmployee / ${applicationId}`} >
+            <Button variant="danger" as={Link} to={`/hrdash/addEmployee/${applicationId}`} >
               Accept
             </Button>
           </Modal.Footer>
@@ -404,7 +428,10 @@ export default function ViewJobApplications() {
             <Modal.Title>Offer Letter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <textarea name="" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} />
+            <textarea name=""  className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} >
+            This is <strong>bold</strong> text.
+  This is <em>italic</em> text.
+              </textarea>
 
           </Modal.Body>
           <Modal.Footer>
@@ -416,6 +443,9 @@ export default function ViewJobApplications() {
             </Button>
             <Button variant="success" onClick={sendOfferLetter} >
               Send
+            </Button>
+            <Button variant="primary" onClick={handlePrint}>
+              Print
             </Button>
           </Modal.Footer>
         </Modal>

@@ -9,14 +9,14 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ success: false, message: 'Authentication failed' });
       }
       req.user = decoded;
-      console.log('Decoded JWT Payload:', decoded);
+      // console.log('Decoded JWT Payload:', decoded);
       console.log('Token Verified');
       next();
     });
   };
   
   const checkUserRole = (requiredRole) => (req, res, next) => {
-    console.log(requiredRole);
+    // console.log(requiredRole);
     const userRole = req.user.role_id;
     if (userRole !== requiredRole) {
       return res.status(403).json({ success: false, message: 'Access denied. Insufficient role privileges.' });

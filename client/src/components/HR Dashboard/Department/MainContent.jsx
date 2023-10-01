@@ -41,7 +41,7 @@ export default function MainContent() {
                   <i className="fa fa-users fa-4x"></i>
                 </div>
                 <h6 className="text-uppercase">Total Employees</h6>
-                <h1 className="display-4">{stat.totalEmployees}</h1>
+                <h1 className="display-4">{parseInt(stat.totalEmployees,10)-1}</h1>
               </div>
             </div>
           </div>

@@ -73,7 +73,7 @@ const LoginPage = () => {
                 <Form.Control
                   type="email"
                   name="user_email"
-                  placeholder='Please enter Username or Email here!'
+                  placeholder='Please Enter Username or Email here!'
                   value={formData.user_email}
                   onChange={handleInputChange}
                   required
@@ -84,7 +84,7 @@ const LoginPage = () => {
                 <Form.Control
                   type="password"
                   name="user_password"
-                  placeholder='Please enter  Password here!'
+                  placeholder='Please Enter Password here!'
                   value={formData.user_password}
                   onChange={handleInputChange}
                   required

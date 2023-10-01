@@ -8,13 +8,13 @@ import axios from 'axios';
 import Toast from '../../../UIModules/Toast/Toast';
 import { BaseUrl } from '../../../constants';
 import { config } from '../../../constants';
+import { Link } from 'react-router-dom';
 export default function ViewProfile() {
 
   const [current, setCurrent] = useState("");
   const [confirm, setConfirm] = useState("");
   const [newPass, setNewPass] = useState("");
   const [password, setPassword] = useState(false)
-
   const handleChangePassword = async (e) => {
 
     e.preventDefault();
@@ -278,45 +278,45 @@ export default function ViewProfile() {
                   <Table striped bordered hover>
                     <tbody>
                       <tr>
-                        <td className="text-info"><strong>My Employee ID</strong></td>
+                        <td className="text-secondary"><strong>My Employee ID</strong></td>
                         <td>{empInfo.emp_id}</td>
-                        <td className="text-info"><strong>CNIC</strong></td>
+                        <td className="text-secondary"><strong>CNIC</strong></td>
                         <td>{empInfo.cnic}</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>Full Name </strong></td>
+                        <td className="text-secondary"><strong>Full Name </strong></td>
                         <td>{empInfo.name}</td>
-                        <td className="text-info"><strong>Hire Date</strong></td>
+                        <td className="text-secondary"><strong>Hire Date</strong></td>
                         <td>{empInfo.hire_date?.toString().slice(0, 10)}</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>Email </strong></td>
+                        <td className="text-secondary"><strong>Email </strong></td>
                         <td>{empInfo.email}</td>
-                        <td className="text-info"><strong>Date of Birth</strong></td>
+                        <td className="text-secondary"><strong>Date of Birth</strong></td>
                         <td>{empInfo.DOB?.toString().slice(0, 10)}</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>Phone Number </strong></td>
+                        <td className="text-secondary"><strong>Phone Number </strong></td>
                         <td>{empInfo.phone_number}</td>
-                        <td className="text-info"><strong>Salary</strong></td>
-                        <td>{empInfo.salary}</td>
+                        <td className="text-secondary"><strong>Salary</strong></td>
+                        <td>{empInfo.salary?.toString()?.slice(0,-3)} PKR</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>City </strong></td>
+                        <td className="text-secondary"><strong>City </strong></td>
                         <td>{empInfo.city}</td>
-                        <td className="text-info"><strong>Department</strong></td>
+                        <td className="text-secondary"><strong>Department</strong></td>
                         <td>{empInfo.dep_name}</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>Zip-Code </strong></td>
+                        <td className="text-secondary"><strong>Zip-Code </strong></td>
                         <td>{empInfo.zipcode}</td>
-                        <td className="text-info"><strong>My Job as a</strong></td>
+                        <td className="text-secondary"><strong>My Job as a</strong></td>
                         <td>{empInfo.job_name}</td>
                       </tr>
                       <tr>
-                        <td className="text-info"><strong>Address </strong></td>
+                        <td className="text-secondary"><strong>Address </strong></td>
                         <td>{empInfo.address}</td>
-                        <td className="text-info"><strong>Gender</strong></td>
+                        <td className="text-secondary"><strong>Gender</strong></td>
                         <td>{empInfo.gender}</td>
                       </tr>
                     </tbody>
@@ -324,10 +324,13 @@ export default function ViewProfile() {
                       <Button variant="primary" onClick={() => { setEditMode(true) }}>
                         Edit Profile
                       </Button>
-                      <hr />
-                      <Button variant="primary" onClick={() => { setPassword(true) }} >
+
+                      {/* <Button variant="primary" style={{ margin: '6px' }} onClick={() => { setPassword(true) }} >
                         Reset Password
-                      </Button>
+                      </Button> */}
+                      <Link to="/empdash/viewProfile/resetPassword">
+                        <Button variant="danger">Reset Password</Button>
+                      </Link>
                     </tfoot>
                   </Table>
                 )}

@@ -1,34 +1,50 @@
+#back-arrow {
 
-#back-arrow{
-
-position: absolute;
-top: 35px;
-left: 40px;
-font-size: large;
+  position: absolute;
+  top: 35px;
+  left: 40px;
+  font-size: large;
 
 }
 
-#wrapper{
+#wrapper {
 
   height: 200px;
-  background-color: white; /* For browsers that do not support gradients */
-  background-image: linear-gradient(to bottom right, white, #0066cc);
-
-
+  background-color: white;
+  /* For browsers that do not support gradients */
+  
+  
 }
+
 /* LoginForm.css */
 
 .login-form {
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
   padding: 20px;
   border-radius: 8px;
+  /* background: repeating-linear-gradient(45deg, #3399ff, #3399ff 10px, transparent 10px, transparent 20px); */
+  
+  background: linear-gradient(to bottom right, #5df2ca, #8c6cff);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   margin-top: 50px;
+  transition: box-shadow 2s ease; /* Add a transition effect on transform */
+  transition: transform 1s ease; /* Add a transition effect on transform */
+  transform-origin: center; 
+}
+.login-form:hover{
+  transform: scale(1.07);
+  box-shadow:0px 0px  20px rgb(66, 65, 65);
+  /* Increase the size by 10% */
 }
 
 .login-form h2 {
   margin-bottom: 20px;
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Set the text color */
+  text-align: center; /* Center-align the text */
+  text-transform: uppercase; /* Convert text to uppercase */
 }
 
 .login-form input[type="email"],
@@ -44,14 +60,21 @@ font-size: large;
   width: 100%;
   padding: 12px;
   border: none;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   background-color: #007bff;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+
+  transition: transform 0.7s ease; /* Add a transition effect on transform */
+  transform-origin: center; /* Set the transform origin to the center */
+
+  border-radius:50px;
   outline: none;
+  
 }
 
 .login-form button[type="submit"]:hover {
-  background-color: #0056b3;
+  transform: scale(1.03);
+    background-color: #0056b3;
 }

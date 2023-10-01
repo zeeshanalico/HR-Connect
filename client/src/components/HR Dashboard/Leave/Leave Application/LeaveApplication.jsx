@@ -143,11 +143,11 @@ export default function LeaveApplication() {
           <input
             type="text"
             id="employeeNameFilter"
-            placeholder="Search by Employee Name                 🔍"
+            placeholder="Search by Employee Name                 "
             className="form-control"
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
-            style={{ width: '300px', marginRight: '10px' }}
+            style={{ width: '300px', marginRight: '10px',marginBottom:'5px'}}
           />
           <div style={{ margin: '0 0 10px 500px' }}>items per page &ensp;</div>
           <select

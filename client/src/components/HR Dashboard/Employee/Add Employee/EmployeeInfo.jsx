@@ -272,7 +272,7 @@ export default function EmployeeInfo({ id }) {
             <div id="info-card">
               <div id="first-half">
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="EmployeeID" className="form-label">Employee ID:</label>
+                  <label htmlFor="EmployeeID" required className="form-label">Employee ID:</label>
                   <input
                     type="number"
                     className="form-control round"
@@ -284,7 +284,7 @@ export default function EmployeeInfo({ id }) {
                   />
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="emp_role" className="form-label">Employee job:</label>
+                  <label htmlFor="emp_role" required className="form-label">Employee job:</label>
                   <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={handleChange}  >
                     <option>--select</option>
                     {jobPositions.map((job) => (
@@ -295,7 +295,7 @@ export default function EmployeeInfo({ id }) {
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="DepartmentName" className="form-label">Department Name:</label>
+                  <label htmlFor="DepartmentName" required className="form-label">Department Name:</label>
                   <select name="dep_id" className="form-control round" value={employeeInformation?.dep_id} onChange={handleChange} >
                     <option>--select--</option>
                     {dep.map((dep) => (
@@ -306,7 +306,7 @@ export default function EmployeeInfo({ id }) {
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="Salary" className="form-label">Salary(PKR):</label>
+                  <label htmlFor="Salary" required className="form-label">Salary(PKR):</label>
                   <input
                     type="number"
                     className="form-control round"
@@ -329,7 +329,7 @@ export default function EmployeeInfo({ id }) {
                   />
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="HireDate" className="form-label">Hire Date:</label>
+                  <label htmlFor="HireDate" required className="form-label">Hire Date:</label>
                   <input
                     type={(!employeeInformation?.hire_date || employeeInformation?.hire_date.trim() === '' || employeeInformation?.hire_date == null) ? 'date' : 'text'}
                     className="form-control round"
@@ -346,7 +346,7 @@ export default function EmployeeInfo({ id }) {
 
             <div id="second-half"><div className="mb-3 rounded-input">
               <label htmlFor="emprole" className="form-label">Employee Role:</label>
-              <select name="role_id" className="form-control round" value={employeeInformation?.role_id} onChange={handleChange}>
+              <select name="role_id" className="form-control round" required value={employeeInformation?.role_id} onChange={handleChange}>
                 <option value="">--select</option>
                 {roles.map((role) => (
                   <option key={role.role_id} value={role.role_id}>
