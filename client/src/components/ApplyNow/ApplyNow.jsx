@@ -22,25 +22,6 @@ export default function ApplyNow() {
   const jobTitleFromState = location.state && location.state.job_title;
   const navigate = useNavigate();
 
-  // const handleChange = (e) => {
-  //   const { name, value, type, files } = e.target;
-  //   if (type === 'file') {
-  //     setFile((prevState) => {
-  //       return { ...prevState, [name]: files[0], job_id: jobId };
-
-  // const handleChange = (e) => {
-  //   const { name, value, type, files } = e.target;
-  //   if (type === 'file') {
-  //     setUserDetails((prevState) => {
-  //       return { ...prevState, [name]: files[0], job_id: jobId };
-  //     });
-  //   } else {
-  //     setUserDetails((prevState) => {
-  //       return { ...prevState, [name]: value, job_id: jobId };
-  //     });
-  //   }
-  // };
-
   const handleSubmit = async (values, { resetForm }) => {
     console.log(values);
     try {
@@ -72,7 +53,7 @@ export default function ApplyNow() {
         initialValues={{ ...initialValues, job_id: jobId, job_title: jobTitle, cv_file: null }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}    >
-        {({ errors, touched, values,setFieldValue }) => (
+        {({ errors, touched, values, setFieldValue }) => (
           <Form className={styles.form} method="post" enctype="multipart/form-data">
             <label htmlFor="applicant_name">Applicant Name</label>
             <Field
@@ -242,22 +223,10 @@ export default function ApplyNow() {
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="gender" component="span" className="error-message" />
 
             <label htmlFor="cv_file">Upload Resume</label>
-            {/* <Field
-              type="file"
-              id="cv_file"
-              // onChange={handleChange}
-              onChange={(event) => {
-                setFieldValue("cv_file", event.currentTarget.files[0]);
-              }}
-              accept=".pdf,.doc,.docx"
-              required
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-
-            /> */}
-            <input id="file" name="cv_file" type="file" onChange={(event) => {
+            <input id="file" name="cv_file" type="file"  accept=".pdf,.docx" onChange={(event) => {
               setFieldValue("cv_file", event.target.files[0]);
             }} />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cv_file" component="div" className="error-message" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }}  name="cv_file" component="div" className="error-message" />
 
             <button className={styles.submitButton} style={{ marginTop: '10px' }} type="submit">Submit</button>
           </Form>
@@ -266,110 +235,3 @@ export default function ApplyNow() {
     </div>
   );
 }
-
-
-
-// import React from 'react';
-// import { Link as RouterLink } from 'react-router-dom';
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
-// import * as Yup from 'yup';
-// import styles from './ApplyNow.module.css';
-
-// const validationSchema = Yup.object().shape({
-//   applicant_name: Yup.string().required('Full Name is required'),
-//   email: Yup.string().email('Invalid email address').required('Email is required'),
-//   phone_number: Yup.string()
-//     .matches(/^\d{11}$/, 'Phone number must be 11 digits')
-//     .required('Phone number is required'),
-//   // Add more validation rules for other fields here...
-// });
-
-// const ApplyNow = () => {
-//   return (
-//     <div className={styles.container}>
-//       <RouterLink to="/applyPage">
-//         <i
-//           id="back-arrow"
-//           className={`fa fa-arrow-left ${styles.backArrow}`}
-//           aria-hidden="true"
-//         />
-//       </RouterLink>
-
-//       <Formik
-//         initialValues={{
-//           applicant_name: '',
-//           email: '',
-//           phone_number: '',
-//           // Initialize other fields here...
-//         }}
-//         validationSchema={validationSchema}
-//         onSubmit={values => {
-//           console.log(values);
-//         }}
-//       >
-//         {({ errors, touched }) => (
-//           <Form className={styles.form}>
-//             <div className={styles.fieldGroup}>
-//               <label htmlFor="applicant_name">Applicant Name</label>
-//               <Field
-//                 id="applicant_name"
-//                 name="applicant_name"
-//                 placeholder="Applicant Full Name"
-//               />
-//               <ErrorMessage name="applicant_name" component="span" className={styles.error} />
-//             </div>
-
-//             <div className={styles.fieldGroup}>
-//               <label htmlFor="email">Email</label>
-//               <Field
-//                 id="email"
-//                 name="email"
-//                 placeholder="Enter your email"
-//               />
-//               <ErrorMessage name="email" component="span" className={styles.error} />
-//             </div>
-
-//             <div className={styles.fieldGroup}>
-//               <label htmlFor="phone_number">Phone Number</label>
-//               <Field
-//                 id="phone_number"
-//                 name="phone_number"
-//                 type="number"
-//               />
-//               <ErrorMessage name="phone_number" component="span" className={styles.error} />
-//             </div>
-
-//             {/* Add more field groups for other fields here... */}
-
-//             <div className={styles.radioGroup} role="group" aria-labelledby="gender">
-//               <label>
-//                 <Field type="radio" id="male" name="gender" value="Male" />
-//                 Male
-//               </label>
-//               <label>
-//                 <Field type="radio" id="female" name="gender" value="Female" />
-//                 Female
-//               </label>
-//             </div>
-//             <ErrorMessage name="gender" component="span" className={styles.error} />
-
-//             <div className={styles.fieldGroup}>
-//               <label htmlFor="cv_file">Upload Resume</label>
-//               <Field
-//                 type="file"
-//                 id="cv_file"
-//                 name="cv_file"
-//               />
-//               <ErrorMessage name="cv_file" component="div" className={styles.error} />
-//             </div>
-
-//             <button type="submit" className={styles.submitButton}>Submit</button>
-//           </Form>
-//         )}
-//       </Formik>
-//     </div>
-//   );
-// };
-
-// export default ApplyNow;
-

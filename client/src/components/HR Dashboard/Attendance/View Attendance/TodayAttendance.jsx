@@ -13,20 +13,18 @@ const TodayAttendance = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getTodayAllAttendance',config);
+      const response = await axios.get(BaseUrl + '/getTodayAllAttendance', config);
       setTodayAllAttendance(response.data);
     } catch (error) {
-      Toast('catch Error','error')
+      Toast('catch Error', 'error')
       console.error('Error fetching data jobpositions:', error);
     }
   };
 
   useEffect(() => {
     fetchData();
-    // console.log("connection:",navigator);
   }, []);
 
-  // Handle change in items per page select
   const handleItemsPerPageChange = (e) => {
     const selectedItemsPerPage = parseInt(e.target.value);
     setItemsPerPage(selectedItemsPerPage);
@@ -46,24 +44,31 @@ const TodayAttendance = () => {
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Today's Attendance</h2>
       <div id="content">
-        <Row>
-          <Col md={10}></Col>
-          <Col md={2} className="text-right">
-            <label htmlFor="itemsPerPageSelect" style={{ marginRight: '10px' }}>Items per Page:</label>
-            <select
-              id="itemsPerPageSelect"
-              className="form-control"
-              value={itemsPerPage}
-              style={{ width: '70px', marginLeft: '70px' }}
-              onChange={handleItemsPerPageChange}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-            </select>
-          </Col>
-        </Row>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,margin:'10px' }}>
+          <select name="status" className="form-control round" style={{width:'250px'}} onChange={(e) => setStatus(e.target.value)}>
+            <option value={''} style={{display:'none'}}>Search by Attendance Status</option>
+            <option value={'All'}>All</option>
+            <option value={'Absent'}>Absent</option>
+            <option value={'Leave'}>Leave</option>
+            <option value={'Present'}>Present</option>
+          </select>
+
+          <label htmlFor="itemsPerPageSelect" style={{ marginRight: '-100px',marginLeft:'500px' }}>Items per Page:</label>
+          <select
+            id="itemsPerPageSelect"
+            className="form-control"
+            value={itemsPerPage}
+            style={{ width: '70px', marginLeft: '70px' }}
+            onChange={handleItemsPerPageChange}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+          </select>
+        </div>
+
 
         <table className="table">
           <thead>
@@ -74,14 +79,7 @@ const TodayAttendance = () => {
               <th>Gender</th>
               <th>Department</th>
               <th>Phone Number</th>
-              <th>
-                <select style={{ border: "none", height: "30px", outline: " none", cursor: 'pointer', backgroundColor: "transparent" }} name="status" className="form-control round" onChange={(e) => setStatus(e.target.value)}>
-                  <option value={'All'}>Status</option>
-                  <option value={'Absent'} >Absent</option>
-                  <option value={'Leave'} >Leave</option>
-                  <option value={'Present'} >present</option>
-                </select>
-              </th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>

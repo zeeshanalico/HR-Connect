@@ -36,7 +36,7 @@ export default function SideBar() {
         <li className="nav-item mb-2">
           <Dropdown as="div">
             <Dropdown.Toggle variant="link" className="nav-link text-secondary">
-              <i className="far fa-calendar-alt font-weight-bold"></i> <span className="ml-3">Attendance</span>
+              <i className="far fa-calendar-alt font-weight-bold"></i>  <span className="ml-3">Attendance</span>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item as={RouterLink} to="/hrdash/todayAttendance">
@@ -51,7 +51,7 @@ export default function SideBar() {
         <li className="nav-item mb-2">
           <Dropdown as="div">
             <Dropdown.Toggle variant="link" className="nav-link text-secondary">
-              <i className="fas fa-sitemap font-weight-bold"></i> <span className="ml-3">Departments</span>
+              <i className="fas fa-sitemap font-weight-bold"></i><span className="ml-3">Departments</span>
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item as={RouterLink} to="/hrdash/viewDepartment">

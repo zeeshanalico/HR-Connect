@@ -5,7 +5,7 @@ import '../../../BasicStyle.css';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
-import { config,increaseDateByOneDay } from './../../../../constants.js';
+import { config, increaseDateByOneDay } from './../../../../constants.js';
 import ReactPaginate from 'react-paginate';
 import styles from './PostJob.module.css'
 // import './PostJob.css'
@@ -80,7 +80,7 @@ export default function PostJob() {
     if (jobToRemove !== null) {
       console.log('Deleting job with ID:', jobToRemove);
       try {
-        const response = await axios.post(BaseUrl + '/deleteJob', { job_id: jobToRemove },config);
+        const response = await axios.post(BaseUrl + '/deleteJob', { job_id: jobToRemove }, config);
         if (response.data.success) {
           console.log('Job with ID', jobToRemove, 'deleted successfully.');
           Toast('Job Removed Successfully', 'success');
@@ -109,7 +109,6 @@ export default function PostJob() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   // Handle filter input changes
   const handleFilterChange = (e) => {
-
     const { name, value } = e.target;
     console.log(name, value);
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
@@ -121,17 +120,17 @@ export default function PostJob() {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(0);
-  };
-
-  // Filter jobs based on filters and current page
+  }; console.log('filters.expiryDate:', filters.expiryDate);
+  console.log('alljobs:', alljobs);
   const filteredJobs = alljobs
     .filter((job) =>
       job.title.toLowerCase().includes(filters.jobTitle.toLowerCase()) &&
       job.dep_name.toLowerCase().includes(filters.department.toLowerCase()) &&
-      job.date_posted.toLowerCase().includes(filters.datePosted.toLowerCase()) &&
-      job.expiry_date.toLowerCase().includes(filters.expiryDate.toLowerCase()) &&
-      job.experience.toLowerCase().includes(filters.experienceRequired.toLowerCase())
-    )
+      job.date_posted.slice(0, 10).toLowerCase().includes(filters.datePosted.toLowerCase()) &&
+      job.expiry_date.slice(0, 10).toLowerCase().includes(filters.expiryDate.toLowerCase()) &&
+      job.experience.toLowerCase().includes(filters.experienceRequired.toLowerCase()))
+  console.log('filteredJobs:', filteredJobs);
+
   const offset = currentPage * itemsPerPage;
   const currentJobs = filteredJobs.slice(offset, offset + itemsPerPage);
 
@@ -292,12 +291,13 @@ export default function PostJob() {
             <InputGroup className="filter-inputs">
               <select
                 name="department"
-                style={{ margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%' }}
+                style={{ margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%', outline: "none" }}
                 className="formcont"
                 value={filters.department}
                 onChange={handleFilterChange}
               >
-                <option value={''}>Department</option>
+                <option value={''} style={{ display: 'none' }}>Department</option>
+                <option value={''}>All</option>
                 {dep.map((department, index) => (
                   <option value={department.dep_name} key={index}>
                     {department.dep_name}
@@ -330,7 +330,7 @@ export default function PostJob() {
               </InputGroup>
               <InputGroup style={{ width: 'calc(36% - 20px)' }}>
                 <FormControl
-                  placeholder="Applying Date"
+                  placeholder="Expiry Date"
                   style={{
                     margin: '7px -30px 7px 0',
                     paddingBottom: '6px',

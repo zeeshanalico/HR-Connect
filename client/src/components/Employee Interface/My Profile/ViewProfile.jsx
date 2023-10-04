@@ -9,44 +9,31 @@ import Toast from '../../../UIModules/Toast/Toast';
 import { BaseUrl } from '../../../constants';
 import { config } from '../../../constants';
 import { Link } from 'react-router-dom';
+import ImageUpload from './ImageUpload';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object().shape({
+  phone_number: Yup.string()
+    .matches(/^\d{11}$/, "Phone number must be 11 digits")
+    .required("Phone number is required"),
+  city: Yup.string().required("City is required"),
+  address: Yup.string()
+    .min(30, 'Address must be at least 30 characters long')
+    .required('Address is required'),
+  zipcode: Yup.string()
+    .required("Zipcode is required")
+    .matches(/^\d{5}$/, "Zip must be 5 digits"),
+});
 export default function ViewProfile() {
+
 
   const [current, setCurrent] = useState("");
   const [confirm, setConfirm] = useState("");
   const [newPass, setNewPass] = useState("");
   const [password, setPassword] = useState(false)
-  const handleChangePassword = async (e) => {
 
-    e.preventDefault();
+  const [imageURL, setImageURL] = useState(null);
 
-    try {
-      const response = await axios.put(BaseUrl + '/resetPassword', {
-        current,
-        confirm,
-        newPass,
-      });
-
-      if (response.data.success) {
-        Toast(response.data.message);
-        // Optionally, you can reset the input fields or clear them
-        setCurrent('');
-        setConfirm('');
-        setNewPass('');
-      } else {
-        // Check for specific error messages and provide user feedback
-        if (response.data.message === 'Current password does not match') {
-          Toast(response.data.message);
-        } else if (response.data.message === 'New password and Confirm password do not match') {
-          Toast(response.data.message);
-        } else {
-          Toast('Password not changed');
-        }
-      }
-    } catch (error) {
-      // Handle network or other errors
-      Toast('Password change failed');
-    }
-  };
 
   const [empInfo, setEmpInfo] = useState({});
   const fetchData = async () => {
@@ -61,8 +48,26 @@ export default function ViewProfile() {
       console.error('Error fetching data empInfobyId:', error);
     }
   };
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/images', { responseType: 'blob' });
+      if (response.status === 200) {
+        const blob = new Blob([response.data.imagePath], { type: 'image/png' }); // Adjust the type if needed
+        const url = URL.createObjectURL(blob);
+        console.log(url);
+        setImageURL(url);
+      } else {
+        console.error('Error fetching image:', response.statusText);
+      }
+    } catch (error) {
+      // Handle network or other errors here
+      console.error('Error fetching image:', error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchImage();
   }, [])
 
 
@@ -75,22 +80,52 @@ export default function ViewProfile() {
       return { ...prevState, [name]: value };
     });
   }
+  // const handleUpdate = async () => {
+  //   console.log(updateInfo)
+  //   try {
+  //     await validationSchema.validate(updateInfo, { abortEarly: false });
+  //       const response = await axios.put(BaseUrl + '/updateEmployeeInfo', updateInfo, config)
+  //       if (response.data.success) {
+  //         Toast(`${response.data.message}`)
+  //         await fetchData();
+  //       } else {
+  //         Toast(`${response.data.message}`)
+  //       }
+  //   } catch (e) {
+  //     Toast('An Error Occured.', 'error')
+  //     console.log(e);
+  //   }
+
+  // }
   const handleUpdate = async () => {
     console.log(updateInfo);
     try {
-      const response = await axios.put(BaseUrl + '/updateEmployeeInfo', { ...updateInfo }, config)
+      await validationSchema.validate(updateInfo, { abortEarly: false });
+      const response = await axios.put(BaseUrl + '/updateEmployeeInfo', { ...updateInfo }, config);
+
       if (response.data.success) {
-        Toast(`${response.data.message}`)
+        Toast(`${response.data.message}`);
         await fetchData();
       } else {
-        Toast(`${response.data.message}`)
+        Toast(`${response.data.message}`, 'error');
       }
-    } catch (e) {
-      Toast('An Error Occured.', 'error')
-      console.log(e);
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((e) => {
+          validationErrors[e.path] = e.message;
+        });
+        console.log(validationErrors);
+        Object.values(validationErrors).forEach((errorMessage) => {
+          Toast(errorMessage, 'error');
+        });
+      } else {
+        Toast('An Error Occurred.', 'error');
+        console.error(error);
+      }
     }
-
-  }
+    await fetchData();
+  };
 
   return (
     <>
@@ -153,7 +188,6 @@ export default function ViewProfile() {
                   />
                 </div>
                 <button
-                  onClick={handleChangePassword}
                   style={{
                     backgroundColor: '#007BFF',
                     color: 'white',
@@ -191,28 +225,20 @@ export default function ViewProfile() {
                 />
               </div>
             )}
+            
           </div> */}
+            <div>
+              {imageURL && <img src={'http://localhost:3002/images'} alt="Img" />}
+            </div>
             <div id="flex-content">
               <div id="first-half">
                 {editMode ? (
                   <>
                     <h4>Only This Information is Allowed to change!</h4>
-                    {/* <div className="mb-3 rounded-input">
-                      <label htmlFor="email" className="form-label">Email:</label>
-                      <input
-                        type="email"
-                        name='email'
-                        className="form-control round"
-                        id="email"
-                        value={updateInfo.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div> */}
                     <div className="mb-3 rounded-input">
                       <label htmlFor="phoneNumber" className="form-label">Phone Number:</label>
                       <input
-                        type="tel"
+                        type="number"
                         className="form-control round"
                         id="phoneNumber"
                         name='phone_number'
@@ -275,64 +301,68 @@ export default function ViewProfile() {
 
                   </>
                 ) : (
-                  <Table striped bordered hover>
-                    <tbody>
-                      <tr>
-                        <td className="text-secondary"><strong>My Employee ID</strong></td>
-                        <td>{empInfo.emp_id}</td>
-                        <td className="text-secondary"><strong>CNIC</strong></td>
-                        <td>{empInfo.cnic}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>Full Name </strong></td>
-                        <td>{empInfo.name}</td>
-                        <td className="text-secondary"><strong>Hire Date</strong></td>
-                        <td>{empInfo.hire_date?.toString().slice(0, 10)}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>Email </strong></td>
-                        <td>{empInfo.email}</td>
-                        <td className="text-secondary"><strong>Date of Birth</strong></td>
-                        <td>{empInfo.DOB?.toString().slice(0, 10)}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>Phone Number </strong></td>
-                        <td>{empInfo.phone_number}</td>
-                        <td className="text-secondary"><strong>Salary</strong></td>
-                        <td>{empInfo.salary?.toString()?.slice(0,-3)} PKR</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>City </strong></td>
-                        <td>{empInfo.city}</td>
-                        <td className="text-secondary"><strong>Department</strong></td>
-                        <td>{empInfo.dep_name}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>Zip-Code </strong></td>
-                        <td>{empInfo.zipcode}</td>
-                        <td className="text-secondary"><strong>My Job as a</strong></td>
-                        <td>{empInfo.job_name}</td>
-                      </tr>
-                      <tr>
-                        <td className="text-secondary"><strong>Address </strong></td>
-                        <td>{empInfo.address}</td>
-                        <td className="text-secondary"><strong>Gender</strong></td>
-                        <td>{empInfo.gender}</td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <Button variant="primary" onClick={() => { setEditMode(true) }}>
-                        Edit Profile
-                      </Button>
+                  <>
 
-                      {/* <Button variant="primary" style={{ margin: '6px' }} onClick={() => { setPassword(true) }} >
-                        Reset Password
-                      </Button> */}
-                      <Link to="/empdash/viewProfile/resetPassword">
-                        <Button variant="danger">Reset Password</Button>
-                      </Link>
-                    </tfoot>
-                  </Table>
+                    <Table striped bordered hover>
+                      <tbody>
+                        <tr>
+                          <td className="text-secondary"><strong>My Employee ID</strong></td>
+                          <td>{empInfo.emp_id}</td>
+                          <td className="text-secondary"><strong>CNIC</strong></td>
+                          <td>{empInfo.cnic}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>Full Name </strong></td>
+                          <td>{empInfo.name}</td>
+                          <td className="text-secondary"><strong>Hire Date</strong></td>
+                          <td>{empInfo.hire_date?.toString().slice(0, 10)}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>Email </strong></td>
+                          <td>{empInfo.email}</td>
+                          <td className="text-secondary"><strong>Date of Birth</strong></td>
+                          <td>{empInfo.DOB?.toString().slice(0, 10)}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>Phone Number </strong></td>
+                          <td>{empInfo.phone_number}</td>
+                          <td className="text-secondary"><strong>Salary</strong></td>
+                          <td>{empInfo.salary?.toString()?.slice(0, -3)} PKR</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>City </strong></td>
+                          <td>{empInfo.city}</td>
+                          <td className="text-secondary"><strong>Department</strong></td>
+                          <td>{empInfo.dep_name}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>Zip-Code </strong></td>
+                          <td>{empInfo.zipcode}</td>
+                          <td className="text-secondary"><strong>My Job as a</strong></td>
+                          <td>{empInfo.job_name}</td>
+                        </tr>
+                        <tr>
+                          <td className="text-secondary"><strong>Address </strong></td>
+                          <td>{empInfo.address}</td>
+                          <td className="text-secondary"><strong>Gender</strong></td>
+                          <td>{empInfo.gender}</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <Button variant="primary" onClick={() => { setEditMode(true) }}>
+                          Edit Profile
+                        </Button>
+                        <Link to="/empdash/viewProfile/resetPassword">
+                          <Button variant="danger">Reset Password</Button>
+                        </Link>
+                        {/* <ImageUpload emp_id={empInfo.emp_id} emp_name={empInfo.name} /> */}
+
+                      </tfoot>
+                      <tfoot>
+
+                      </tfoot>
+                    </Table>
+                  </>
                 )}
               </div>
             </div>
@@ -350,7 +380,8 @@ export default function ViewProfile() {
             </Modal.Footer>
           </Modal>
         </div>
-      )}
+      )
+      }
     </>
   );
 }

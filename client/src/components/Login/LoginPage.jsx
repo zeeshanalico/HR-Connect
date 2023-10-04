@@ -6,8 +6,10 @@ import axios from 'axios';
 import './LoginPage.css'; // Import your custom CSS
 import { useNavigate } from 'react-router-dom';
 import { withRouter } from 'react-router-dom'; // Import withRouter
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     user_email: '',
     user_password: '',
@@ -18,6 +20,9 @@ const LoginPage = () => {
 
   }, []);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -37,7 +42,7 @@ const LoginPage = () => {
 
         if (response.data.role_id === 1) {
           setTimeout(() => {
-            navigate('/hrdash');
+            navigate('/hrdash',{state:{roleId:response.data.role_id}});
             window.location.reload()
           }, 500);
           console.log(response.data.role_id);
@@ -45,14 +50,15 @@ const LoginPage = () => {
         }
         else if (response.data.role_id === 2) {
           setTimeout(() => {
-            navigate('/empdash');
+            navigate('/empdash',{state:{roleId:response.data.role_id}});
             window.location.reload()
           }, 500);
           Toast(`${response.data.message} as Employee`, 'success')
-         
+
         }
       } else {
-        Toast(`${response.data.message}`, 'error')
+        // Toast(`${response.data.message}`, 'error')
+        console.log(`${response.data.message}`, 'error')
       }
       console.log(response.data);
     } catch (error) {
@@ -79,16 +85,22 @@ const LoginPage = () => {
                   required
                 />
               </Form.Group>
-              <Form.Group controlId="user_password">
+              <Form.Group className={'password-input'} controlId="user_password">
                 <Form.Label>Password:</Form.Label>
                 <Form.Control
-                  type="password"
+                  // type="password"
+                  type={showPassword ? "text" : "password"}
+                  // style={{position: "relative"}}
+                  style={{paddingRight:'30px'}}
                   name="user_password"
                   placeholder='Please Enter Password here!'
                   value={formData.user_password}
                   onChange={handleInputChange}
                   required
                 />
+                <span className='spanPass' onClick={togglePasswordVisibility}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
               </Form.Group>
               <Button variant="primary" type="submit">
                 Login

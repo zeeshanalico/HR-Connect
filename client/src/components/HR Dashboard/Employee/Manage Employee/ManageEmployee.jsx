@@ -1,10 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { config } from './../../../../constants.js';
+import { BaseUrl, config } from './../../../../constants.js';
 // import '../../BasicStyle.css'
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
-import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
 import ReactPaginate from 'react-paginate';
 // import './ManageEmployee.css'
@@ -12,10 +11,46 @@ import styles from './ManageEmployee.module.css'
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().slice(0,10));
   const [dep, setDep] = useState([])
   const [jobPositions, setJobPositions] = useState([])
   const [empId, setEmpId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [experienceConfirmation, setExperienceConfirmation] = useState(false)
+  const [experienceData, setExperienceData] = useState(`
+             This is to certify that Mr/Ms [employee name] has worked with our company as an [Job Title] in our [department name] department from [hiring date] to ${currentDate}.
+During the period he/she worked with the company we found him/her to be hardworking and sincere resource. We wish him all the best in his future professional endeavors.
+
+
+
+
+Muhammad Ihtisham
+Lead Talent Acquisition 
+
+  Date:${currentDate}
+                                                 Signed By:_____________________`);
+
+  const handlePrint = () => {
+    const printableContent = document.querySelector(".printable-content"); // Replace with an appropriate class or ID
+    if (printableContent) {
+      const printWindow = window.open("", "_blank");
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Print</title>
+          </head>
+          <body>
+            ${printableContent.innerHTML}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+      setExperienceConfirmation(false)
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -62,7 +97,7 @@ const ManageEmployee = () => {
   });
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  
+
   const filteredEmployees = employees
     .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
     .filter((emp) => emp?.gender?.toLowerCase()?.includes(filters.gender.toLowerCase()))
@@ -87,14 +122,14 @@ const ManageEmployee = () => {
   const handleRemoveEmployee = async () => {
     console.log(empId);
     try {
-      const response = await axios.post(BaseUrl + '/removeEmployee', { emp_id: empId })
+      const response = await axios.post(BaseUrl + '/removeEmployee', { emp_id: empId }, config)
       if (response.data.success) {
         Toast(`${response.data.message}`, 'success')
         setShowConfirmation(false);
         await fetchData();
       }
       else {
-        Toast(`Success : ${response.data.success} - Message : ${response.data.message}`)
+        Toast(`${response.data.message}`, "error")
         console.log("Error occured", response.data.message);
         setShowConfirmation(false);
       }
@@ -115,15 +150,15 @@ const ManageEmployee = () => {
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
-            style={{width:'335px',marginBottom:'10px'}}
+            style={{ width: '335px', marginBottom: '10px' }}
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
-            // style={{ flex: '1' }}
+          // style={{ flex: '1' }}
           />
-          <div style={{marginLeft:'490px'}}>items per page</div>
+          <div style={{ marginLeft: '490px' }}>items per page</div>
           <select
             name="itemsPerPage"
-            style={{width:'100px'}}
+            style={{ width: '100px' }}
             id="itemsPerPage"
             className="form-control round"
             // style={{ borderRadius: '8px', outline: 'none', padding: '9px' }}
@@ -218,6 +253,23 @@ const ManageEmployee = () => {
                     >
                       Terminate
                     </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      // style={{backgroundColor:'#FF2400'}}
+                      onClick={() => {
+                        setEmpId(employee.emp_id)
+                        setExperienceData((prevData) => {
+                          return prevData.replace('[employee name]', employee.name).replace('[Job Title]', employee.job_name).replace('[department name]', employee.dep_name).replace('[hiring date]', employee?.hire_date?.slice(0,10));
+                        });
+                        setExperienceConfirmation(true);
+                      }
+                      }
+                    >
+                      Experience Letter
+                    </button>
+
                   </td>
                 </tr>
               ))}
@@ -262,6 +314,32 @@ const ManageEmployee = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal show={experienceConfirmation}
+          onHide={() => { setExperienceConfirmation(false) }}>
+          <Modal.Header closeButton>
+            <Modal.Title>Experience Letter</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <textarea name="" className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={experienceData} cols="56" rows="17" onChange={(e) => { setExperienceData(e.target.value) }} >
+              This is <strong>bold</strong> text.
+              This is <em>italic</em> text.
+            </textarea>
+
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setExperienceConfirmation(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handlePrint}>
+              Print
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
       </div>
 
     </div>

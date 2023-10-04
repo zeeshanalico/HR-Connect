@@ -19,7 +19,7 @@ function ViewResume(props) {
                 Toast('Failed to fetch PDF','error');
             }
         } catch (error) {
-            Toast(`${error.message}`,'error');
+            // Toast(`${error.message}`,'error');
             console.log('Error:', error);
         }
     };

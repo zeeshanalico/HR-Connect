@@ -48,6 +48,7 @@
 }
 
 .login-form input[type="email"],
+.login-form input[type="text"],
 .login-form input[type="password"] {
   width: 100%;
   padding: 10px;
@@ -77,4 +78,22 @@
 .login-form button[type="submit"]:hover {
   transform: scale(1.03);
     background-color: #0056b3;
+}
+/* ----------------------------------*/
+
+
+.password-input {
+  position: relative;
+}
+
+.password-input input {
+  padding-right: 30px; /* Space for the eye icon */
+}
+
+.spanPass {
+  position: absolute;
+  top: 70%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
 }

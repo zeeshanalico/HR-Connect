@@ -23,34 +23,46 @@ const initialValues = {
 
 
 const validationSchema = Yup.object().shape({
-    applicant_name: Yup.string().required('Full Name is required'),
+    applicant_name: Yup.string()
+        .matches(/^[A-Za-z ]+$/, 'In Name Only alphabets are allowed')
+        .required('Full Name is required'),
     email: Yup.string().email('Invalid email address').required('Email is required'),
     phone_number: Yup.string()
-        .matches(/^\d{11}$/, 'Phone number must be 11 digits')
+        .matches(/^[0-9]{10,11}$/,'Phone number must be 11 or 12 digits')
         .required('Phone number is required'),
     cnic: Yup.string()
         .matches(/^\d{5}-\d{7}-\d{1}$/, 'Format : XXXXX-XXXXXXX-X')
         .required('CNIC is required'),
     city: Yup.string().required('City is required'),
-    github_profile_url: Yup.string().url('Invalid GitHub URL format'),
-    linkedin_profile_url: Yup.string().url('Invalid LinkedIn URL format'),
-    experience: Yup.string().required('Experience is required'),
+    github_profile_url: Yup.string()
+        .matches(/(github\.com)/, 'Invalid GitHub URL format, it must contain ".com"')
+        .url('Invalid GitHub URL format'),
+    linkedin_profile_url: Yup.string()
+        .matches(/(linkedin\.com)/, 'Invalid LinkedIn URL format, it must contain ".com"')
+        .url('Invalid LinkedIn URL format'), experience: Yup.string().required('Experience is required'),
     cgpa: Yup.number()
         .typeError('CGPA must be a number')
         .min(0, 'CGPA cannot be negative')
         .max(4, 'CGPA cannot be greater than 4')
         .required('CGPA is required'),
     gender: Yup.string().required('Gender is required'),
-    address: Yup.string().required('Address is required'),
-    zipcode: Yup.number()
-        .typeError('Zip Code must be a number')
-        .min(0, 'Zip Code cannot be negative')
-        .required('Zip Code is required'),
+    address: Yup.string()
+        .matches(/[a-zA-Z]/, 'Address must contain alphabetic characters')
+        .required('Address is required'),
+    zipcode: Yup.string()
+        .required("Zipcode is required")
+        .matches(/^\d{5}$/, "Zip must be 5 digits"),
     job_id: Yup.string().required('Job ID is required'),
     job_name: Yup.string(),
-    university: Yup.string().required('University is required'),
-    degree: Yup.string().required('Degree is required'),
-    major: Yup.string().required('Major is required'),
+    university: Yup.string()
+        .matches(/^[A-Za-z\s]{1,50}$/, 'University can only contain alphabets and have a max length of 50 characters')
+        .required('University is required'),
+    degree: Yup.string()
+        .matches(/^[A-Za-z\s]+$/, 'Degree can only contain alphabets')
+        .required('Degree is required'),
+    major: Yup.string()
+        .matches(/^[A-Za-z\s]+$/, 'Major can only contain alphabets')
+        .required('Major is required'),
     desired_salary: Yup.number()
         .typeError('Desired Salary must be a number')
         .min(0, 'Desired Salary cannot be negative')
@@ -59,11 +71,11 @@ const validationSchema = Yup.object().shape({
         .max(new Date(), 'Date of Birth cannot be in the future')
         .required('Date of Birth is required'),
     cv_file: Yup.mixed()
-        // .test('fileFormat', 'Only PDF files are allowed', (value) => {
-        //     if (!value) return true; // No file selected is considered valid
-        //     return value.type === 'application/pdf';
-        // })
-        // .required('CV/Resume is required'),
+    // .test('fileFormat', 'Only PDF files are allowed', (value) => {
+    //     if (!value) return true; // No file selected is considered valid
+    //     return value.type === 'application/pdf';
+    // })
+    // .required('CV/Resume is required'),
 });
 
 export { initialValues, validationSchema };

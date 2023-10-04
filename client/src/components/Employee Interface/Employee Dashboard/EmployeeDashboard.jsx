@@ -11,14 +11,22 @@ import { config } from '../../../constants';
 export default function EmployeeDashboard() {
 
   const [empStats, setEmpStats] = useState({})
+  const [empDashStats, setEmpDashStats] = useState({})
   const navigate = useNavigate();
   const fetchData = async () => {
     try {
       const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', {}, config);
       setEmpStats(response.data);
     } catch (error) {
-      console.log(error);
-      Toast("Cache Error", 'error')
+      console.log("Error : ", error);
+    }
+  };
+  const fetchData2 = async () => {
+    try {
+      const response = await axios.post(BaseUrl + '/getempdashStats', {}, config);
+      setEmpDashStats(response.data);
+      console.log(response.data);
+    } catch (error) {
       console.log("Error : ", error);
     }
   };
@@ -26,7 +34,9 @@ export default function EmployeeDashboard() {
 
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, [])
+
 
   const handleLogout = async () => {
     try {
@@ -69,24 +79,31 @@ export default function EmployeeDashboard() {
           </div>
         </div>
         <div className="col-xl-4 col-sm-6 py-2">
-          <div className="card text-white bg-danger h-100">
-            <div className="card-body bg-danger">
+          <div className="card text-white bg-success h-100">
+            <div className="card-body bg-success">
               <div className="rotate">
-                <i class="fa fa-users fa-4x" aria-hidden="true"></i>
-              </div>
-              {/* <h4 className="text-uppercase">Role</h4> */}
-              <h3>{empStats.job_name}</h3>
+              <i className="fa fa-check-circle fa-4x"></i>              </div>
+              <h3>This Month Presents : {empDashStats.present_count}</h3>
             </div>
           </div>
         </div>
         <div className="col-xl-4 col-sm-6 py-2">
-          <div className="card text-white bg-success h-100">
-            <div className="card-body bg-success">
+          <div className="card text-white bg-danger h-100">
+            <div className="card-body bg-danger">
               <div className="rotate">
-                <i className="fa-4x fa fa-credit-card-alt"></i>
-              </div>
-              <h4 className="text-uppercase">Salary</h4>
-              <h3>{empStats.salary?.toString()?.replace(/\.0+$/, '')} PKR</h3>
+              <i className="fa fa-times-circle fa-4x"></i>
+                  </div>
+              <h3>This Month Absents : {empDashStats.absent_count}</h3>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-sm-6 py-2">
+          <div className="card text-white bg-danger h-100">
+            <div className="card-body bg-secondary">
+              <div className="rotate">
+              <i class="fa fa-times-circle fa-4x"></i>                 
+               </div>
+              <h3>This Month Leaves : {empDashStats.leave_count}</h3>
             </div>
           </div>
         </div>

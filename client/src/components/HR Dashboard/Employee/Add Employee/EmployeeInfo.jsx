@@ -9,6 +9,107 @@ import axios from 'axios'
 import Navbar from '../../Navbar';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';
 import { config } from './../../../../constants.js';
+import * as Yup from 'yup';
+
+// const validationSchema = Yup.object().shape({
+//   applicant_name: Yup.string().required('Full Name is required'),
+//   email: Yup.string().email('Invalid email address').required('Email is required'),
+//   phone_number: Yup.string()
+//     .matches(/^\d{11}$/, 'Phone number must be 11 digits')
+//     .required('Phone number is required'),
+//   cnic: Yup.string()
+//     .matches(/^\d{5}-\d{7}-\d{1}$/, 'Format : XXXXX-XXXXXXX-X')
+//     .required('CNIC is required'),
+//   city: Yup.string().required('City is required'),
+//   github_profile_url: Yup.string().url('Invalid GitHub URL format'),
+//   linkedin_profile_url: Yup.string().url('Invalid LinkedIn URL format'),
+//   experience: Yup.string().required('Experience is required'),
+//   cgpa: Yup.number()
+//     .typeError('CGPA must be a number')
+//     .min(0, 'CGPA cannot be negative')
+//     .max(4, 'CGPA cannot be greater than 4')
+//     .required('CGPA is required'),
+//   gender: Yup.string().required('Gender is required'),
+//   address: Yup.string().required('Address is required'),
+//   zipcode: Yup.number()
+//     .typeError('Zip Code must be a number')
+//     .min(0, 'Zip Code cannot be negative')
+//     .required('Zip Code is required'),
+//   job_id: Yup.string().required('Job ID is required'),
+//   job_name: Yup.string(),
+//   university: Yup.string().required('University is required'),
+//   degree: Yup.string().required('Degree is required'),
+//   major: Yup.string().required('Major is required'),
+//   desired_salary: Yup.number()
+//     .typeError('Desired Salary must be a number')
+//     .min(0, 'Desired Salary cannot be negative')
+//     .required('Desired Salary is required'),
+//   dob: Yup.date()
+//     .max(new Date(), 'Date of Birth cannot be in the future')
+//     .required('Date of Birth is required'),
+// });
+
+const validationSchema = Yup.object().shape({
+  // Newly added fields
+  applicant_name: Yup.string()
+    .matches(/^[A-Za-z ]+$/, 'In Name Only alphabets are allowed')
+    .required('Full Name is required'),
+  address: Yup.string()
+    .matches(/[a-zA-Z]/, 'Address must contain alphabetic characters')
+    .required('Address is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
+  zipcode: Yup.string()
+    .required("Zipcode is required")
+    .matches(/^\d{5}$/, "Zip must be 5 digits"),
+  phone_number: Yup.string()
+    .matches(/^[0-9]{10,11}$/, 'Phone number must be 11 or 12 digits')
+    .required('Phone number is required'),
+  dob: Yup.date()
+    .max(new Date(), 'Date of Birth cannot be in the future')
+    .required('Date of Birth is required'),
+  city: Yup.string().required('City is required'),
+  cnic: Yup.string().min(0, 'CNIC cannot be negative')
+    // .matches(/^\d{5}-\d{7}-\d{1}$/, 'CNIC Format\n : XXXXX-XXXXXXX-X')
+    .required('CNIC is required'),
+  gender: Yup.string().required('Gender is required'),
+  emp_id: Yup.string()
+    // .required('Employee ID is required'),
+    .matches(/^[0-9]{1,10}$/, 'Employee ID must be 1 to 10 digits'),
+  role_id: Yup.string().required('Role  is required'),
+  job_id: Yup.number()
+    .integer('Employee Job title must be an integer')
+    .positive('Employee Job title must be a positive number')
+    .required('Employee Job title is required'),
+  university: Yup.string()
+    .matches(/^[A-Za-z\s]{1,50}$/, 'University can only contain alphabets and have a max length of 50 characters')
+    .required('University is required'),
+  dep_id: Yup.string().required('Department is required'),
+  degree: Yup.string()
+    .matches(/^[A-Za-z\s]+$/, 'Degree can only contain alphabets')
+    .required('Degree is required'),
+  salary: Yup.string()
+    .matches(/^[0-9]+$/, 'Salary can only contain digits')
+    .required('Salary is required')
+    .min(0, 'Desired Salary cannot be negative')
+    .required('Desired Salary is required'),
+  major: Yup.string()
+    .matches(/^[A-Za-z\s]+$/, 'Major can only contain alphabets')
+    .required('Major is required'),
+  cgpa: Yup.number()
+    .typeError('CGPA must be a number')
+    .min(0, 'CGPA cannot be negative')
+    .max(4, 'CGPA cannot be greater than 4')
+    .required('CGPA is required'),
+  linkedin_profile_url: Yup.string()
+    .matches(/(linkedin\.com)/, 'Invalid LinkedIn URL format, it must contain ".com"')
+    .url('Invalid LinkedIn URL format'),
+  hire_date: Yup.date()
+    .min(new Date(), 'Hire date must be tomorrow or in the future')
+    .required('Hire date is required'),
+  github_profile_url: Yup.string()
+    .matches(/(github\.com)/, 'Invalid GitHub URL format, it must contain ".com"')
+    .url('Invalid GitHub URL format')
+});
 
 export default function EmployeeInfo({ id }) {
   console.log(id);
@@ -29,7 +130,7 @@ export default function EmployeeInfo({ id }) {
     job_id: "",
     linkedin_profile_url: "",
     major: '',
-    phone_number: '',
+    phone_number: '03',
     role_id: "",
     salary: "",
     university: "",
@@ -40,7 +141,7 @@ export default function EmployeeInfo({ id }) {
   const [roles, setRoles] = useState([]);//get
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // Add a loading state
-  
+
 
   const fetchData = async () => {
     try {
@@ -96,16 +197,58 @@ export default function EmployeeInfo({ id }) {
     });
   }
 
+
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   console.log(employeeInformation);
+  //   setLoading(true);
+  //   try {
+  //     let postData = {
+  //       ...employeeInformation,
+  //       cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
+  //     };
+  //     if (id) {
+  //       console.log(postData, id);
+  //       const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id }, config);
+  //       if (response.data.success) {
+  //         Toast("Employee Registered Successfully!", 'info');
+  //         navigate('/hrdash/manageEmployee');
+  //       } else {
+  //         Toast(`${response.data.message}`, 'error');
+  //       }
+  //     } else {
+  //       const response = await axios.post(BaseUrl + '/registerEmployee', postData, config);
+  //       if (response.data.success) {
+  //         Toast("Employee Registered Successfully!", 'info');
+  //         navigate('/hrdash/manageEmployee');
+  //       } else {
+  //         Toast(`${response.data.message}`, 'error');
+  //       }
+  //     }
+  //   } catch (error) {
+  //     Toast("Error in registration: check console for further Details", 'error');
+  //     console.error('Error in submission:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(employeeInformation);
     setLoading(true);
-
     try {
       let postData = {
         ...employeeInformation,
         cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
       };
+      await validationSchema.validate(postData, { abortEarly: false });
       if (id) {
         console.log(postData, id);
         const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id }, config);
@@ -122,14 +265,23 @@ export default function EmployeeInfo({ id }) {
           navigate('/hrdash/manageEmployee');
         } else {
           Toast(`${response.data.message}`, 'error');
-
         }
       }
-
     } catch (error) {
-      Toast("Error in registration: check console for further Details", 'error');
-      console.error('Error in submission:', error);
-    } finally {
+      if (error instanceof Yup.ValidationError) {
+        // const validationErrors = {};
+        // error.inner.forEach((e) => {
+        //   validationErrors[e.path] = e.message;
+        //   Toast(`${e.message}`, 'error');
+        // });
+        // console.log(validationErrors);
+        const firstValidationError = error.inner[0];
+        Toast(`${firstValidationError.message}`, 'error');
+        console.log(firstValidationError);
+      } else {
+        Toast("Error in registration: check console for further Details", 'error');
+        console.error('Error in submission:', error);
+      }
       setLoading(false);
     }
   };
@@ -174,7 +326,7 @@ export default function EmployeeInfo({ id }) {
                 <div className="mb-3 rounded-input">
                   <label htmlFor="phoneNumber" className="form-label">Phone Number:</label>
                   <input
-                    type="tel"
+                    type="number"
                     className="form-control round"
                     id="phoneNumber"
                     name='phone_number'

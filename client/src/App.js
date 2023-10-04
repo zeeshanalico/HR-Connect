@@ -22,41 +22,12 @@ import AttendanceRecordPage from "./components/Employee Interface/Employee Atten
 import SubmitLeavePage from "./components/Employee Interface/Leave/Submit Leave/SubmitLeavePage.jsx";
 import LeaveStatusPage from "./components/Employee Interface/Leave/Leave Status/LeaveStatusPage.jsx";
 import PostJobPage from "./components/HR Dashboard/Hiring/Job Posting/PostJobPage.jsx";
-import RegisterUser from './components/RegisterUser/RegisterUser.js'
-import ResetPassword  from "./components/Employee Interface/My Profile/ResetPassword";
+import ResetPassword from "./components/Employee Interface/My Profile/ResetPassword";
 import ApplyNow from "./components/ApplyNow/ApplyNow.jsx";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { config, BaseUrl } from "./constants";
 import axios from 'axios'
 import Loading from "./components/Loader/Loading";
-import Toast from "./UIModules/Toast/Toast";
-
-
-
-
-// const PrivateRoute = ({ element, allowedRoles }) => {
-  // const [roleID, setRoleID] = useState(null);
-
-  // useEffect(() => {
-  //   const Authenticate = async () => {
-  //     try {
-  //       const response = await axios.get(BaseUrl + '/decodeToken', config);
-  //       if (response.data.success) {
-  //         setRoleID(response.data.role_id);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error while decoding token:', error);
-  //     }
-  //   };
-  //   Authenticate();
-  // }, []);
-//   const userRole = 1;
-//   if (allowedRoles.includes(userRole)) {
-//     return element;
-//   } else {
-//     return <Navigate to="/login" />;
-//   }
-// };
 
 export default function App() {
 
@@ -90,7 +61,7 @@ export default function App() {
     if (roleID === allowedRole) {
       return element;
     } else {
-      return <Navigate to="/Login" />; // Redirect to a different route if not allowed
+      return <Navigate to="/Login" />;
     }
   };
 
@@ -123,11 +94,9 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/applyPage" element={<ApplyPage />} />
           <Route path="/applyPage/applyNow" element={<ApplyNow />} />
-
           <Route path="/hrdash" element={<HrDashboard />} />
-          {/* <Route path="/empdash" element={<PrivateRoute element={<EmployeeDashboardPage />} allowedRoles={[2]} />} /> */}
-          <Route path="/empdash" element={<EmployeeDashboardPage />} /> 
-          
+          <Route path="/empdash" element={<EmployeeDashboardPage />} />
+
           {/* //Employee's side routes */}
           {roleIDFetched && <Route path="/empdash/viewProfile" element={renderRoute(<ViewProfilePage />, 2)} />}
           {roleIDFetched && <Route path="/empdash/markAttendance" element={renderRoute(<MarkAttendancePage />, 2)} />}

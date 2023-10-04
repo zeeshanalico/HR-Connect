@@ -9,6 +9,7 @@ import ViewResume from "./ViewResume";
 import { Link } from 'react-router-dom'
 import Toast from "./../../../../UIModules/Toast/Toast.jsx";
 import ReactPaginate from "react-paginate";
+import './ViewJobApplications.css'
 export default function ViewJobApplications() {
 
   const [jobApplications, setJobApplications] = useState([]);
@@ -16,18 +17,29 @@ export default function ViewJobApplications() {
   const [showAcceptModal, setShowAcceptModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [applicationId, setApplicationId] = useState("");
+  const [email, setEmail] = useState('');
+  const [applicantName, setApplicantName] = useState('');
+  const [applicantJobName, setApplicantJobName] = useState('');
+  const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [email, setEmail] = useState('');
   const [offerLetter, setOfferLetter] = useState(`
-  Congratulations, 
-  Dear Candidate,
-      We are pleased to extend an offer of employment at HRConnect. We were impressed with your qualifications and experience, and we believe that you will be a valuable addition to our team.
-        
-  Sincerely,
-  Muhammad Ihtisham(HR)
-  HRConnect
-                                                 Signed By:_____________________`);
+  Subject: Offer of Employment
+ 
+Dear [Applicant Name],
+I hope this message finds you well. We are delighted to extend an offer of employment for the [Job Title] position at HRConnect. Your performance during the interview process demonstrated that you are a highly qualified candidate who meets our hiring criteria, and we believe that you will be a valuable addition to our team.
+Below, you will find the details of your employment offer:
+Position: [Job Title] Start Date: [Start Date] Location: [Location] Salary: [Salary] Probation Period: [Probation Period, if applicable]
+Next Steps:
+Please review this offer carefully to ensure that all details are accurate and meet your expectations.
+If you accept this offer, please sign and date the enclosed copy of this letter and return it to us by [Acceptance Deadline].
+If you have any questions or require further clarification, do not hesitate to reach out to our HR department details mentioned below.
+Acceptance Deadline: [Acceptance Deadline]
+We are excited about the prospect of you joining our team and contributing to HRConnect. Our organization values talent, dedication, and a commitment to excellence, and we believe that you embody these qualities.
+Once again, congratulations on this significant milestone, and we look forward to your positive response. We are confident that you will make a meaningful impact in your new role, and we are excited to have you on board.
+Thank you for choosing to be a part of HRConnect. We are excited to welcome you to our team.
+  
+Signed By:_____________________`);
 
   const [showOfferLetterModal, setShowOfferLetterModal] = useState(false)
   const handlePrint = () => {
@@ -98,6 +110,8 @@ export default function ViewJobApplications() {
     applicantName: '',
     jobTitle: '',
     status: '',
+    experience: '',
+    desired_salary: ''
   });
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -106,6 +120,8 @@ export default function ViewJobApplications() {
   const filteredApplications = jobApplications
     .filter((app) => app?.applicant_name?.toLowerCase()?.includes(filters.applicantName.toLowerCase()))
     .filter((app) => app?.title?.toLowerCase()?.includes(filters.jobTitle.toLowerCase()))
+    .filter((app) => app?.experience?.toLowerCase()?.includes(filters.experience.toLowerCase()))
+    .filter((app) => app?.desired_salary?.toLowerCase()?.includes(filters.desired_salary.toLowerCase()))
     .filter((app) => app?.status?.toLowerCase()?.includes(filters.status.toLowerCase())) || []
   const offset = currentPage * itemsPerPage;
   const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
@@ -128,7 +144,7 @@ export default function ViewJobApplications() {
     console.log(applicationId, selectedDate, selectedTime);
     try {
       const response = await axios.post(BaseUrl + "/callForInterview", {
-        callForInterviewId: applicationId, interviewDate: selectedDate, interviewTime: selectedTime, email
+        callForInterviewId: applicationId, interviewDate: selectedDate, interviewTime: selectedTime, email, applicantName, applicantJobName
       });
       if (response.data.success) {
         Toast("applicant Called for interview Successfully");
@@ -151,7 +167,7 @@ export default function ViewJobApplications() {
     // console.log(applicationId);
     try {
       const response = await axios.post(BaseUrl + "/rejectApplication", {
-        rejectedApplicationId: applicationId,
+        rejectedApplicationId: applicationId, email, applicantName, applicantJobName
       }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`, 'success')
@@ -178,11 +194,11 @@ export default function ViewJobApplications() {
           <input
             type="text"
             id="employeeNameFilter"
-            placeholder="Search by Employee Name                 "
+            placeholder="Search by Applicant Name                 "
             className="form-control"
             value={filters.applicantName}
             onChange={(e) => handleFilter('applicantName', e.target.value)}
-            style={{ width: '300px', marginRight: '10px' }}
+            style={{ width: '365px', marginRight: '10px' }}
           />
           <input
             type="text"
@@ -191,13 +207,47 @@ export default function ViewJobApplications() {
             className="form-control"
             value={filters.jobTitle}
             onChange={(e) => handleFilter('jobTitle', e.target.value)}
-            style={{ width: '300px', marginRight: '10px' }}
+            style={{ width: '350px', marginRight: '10px' }}
           />
-          <div style={{ margin: '20px 0 10px 200px' }}>items per page &ensp;</div>
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Experience                "
+            className="form-control"
+            value={filters.experience}
+            onChange={(e) => handleFilter('experience', e.target.value)}
+            style={{ width: '350px', marginRight: '10px' }}
+          />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Job Desired Salary                "
+            className="form-control"
+            value={filters.desired_salary}
+            onChange={(e) => handleFilter('desired_salary', e.target.value)}
+            style={{ width: '328px', marginRight: '10px' }}
+          />
+          <select
+            value={filters.status}
+            style={{ width: '315px' }}
+            name="job_id"
+            className="form-control round"
+            onChange={(e) => handleFilter('status', e.target.value)}
+          >
+            <option value='' style={{ display: 'none' }}>Status</option>
+            <option value=''>All</option>
+            <option value="Pending">Pending</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Interview">Interview</option>
+            <option value="Hired">Hired</option>
+          </select>
+          <span style={{ margin: '20px 0 10px 140px' }}>items per page &ensp;</span>
           <select
             name="itemsPerPage"
             id="itemsPerPage"
-            style={{ borderRadius: '8px', outline: 'none', padding: '9px', width: 'fitcontent', }}
+            style={{ borderRadius: '5px', margin: '5px', outline: 'none', padding: '9px', width: 'fitcontent', }}
             onChange={handleItemsPerPageChange}
             value={itemsPerPage}
           >
@@ -206,36 +256,28 @@ export default function ViewJobApplications() {
             <option value="20">20</option>
           </select>
         </div>
-        <Table striped bordered hover responsive>
+
+        <Table striped bordered hover responsive className="custom-scrollbar-table">
           <thead>
-            <tr>
-              <th>ID</th>
+            <tr style={{ borderBottom: '3px solid white' }}>
+              <th style={{ fontWeight: 'bold' }}>ID</th>
               <th>Applicant Name</th>
               <th>Applicant Email</th>
               <th>Applicant Phone</th>
               <th>Resume</th>
               <th>Job Title</th>
-              <th> <select
-                value={filters.status}
-                style={{
-                  border: "none",
-                  height: "30px",
-                  outline: "none",
-                  cursor: "pointer",
-                  backgroundColor: "transparent",
-                }}
-                name="job_id"
-                className="form-control round"
-                onChange={(e) => handleFilter('status', e.target.value)}
-              >
-                <option value='All'>Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Interview">Interview</option>
-                <option value="Hired">Hired</option>
-              </select>
-              </th>
+              <th>Experience</th>
+              <th>Desired Salary</th>
+              <th>Status</th>
               <th>Action</th>
+              <th>CGPA</th>
+              <th>University</th>
+              <th>Degree</th>
+              <th>Major</th>
+              <th>LinkedIn Profile</th>
+              <th>Github Profile</th>
+              <th>Gender</th>
+              <th>ZipCode</th>
             </tr>
           </thead>
           <tbody>
@@ -243,25 +285,32 @@ export default function ViewJobApplications() {
               .map((application) => (
                 <tr key={application.application_id}>
                   <td>{application.application_id}</td>
-                  <td>{application.applicant_name}</td>
+                  <td><div style={{ width: '170px' }}>{application.applicant_name}</div></td>
                   <td>{application.email}</td>
-                  <td>{application.phone_number}</td>
-                  <td>
+                  <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
+                  <td> <div style={{ width: '170px' }}>
                     <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
+                  </div>
                   </td>
-                  <td>{application.title}</td>
+                  <td><div style={{ width: '150px' }}>{application.title}</div></td>
+                  <td>{application.experience}</td>
+                  <td><div style={{ width: '100px' }}>{application.desired_salary}</div></td>
                   <td>{application.status}</td>
                   <td>
                     {application.status === "Pending" ? (
-                      <>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Button
                           variant="success"
                           size="sm"
                           onClick={() => {
                             setApplicationId(application.application_id);
                             setShowInterviewModal(true);
-                            setEmail(application.email)
+                            setEmail(application.email);
+                            setApplicantName(application.applicant_name);
+                            setApplicantJobName(application.title);
                           }}
+                          style={{
+                            marginRight: '5px',width: '150px' }} // Add margin between buttons
                         >
                           Call for Interview
                         </Button>
@@ -275,10 +324,11 @@ export default function ViewJobApplications() {
                         >
                           Reject
                         </Button>
-                      </>
+                      </div>
+
                     ) : (
                       application.status === "Interview" && (
-                        <div>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
 
                           <Button
                             variant="success"
@@ -286,45 +336,74 @@ export default function ViewJobApplications() {
                             onClick={() => {
                               setApplicationId(application.application_id);
                               setShowAcceptModal(true);
+                              setEmail(application.email);
+                              setApplicantName(application.applicant_name)
+                              setApplicantJobName(application.title)
                             }}
                             style={{
                               color: "black",
                               backgroundColor: 'yellow',
+                              width: '150px',
+                              fontWeight: 'bold',
+                              marginRight: '5px'
                               // marginBottom:'3px'
                             }}
                           >
-                            Accepted For Job
+                            Accept&ensp;for&ensp;job
                           </Button>
                           <Button
                             variant="danger"
+                            style={{ marginRight: '5px' }}
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
                             }}
-                            style={{ margin: '4px' }}
-                          >
-                            Reject
-                          </Button>
+
+                          >Reject</Button>
                           <Button
                             variant="info"
                             size="sm"
+                            style={{
+                              width: '150px',
+                            }}
                             onClick={() => {
                               setApplicationId(application.application_id);
+                              setOfferLetter((prevData) => {
+                                return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
+                              });
                               setShowOfferLetterModal(true);
                             }}
-                          >
-                            Offer letter
-                          </Button>
+                          >Send Offer Letter</Button>
                         </div>
                       )
                     )}
                   </td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.cgpa}</div></td>
+                  <td><div style={{ width: '200px' }}>{application.university}</div></td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.degree}</div></td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.major}</div></td>
+                  <td>
+                    <div style={{ width: '130px' }}>
+                      <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.linkedin_profile_url.toString()}>
+                        LinkedIn Link
+                      </a>
+                    </div>
+                  </td>
+                  <td>
+                    <div style={{ width: '130px' }}>
+                      <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.github_profile_url.toString()}>
+                        github Link
+                      </a>
+                    </div>
+                  </td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.zipcode}</div></td>
                 </tr>
               ))}
           </tbody>
         </Table>
-        <div style={{ margin: 'auto' }}>
+        <div style={{ margin: '20px auto 0px auto' }}>
 
           <ReactPaginate
             previousLabel={'Previous'}
@@ -407,7 +486,7 @@ export default function ViewJobApplications() {
             <Modal.Title>Accept Application</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Are you sure you want to accept this applicant's application?
+            Are you sure you want to hire applicant?
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -428,10 +507,10 @@ export default function ViewJobApplications() {
             <Modal.Title>Offer Letter</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <textarea name=""  className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} >
-            This is <strong>bold</strong> text.
-  This is <em>italic</em> text.
-              </textarea>
+            <textarea name="" className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} >
+              This is <strong>bold</strong> text.
+              This is <em>italic</em> text.
+            </textarea>
 
           </Modal.Body>
           <Modal.Footer>

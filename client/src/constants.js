@@ -10,7 +10,7 @@ export const end_time = "11:40:0"
 //     withCredentials: true
 //   };
 const jwtToken = localStorage.getItem('jwtToken');
-console.log('JWT Token:', jwtToken); // Log the token
+// console.log('JWT Token:', jwtToken); // Log the token
 export const config = {
   headers: { authorization: `Bearer ${jwtToken}` },
   withCredentials: true,
