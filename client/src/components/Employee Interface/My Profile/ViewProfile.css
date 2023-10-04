@@ -35,3 +35,10 @@ padding: 15px !important;
   right: 0; /* Align the image to the right */
   bottom: 0; /* Align the image to the bottom */
 }
+/* In your CSS stylesheet */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px; /* Add margin as needed */
+}
+

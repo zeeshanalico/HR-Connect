@@ -3,9 +3,14 @@ import { BaseUrl, config } from "../../../constants";
 import axios from 'axios'
 import Toast from "../../../UIModules/Toast/Toast";
 import { Button } from "react-bootstrap";
+import { useEffect } from "react";
 
 
-function ImageUpload({emp_id}) {
+function ImageUpload({ fetchData }) {
+
+  useEffect(() => {
+    fetchData()
+  }, [])
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageChange = (event) => {
@@ -15,47 +20,44 @@ function ImageUpload({emp_id}) {
 
   const handleUpload = async () => {
     if (!selectedImage) {
-      Toast("Please select an image to upload.",'warning');
+      Toast("Please select an image to upload.", 'warning');
       return;
     }
-
     try {
       const formData = new FormData();
       formData.append("image", selectedImage);
-      const response = await axios.post(BaseUrl+"/upload", formData,config);
+      const response = await axios.post(BaseUrl + "/upload", formData, config);
 
       if (response) {
         Toast("Image uploaded successfully!");
         setSelectedImage(null);
+        window.location.reload();
       } else {
-        Toast("Image upload failed.",'error');
+        Toast("Image upload failed.", 'error');
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-      Toast("An error occurred while uploading the image.",'error');
+      Toast("An error occurred while uploading the image.", 'error');
     }
     setSelectedImage('');
 
   };
 
   return (
-    <div>
-      <input
-        type="file"
-        style={{display:'inline'}}
-        accept="image/*"
-        onChange={handleImageChange}
-      />
-      {/* {selectedImage && (
-        <img
-          src={URL.createObjectURL(selectedImage)}
-          alt="Selected"
-          width="200"
+    <>
+      <div style={{marginTop:'0px',height:'43px'}} className="button-container">
+        <input
+          type="file"
+          style={{ display: 'inline',width:'350px',marginRight:'10px' }}
+          accept="image/png" // Only allow PNG format
+          onChange={handleImageChange}
         />
-      )} */}
-      <br />
-      <Button variant="secondary"onClick={handleUpload}>Upload Image</Button>
-    </div>
+        <Button variant="secondary" style={{width:'160px'}} onClick={handleUpload}>Upload Image</Button>
+      </div>
+      {/* <p style={{ color: "red", fontSize: "12px", marginBottom: '-25px' }}>
+        <strong>Only PNG format is allowed for image uploads.</strong>
+      </p> */}
+    </>
   );
 }
 

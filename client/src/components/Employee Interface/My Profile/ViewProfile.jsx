@@ -25,8 +25,6 @@ const validationSchema = Yup.object().shape({
     .matches(/^\d{5}$/, "Zip must be 5 digits"),
 });
 export default function ViewProfile() {
-
-
   const [current, setCurrent] = useState("");
   const [confirm, setConfirm] = useState("");
   const [newPass, setNewPass] = useState("");
@@ -50,17 +48,16 @@ export default function ViewProfile() {
   };
   const fetchImage = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/images', { responseType: 'blob' });
+      const response = await axios.get(BaseUrl + '/images', { ...config, responseType: 'blob' });
+      console.log(response.data);
       if (response.status === 200) {
-        const blob = new Blob([response.data.imagePath], { type: 'image/png' }); // Adjust the type if needed
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(response.data);
         console.log(url);
         setImageURL(url);
       } else {
         console.error('Error fetching image:', response.statusText);
       }
     } catch (error) {
-      // Handle network or other errors here
       console.error('Error fetching image:', error);
     }
   };
@@ -80,23 +77,7 @@ export default function ViewProfile() {
       return { ...prevState, [name]: value };
     });
   }
-  // const handleUpdate = async () => {
-  //   console.log(updateInfo)
-  //   try {
-  //     await validationSchema.validate(updateInfo, { abortEarly: false });
-  //       const response = await axios.put(BaseUrl + '/updateEmployeeInfo', updateInfo, config)
-  //       if (response.data.success) {
-  //         Toast(`${response.data.message}`)
-  //         await fetchData();
-  //       } else {
-  //         Toast(`${response.data.message}`)
-  //       }
-  //   } catch (e) {
-  //     Toast('An Error Occured.', 'error')
-  //     console.log(e);
-  //   }
 
-  // }
   const handleUpdate = async () => {
     console.log(updateInfo);
     try {
@@ -208,28 +189,31 @@ export default function ViewProfile() {
         <div id="full-content">
           <h2 className="mb-4">My Profile</h2>
           <div id="content">
-            {/* <div id="profile-picture">
-            <div className="profile-image-container">
-              <img
-                src={profilePicture ? URL.createObjectURL(profilePicture) : '/default-profile-picture.png'}
-                alt="___Image"
-                className="profile-image"
-              />
+            <div style={{
+              margin: 'auto',
+              borderRadius: '50%',
+              width: '250px',
+              height: '270px',
+              overflow: 'hidden',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '2px solid #ccc',
+              padding: '0',
+              transition: 'transform 0.3s ease', // Added transition
+              cursor: 'pointer' // Added cursor style for hover
+            }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'} // Scale up on hover
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} // Reset scale on hover out
+            >
+              {imageURL && <img src={imageURL} alt="Img" style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                transition: 'transform 0.3s ease'
+              }} />}
             </div>
-            {editMode && (
-              <div className="mb-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfilePictureChange}
-                />
-              </div>
-            )}
-            
-          </div> */}
-            <div>
-              {imageURL && <img src={'http://localhost:3002/images'} alt="Img" />}
-            </div>
+
+
             <div id="flex-content">
               <div id="first-half">
                 {editMode ? (
@@ -348,20 +332,16 @@ export default function ViewProfile() {
                           <td>{empInfo.gender}</td>
                         </tr>
                       </tbody>
-                      <tfoot>
-                        <Button variant="primary" onClick={() => { setEditMode(true) }}>
+                    </Table>
+                      <div className="button-container">
+                        <Button variant="primary" style={{width:'200px',height:'40px',marginTop:'5px'}} onClick={() => { setEditMode(true) }}>
                           Edit Profile
                         </Button>
-                        <Link to="/empdash/viewProfile/resetPassword">
+                        <Link style={{width:'200px',marginLeft:'-40px',marginTop:'5px'}} to="/empdash/viewProfile/resetPassword">
                           <Button variant="danger">Reset Password</Button>
                         </Link>
-                        {/* <ImageUpload emp_id={empInfo.emp_id} emp_name={empInfo.name} /> */}
-
-                      </tfoot>
-                      <tfoot>
-
-                      </tfoot>
-                    </Table>
+                        <ImageUpload fetchData={fetchData} />
+                      </div>
                   </>
                 )}
               </div>

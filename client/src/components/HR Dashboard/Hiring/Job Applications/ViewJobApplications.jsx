@@ -20,7 +20,6 @@ export default function ViewJobApplications() {
   const [email, setEmail] = useState('');
   const [applicantName, setApplicantName] = useState('');
   const [applicantJobName, setApplicantJobName] = useState('');
-  const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [offerLetter, setOfferLetter] = useState(`

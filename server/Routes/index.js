@@ -453,7 +453,6 @@ router.post('/upload', verifyToken, uploadImage.single('image'), (req, res) => {
 
 router.get('/images', verifyToken, (req, res) => {
   const { emp_id } = req.user;
-  // const emp_id=2;
   const imagePath = path.join(__dirname, '..', 'ImgUploads', `${emp_id}.png`);
   if (!imagePath || !fs.existsSync(imagePath)) {
     return res.status(404).json({ success: false, message: 'Image not found' });

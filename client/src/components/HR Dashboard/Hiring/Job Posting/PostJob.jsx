@@ -98,6 +98,7 @@ export default function PostJob() {
     setJobToRemove(null);
   }
   // --------------------------------------------------------------------------
+  // --------------------------------------------------------------------------
   const [filters, setFilters] = useState({
     jobTitle: '',
     experienceRequired: '',
@@ -247,47 +248,8 @@ export default function PostJob() {
           Post a New Job
         </Button>
 
-        <Row className={`mb-3 ${styles.slideIn}`}>
-          <Col style={{ margin: '0px' }}>
-            <InputGroup className="filter-inputs">
-              <FormControl
-                className="formcont"
-                name="jobTitle"
-                placeholder="Filter by Job Title"
-                value={filters.jobTitle}
-                style={{ margin: '7px 7px 7px 0' }}
-                onChange={handleFilterChange}
-                autoComplete="off"
-              />
-              <FormControl
-                className="formcont"
-                name="experienceRequired"
-                style={{ margin: '7px 7px 7px 0' }}
-                placeholder="Search By Experience"
-                value={filters.experienceRequired}
-                onChange={handleFilterChange}
-                autoComplete="off"
-              />
-              <label htmlFor="itemsPerPage" style={{ marginTop: '10px', color: 'black' }}>
-                Items Per Page:&ensp;
-              </label>
-              <select
-                style={{ margin: '7px 7px 7px 0' }}
-                name="itemsPerPage"
-                id="itemsPerPage"
-                onChange={handleItemsPerPageChange}
-                value={itemsPerPage}
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
-            </InputGroup>
-          </Col>
-        </Row>
-
-        <Row className={`mb-2 ${styles.slideIn}`} style={{ marginTop: '-30px' }}>
-          <Col>
+        <Row className={`mb-2 ${styles.slideIn}`} style={{ marginTop: '10px',marginBottom:'-30px' }}>
+          <Col style={{ marginBottom:'-30px' }} >
             <InputGroup className="filter-inputs">
               <select
                 name="department"
@@ -354,6 +316,45 @@ export default function PostJob() {
             </InputGroup>
           </Col>
         </Row>
+        <Row className={`mb-3 ${styles.slideIn}`}>
+          <Col style={{ margin: '0px' }}>
+            <InputGroup className="filter-inputs">
+              <FormControl
+                className="formcont"
+                name="jobTitle"
+                placeholder="Filter by Job Title"
+                value={filters.jobTitle}
+                style={{ margin: '7px 7px 7px 0' }}
+                onChange={handleFilterChange}
+                autoComplete="off"
+              />
+              <FormControl
+                className="formcont"
+                name="experienceRequired"
+                style={{ margin: '7px 7px 7px 0' }}
+                placeholder="Search By Experience"
+                value={filters.experienceRequired}
+                onChange={handleFilterChange}
+                autoComplete="off"
+              />
+              <label htmlFor="itemsPerPage" style={{ marginTop: '10px', color: 'black' }}>
+                Items Per Page:&ensp;
+              </label>
+              <select
+                style={{ margin: '7px 7px 7px 0' }}
+                name="itemsPerPage"
+                id="itemsPerPage"
+                onChange={handleItemsPerPageChange}
+                value={itemsPerPage}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+            </InputGroup>
+          </Col>
+        </Row>
+
         <table className={`table ${styles.table}`}>
           <thead>
             <tr>
