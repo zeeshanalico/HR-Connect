@@ -100,7 +100,7 @@ export default function LeaveApplication() {
       const response = await axios.put(BaseUrl + '/leaveRejected', {
         empId,
         req_id: req_id,
-      });
+      },config);
       if (response.data.success) {
         Toast(`${response.data.message}`, 'info');
         setShowModal(false);

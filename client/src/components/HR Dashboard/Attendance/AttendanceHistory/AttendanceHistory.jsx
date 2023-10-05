@@ -114,7 +114,6 @@ const AttendanceHistory = () => {
             className="form-control"
             name="emp_id"
             value={filters.emp_id}
-            // style={inputStyle}
             onChange={handleFilterChange}
           />
         </div>
@@ -122,8 +121,7 @@ const AttendanceHistory = () => {
           <select
             name="status"
             value={filters.status}
-            style={{ display: 'inline', width: '235px', margin: '8px 8px 8px 0',  }}
-            // style={inputStyle}
+            style={{ display: 'inline', width: '320px', margin: '8px 8px 8px 0',  }}
             onChange={handleFilterChange}
             className="form-control"
           >
@@ -134,7 +132,7 @@ const AttendanceHistory = () => {
           </select>
           <select
             className="form-control"
-            style={{ display: 'inline', width: '232px' }}
+            style={{ display: 'inline', width: '320px' }}
             value={sortByDate}
             onChange={handleSortByDateChange}
           >
@@ -142,7 +140,7 @@ const AttendanceHistory = () => {
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
-          <label className="mr-2" style={{marginLeft:'269px'}}> Show items per page:</label>
+          <label className="mr-2" style={{marginLeft:'97px'}}> Show items per page:</label>
           <select
             style={{ display: 'inline', width: '70px' }}
             className="form-control"

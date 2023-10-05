@@ -29,7 +29,7 @@ export default function ApplyPage() {
       setAllJobs(response.data);
     } catch (error) {
       console.error('Error fetching data jobs:', error);
-      throw error;
+      // throw error;
     }
   };
 

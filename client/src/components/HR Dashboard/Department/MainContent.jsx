@@ -17,8 +17,6 @@ export default function MainContent() {
       console.log(response.data);
       setStat(response.data);
     } catch (error) {
-      console.log(error);
-      Toast("Cache Error", 'error')
       console.log("Error : ", error);
     }
   }
@@ -47,14 +45,9 @@ const handleTimeChanges = () => {
 };
 
 useEffect(() => {
-  // fetchData();
-
-  // Time
   const intervalId = setInterval(() => {
     handleTimeChanges();
   }, 1000);
-
-  // Clean up
   return () => {
     clearInterval(intervalId);
   };
@@ -63,16 +56,16 @@ useEffect(() => {
 const [record, setRecord] = useState()
 
 useEffect(() => {
-  // fetching data from backend
-
   const time = new Date()
-
   console.log("Current : " + record);
   console.log("End : " + end_time)
 
   // Getting current time when Dashboard Render
   if (`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` >= end_time) {
+  console.log('markab1');
   markAbsent()
+  console.log('markab2');
+
 }
 fetchData()
 }, [])

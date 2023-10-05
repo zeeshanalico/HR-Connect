@@ -22,8 +22,6 @@ const ManageEmployee = () => {
 During the period he/she worked with the company we found him/her to be hardworking and sincere resource. We wish him all the best in his future professional endeavors.
 
 
-
-
 Muhammad Ihtisham
 Lead Talent Acquisition 
 
@@ -77,7 +75,7 @@ Lead Talent Acquisition
       setDep(response.data);
     } catch (error) {
       console.error('Error fetching data dep :', error);
-      throw error;
+      
     }
   };
   useEffect(() => {

@@ -54,9 +54,6 @@ function ImageUpload({ fetchData }) {
         />
         <Button variant="secondary" style={{width:'160px'}} onClick={handleUpload}>Upload Image</Button>
       </div>
-      {/* <p style={{ color: "red", fontSize: "12px", marginBottom: '-25px' }}>
-        <strong>Only PNG format is allowed for image uploads.</strong>
-      </p> */}
     </>
   );
 }

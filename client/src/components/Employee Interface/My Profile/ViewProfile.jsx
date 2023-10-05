@@ -333,15 +333,18 @@ export default function ViewProfile() {
                         </tr>
                       </tbody>
                     </Table>
-                      <div className="button-container">
-                        <Button variant="primary" style={{width:'200px',height:'40px',marginTop:'5px'}} onClick={() => { setEditMode(true) }}>
-                          Edit Profile
-                        </Button>
-                        <Link style={{width:'200px',marginLeft:'-40px',marginTop:'5px'}} to="/empdash/viewProfile/resetPassword">
-                          <Button variant="danger">Reset Password</Button>
-                        </Link>
-                        <ImageUpload fetchData={fetchData} />
-                      </div>
+                    <div className="button-container">
+                      <Button variant="primary" style={{ width: '200px', height: '40px', marginTop: '5px' }} onClick={() => { setEditMode(true) }}>
+                        Edit Profile
+                      </Button>
+                      <Link style={{ width: '200px', marginLeft: '-40px', marginTop: '5px' }} to="/empdash/viewProfile/resetPassword">
+                        <Button variant="danger">Reset Password</Button>
+                      </Link>
+                      <ImageUpload fetchData={fetchData} />
+                    </div>
+                    <p style={{ marginLeft:'500px',color: "red", fontSize: "12px", marginBottom: '-25px' }}>
+        <strong>Only PNG format is allowed for image uploads.</strong>
+      </p>
                   </>
                 )}
               </div>

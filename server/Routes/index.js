@@ -160,6 +160,21 @@ router.post("/deleteJob", verifyToken, checkUserRole(1), (req, res) => {
     }
   );
 });
+router.post("/deleteDep", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/deleteDep");
+  const { dep_id} = req.body;
+  mysql.query(
+    "DELETE FROM department WHERE dep_id = ?;",
+    [dep_id],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage, error, success: false });
+      } else {
+        res.json({ success: true,message:'Deparment deleted Successfully' });
+      }
+    }
+  );
+});
 
 // job post by hr
 router.post("/jobPost", verifyToken, checkUserRole(1), (req, res) => {
@@ -446,7 +461,7 @@ router.post('/upload', verifyToken, uploadImage.single('image'), (req, res) => {
 
   const { filename } = req.file;
   mysql.query('INSERT INTO images (image_file_name) VALUES (?)', [filename], (err) => {
-    if (err) throw err;
+    if (err){console.log(err);}
     res.status(200).json({ message: 'File uploaded successfully' });
   });
 });
@@ -459,10 +474,26 @@ router.get('/images', verifyToken, (req, res) => {
   }
   res.setHeader('Content-Type', 'image/png')
   res.sendFile(imagePath);
-  // res.sendFile(path.resolve(path.resolve(__dirname,'/imagepath.png')));
-  // res.json({imagePath});
-
 });
+
+// router.get('/images/:format', verifyToken, (req, res) => {
+//   const { emp_id } = req.user;
+//   const { format } = req.params;
+//   if (!['jpg', 'jpeg', 'png'].includes(format.toLowerCase())) {
+//     return res.status(400).json({ success: false, message: 'Unsupported image format' });
+//   }
+//   const imagePath = path.join(__dirname, '..', 'ImgUploads', `${emp_id}.${format}`);
+//   if (!imagePath || !fs.existsSync(imagePath)) {
+//     return res.status(404).json({ success: false, message: 'Image not found' });
+//   }
+//   let contentType = 'image/png'; // Default to PNG
+//   if (format.toLowerCase() === 'jpg' || format.toLowerCase() === 'jpeg') {
+//     contentType = 'image/jpeg';
+//   }
+//   res.setHeader('Content-Type', contentType);
+//   res.sendFile(imagePath);
+// });
+
 // ------------------------------------------------------------Departments--------------------------------------------------------------------------------------------
 router.post("/addDepartment", (req, res) => {
   console.log("/addDepartment");
@@ -794,7 +825,7 @@ router.put("/oneDayLeaveRequest", verifyToken, checkUserRole(2), async (req, res
   );
 });
 
-router.post('/markAbsent', verifyToken, checkUserRole(1), (req, res) => {
+router.post('/markAbsent', (req, res) => {
   console.log('mark attendance');
   const query = `CALL markAbsentIntoAttendance()`
 

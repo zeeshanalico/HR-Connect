@@ -57,8 +57,6 @@ export default function ApplyNow() {
       } catch (error) {
         Toast('Error submitting job application:', error)
         console.error('Error submitting job application:', error);
-        throw error;
-      }
     } else {
       Toast('Please fill all the inputs', 'info');
     }
