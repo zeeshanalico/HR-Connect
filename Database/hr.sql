@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `hr` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `hr`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: localhost    Database: hr
+-- Host: 127.0.0.1    Database: hr
 -- ------------------------------------------------------
--- Server version	8.0.34
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -28,7 +28,7 @@ CREATE TABLE `applications` (
   `application_id` int NOT NULL AUTO_INCREMENT,
   `applicant_name` varchar(30) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `cnic` varchar(13) NOT NULL,
+  `cnic` varchar(15) NOT NULL,
   `city` varchar(50) DEFAULT NULL,
   `phone_number` varchar(20) DEFAULT NULL,
   `desired_salary` varchar(20) DEFAULT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `applications` (
   PRIMARY KEY (`application_id`),
   KEY `job_id` (`job_id`),
   CONSTRAINT `applications_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`job_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,7 +58,7 @@ CREATE TABLE `applications` (
 
 LOCK TABLES `applications` WRITE;
 /*!40000 ALTER TABLE `applications` DISABLE KEYS */;
-INSERT INTO `applications` VALUES (11,'akali','dfsw@w','dfd','fdf','dfd','dfd','3_akali.pdf','Interview','dfd',3,'Female','dfd','dfd','fd','dfd','dfd','dfd','fdf',NULL,NULL),(12,'ewrf','werw@erw','wkerjqwj','werkljwkl','werklqwj','jklsdlf','8_ewrf.pdf','Interview','ejrklwjeklr',8,'Female','erklwjekl','less than 1 year','weklrklj','efsdklfkl','sjdfkljs','jelrjwkl``','erklwj','3.45','2004-01-01'),(13,'hassan abdal ali','hassan@gmail.com','3445389498232','khaniwal','0322345232423','3450000','9_hassan abdal ali.pdf','Interview','sdfklskljkl sf ljjk address wis sjis well ana d',9,'Female','52332','2 years','FCIT','BS','CS','www.ssdfs.d.w.e.rw','www.sd.fwe.r.wer.w.',NULL,NULL),(14,'hurma ali','hurma@gmail.com','3455343422435','lahore','034233242','345000','7_hurma ali.pdf','Interview','sdflksdj fjs dfkjkldfj dfkls d',7,'Female','54000','less than 1 year','GCUL','BS','CS','www.er..r.wer.w','www.sdf.s..sf','3.4','2010-05-03'),(15,'Bruce Banner','bb@mail','987654321','Lahore','749027047','10000','10_Bruce Banner.pdf','Pending','Lahore ',10,'Male','3343','0 - 6 months','GCU','CS','CS',NULL,NULL,'8','2023-09-01'),(16,'Superman','su@mail.pk','98765','NY','01709712','10000','11_Superman.pdf','Interview','jkglbcla',11,'Male','14','3-5 years','GCU','CS','CS',NULL,NULL,'8','2023-09-01');
+INSERT INTO `applications` VALUES (22,'waziurehman','wazi@gmail.com','23423-2343432-2','Lahore','34234234242','3','3_waziurehman.pdf','Interview','asdf',3,'Male','343','2+ year','GCU','sdf','df','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','3','2023-10-01'),(24,'hafiz islam','hmic828@gmail.com','22222-2222222-2','Lahore','30232334244','234','3_hafiz islam.pdf','Interview','this is my address',3,'Male','23422','2+ year','UCP','sdf','sdf','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','2','2023-10-01'),(26,'Munawar Hussain','munawar@gmail.com','33423-2323234-1','Lahore','3015372621','35000','12_Munawar Hussain.pdf','Pending','Johar Town',12,'Male','54990','6+ Months','ITU','BS','CS','https://github.com/zeeshanalico','https://linkedin.com/in/zeeshanalico','2.94','2023-10-01');
 /*!40000 ALTER TABLE `applications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +77,7 @@ CREATE TABLE `attendance` (
   PRIMARY KEY (`attendance_id`),
   UNIQUE KEY `emp_id` (`emp_id`,`attendance_date`),
   CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=218 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
-INSERT INTO `attendance` VALUES (8,121,'2023-09-18','Late'),(9,232,'2023-09-18','Late'),(10,232,'2023-09-25','Leave'),(11,232,'2023-09-19','Present'),(12,121,'2023-09-19','Late'),(13,9,'2023-09-19','Late'),(14,7,'2023-09-19','Late'),(46,121,'2023-09-23','Present'),(141,7,'2023-09-23','Late'),(142,9,'2023-09-23','Late'),(143,232,'2023-09-23','Late'),(144,234455,'2023-09-23','Late'),(145,121,'2023-09-24','Late'),(146,234455,'2023-09-24','Late'),(147,1,'2023-09-24','Late'),(148,7,'2023-09-24','Late'),(149,9,'2023-09-24','Late'),(150,171,'2023-09-24','Late'),(151,232,'2023-09-24','Late'),(152,878,'2023-09-24','Late'),(154,234455,'2023-09-26','Leave'),(155,121,'2023-09-25','Late'),(156,1,'2023-09-25','Late'),(157,7,'2023-09-25','Late'),(158,9,'2023-09-25','Late'),(159,171,'2023-09-25','Late'),(160,878,'2023-09-25','Late'),(161,234455,'2023-09-25','Late'),(162,121,'2023-09-26','Absent'),(163,16,'2023-09-25','Late'),(164,16,'2023-09-26','Absent'),(165,121,'2023-09-27','Leave');
+INSERT INTO `attendance` VALUES (9,2,'2023-09-18','Absent'),(10,2,'2023-09-25','Leave'),(11,2,'2023-09-19','Present'),(143,2,'2023-09-23','Absent'),(147,1,'2023-09-24','Absent'),(151,2,'2023-09-24','Absent'),(156,1,'2023-09-25','Absent'),(166,1,'2023-09-26','Absent'),(170,2,'2023-09-26','Absent'),(180,2,'2023-09-29','Absent'),(181,2,'2023-10-07','Leave'),(182,2,'2023-10-04','Leave'),(183,2,'2023-10-05','Leave'),(184,2,'2023-10-06','Leave'),(185,2,'2023-10-08','Leave'),(199,2,'2023-09-30','Absent'),(201,2,'2023-10-01','Present'),(203,2,'2023-11-09','Leave'),(205,2,'2023-10-02','Absent'),(206,2,'2023-10-03','Absent'),(207,3,'2023-10-04','Present'),(208,6,'2023-10-04','Present'),(209,1,'2023-10-03','Absent'),(210,3,'2023-10-03','Absent'),(211,6,'2023-10-03','Absent'),(212,1,'2023-10-04','Absent'),(213,25,'2023-10-05','Present'),(214,25,'2023-10-04','Absent'),(215,1,'2023-10-05','Absent'),(216,3,'2023-10-05','Absent'),(217,6,'2023-10-05','Absent');
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +101,7 @@ CREATE TABLE `department` (
   `dep_id` int NOT NULL AUTO_INCREMENT,
   `dep_name` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`dep_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `department` (
 
 LOCK TABLES `department` WRITE;
 /*!40000 ALTER TABLE `department` DISABLE KEYS */;
-INSERT INTO `department` VALUES (1,'Web Developers Geek'),(2,'Sales '),(3,'Finance');
+INSERT INTO `department` VALUES (1,'Project Management Team'),(3,'Quality Assurance (QA) Team'),(4,'Development Team');
 /*!40000 ALTER TABLE `department` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,8 +134,6 @@ CREATE TABLE `employee` (
   `gender` enum('Male','Female') DEFAULT NULL,
   `hire_date` date DEFAULT NULL,
   `salary` decimal(10,2) DEFAULT NULL,
-  `login_email` varchar(255) DEFAULT NULL,
-  `login_password` varchar(255) DEFAULT NULL,
   `role_id` int DEFAULT NULL,
   `job_id` int DEFAULT NULL,
   `dep_id` int DEFAULT NULL,
@@ -161,8 +159,32 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'Nofil','naufal@gmail.com','03-147714','Lahore','lahore town','12345','2001-01-21','2351521391','Male','2021-01-21',10000.00,'naufal@gmail.com',NULL,1,NULL,NULL,'3.8',NULL,'MS',NULL,NULL,'GCU'),(7,'ali khan','zsldjf2@gmail.com','342414','sdfd','sdfasdfl',NULL,'2023-09-27','3242423232323','Male','2023-09-06',123.00,'zsldjf2@gmail.com','123',2,1,2,NULL,NULL,NULL,NULL,NULL,NULL),(9,'abdullah dogar','dfs@gmail.com','2435','24343','34e34',NULL,'2023-09-27','3434343424232','Male','2023-09-20',1231.00,'dfs@gmail.com','1234',2,1,2,NULL,NULL,NULL,NULL,NULL,NULL),(16,'Superman','su@mail.pk','01709712','NY','jkglbcla','14','2023-09-01','98765','Male','2023-09-26',100000.00,NULL,NULL,2,1,2,'8','CS','CS','oashfpw','oidqhowdb','GCU'),(121,'haseeb','zjdlf@gmail.com','342414','2342','shahdara lahore','54000','2023-09-07','3242423232323','Male','2023-09-27',23242.00,'zeeshanla@gmail.com','$2b$10$FPUK121nt//VUVGBaUE2T.WMZkJIVI6PiDHp5goo62ip5vaqW3Zau',2,2,2,NULL,NULL,NULL,NULL,NULL,NULL),(171,NULL,'nofil@gmail.com',NULL,NULL,NULL,NULL,NULL,'1234',NULL,NULL,NULL,NULL,NULL,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(232,'zulqurnain','zeeshanalo24@gmail.com','2232320-3','LAHORE','this is my address','323','2023-03-03','2342222323232','Male','2023-09-27',23240.00,'zee@gmail.com','$2b$10$QpoYtJdHvPG5vJR2XLtcr.BxDN7Djsjfp4I6vjCAnthPDT.2NRrUa',2,2,1,NULL,NULL,NULL,NULL,NULL,NULL),(878,NULL,'nofl.com',NULL,NULL,NULL,NULL,NULL,'2740274',NULL,NULL,NULL,NULL,NULL,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(234455,'gujjar bawa','bawag@gmail.com','03021055932','shakargarh','shakargarh narrowal','23443','2023-09-12','57676897979','Male','2023-08-29',356576.00,NULL,NULL,2,2,1,'3.4','hr','bg','kljkl jkgjkgk gkgjhfjf gkk','jkhjhkljkljkl kjkh klkljkljklj','gft');
+INSERT INTO `employee` VALUES (1,'ihtishm ','muhammadihtisham60@gmail.com','03021055932','shakargarh','shakargarh narrowal','23443','2001-01-21','2351521391','Male','2021-01-21',10000.00,1,NULL,NULL,'3.8','CS','MS','www','www','GCU'),(2,'ali arshad','aliarshad@gmail.com','03021055932','lahore city',' Chattha Colony No.1 shrqpur road begum kot shahdara LHR','12343','2023-03-03','2342222323232','Male','2023-09-27',23240.00,2,2,1,'3.4','CS','BS','www','www','ITU'),(3,'huzaifa Waheed','huzaifa@gmail.com','39292324234','lahore city','asdf','52221','2023-10-01','3453223443432','Male','2023-10-04',2342.00,2,2,1,'2.4','CS','dfs','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','GCU'),(6,'Bruce Banner','bb@mail','74902704733','Lahore','Lahore ','33433','2023-08-31','987654321','Male','2023-10-04',2321.00,2,2,NULL,'3','CS','CS','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','http://www.applyPage/applyNow?job_title=Android%20Developer&job_id=12','GCU'),(25,'Zeeshan Ali','zeeshanalico24@gmail.com','30221055932','lahore city','Johar Town , Lahore C block','23223','2023-10-01','2222222222222','Male','2023-10-05',234239.00,2,1,4,'2.95','ss','cv','https://github.com','http://www.linkedin.com','fd');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `images`
+--
+
+DROP TABLE IF EXISTS `images`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `images` (
+  `img_id` int NOT NULL AUTO_INCREMENT,
+  `image_file_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`img_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `images`
+--
+
+LOCK TABLES `images` WRITE;
+/*!40000 ALTER TABLE `images` DISABLE KEYS */;
+INSERT INTO `images` VALUES (1,'2.png'),(2,'2.png'),(3,'2.png'),(4,'2.png'),(5,'2.jpeg'),(6,'2.JPG'),(7,'2.jpeg'),(8,'2.png'),(9,'2.png'),(10,'2.png'),(11,'2.png'),(12,'2.png');
+/*!40000 ALTER TABLE `images` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -209,7 +231,7 @@ CREATE TABLE `jobs` (
   PRIMARY KEY (`job_id`),
   KEY `dep_id` (`dep_id`),
   CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`dep_id`) REFERENCES `department` (`dep_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +240,7 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (2,'Mern Developer','3+years','2023-09-17','2023-10-03','The MERN stack is a popular and powerful technology stack for building modern web applications. It consists of four main technologies: MongoDB, Express.js, React, and Node.js. Each component of the stack plays a specific role in the development process, and together they provide a robust and efficient platform for creating web applications.\n\n',1,'2232300','lahore'),(3,'Data Analyst','4+years','2023-09-18','2023-10-07','As a Data Analyst, you will play a crucial role in our organization by turning data into actionable insights. You will be responsible for collecting, analyzing, and interpreting complex data sets to provide valuable information that drives informed decision-making.\n\nKey Responsibilities:\n\nData Collection: Gather and consolidate data from various sources, including databases, spreadsheets, and external APIs.\n\nData Cleaning: Clean, preprocess, and validate data to ensure accuracy and reliability.\n\nData Analysis: Utilize statistical techniques and data visualization tools to identify trends, patterns, and outliers in the data.\n\nReporting: Create clear and concise reports and dashboards that communicate insights to stakeholders.\n\nPredictive Modeling: Develop and implement predictive models to forecast future trends and outcomes.\n\nA/B Testing: Design and analyze A/B tests to optimize product performance and user experience.\n\nData Insights: Collaborate with cross-functional teams to provide data-driven insights and recommendations.\n\nData Governance: Ensure data integrity and compliance with data privacy regulations.\n\nQualifications:\n\nBachelor\'s degree in a related field (e.g., Statistics, Mathematics, Computer Science).\nProficiency in data analysis tools such as Python, R, or SQL.\nStrong knowledge of data visualization tools like Tableau or Power BI.\nExperience with data cleaning, transformation, and manipulation.\nExcellent problem-solving skills and attention to detail.\nStrong communication skills to convey complex findings in a clear and understandable way.\nAbility to work independently and as part of a team.\nPreferred Qualifications:\n\nMaster\'s degree in Data Science or a related field.\nExperience with machine learning algorithms and predictive modeling.\nKnowledge of big data technologies (e.g., Hadoop, Spark).\nFamiliarity with cloud computing platforms (e.g., AWS, Azure, Google Cloud).',1,'800000','islamabad'),(7,'SQA','3+year','2023-09-18','2023-09-12','\nCertainly! Here\'s a description for a Software Quality Assurance (SQA) position:\n\nJob Title: Software Quality Assurance (SQA) Engineer\n\nJob Description:\n\nAs a Software Quality Assurance (SQA) Engineer, you will play a vital role in ensuring the quality and reliability of our software products. You will work closely with cross-functional teams to develop and execute test plans, identify defects, and contribute to the delivery of high-quality software solutions.\n\nKey Responsibilities:\n\nTest Planning: Collaborate with product managers and developers to create comprehensive test plans and test cases that cover all aspects of software functionality.\n\nTest Execution: Conduct manual and automated tests to identify defects, verify fixes, and validate new features.\n\nRegression Testing: Continuously monitor and conduct regression testing to ensure that software updates do not introduce new issues.\n\nBug Tracking: Document defects accurately, including steps to reproduce and relevant information, and manage defect tracking systems.\n\nTest Automation: Develop and maintain automated test scripts to increase testing efficiency and coverage.\n\nPerformance Testing: Perform load and performance testing to identify bottlenecks and ensure optimal system performance.\n\nSecurity Testing: Conduct security testing to identify vulnerabilities and ensure that our software is secure.\n\nQuality Assurance Processes: Contribute to the improvement of quality assurance processes and best practices within the organization.\n\nQualifications:\n\nBachelor\'s degree in Computer Science, Software Engineering, or a related field.\nProven experience in software quality assurance and testing.\nKnowledge of testing methodologies, tools, and best practices.\nProficiency in test automation tools such as Selenium, JUnit, or similar.\nStrong analytical and problem-solving skills.\nExcellent communication and collaboration skills to work effectively with development and product teams.\nFamiliarity with Agile and DevOps methodologies is a plus.\nPreferred Qualifications:\n\nISTQB or similar certification is a plus.\nExperience with continuous integration and continuous delivery (CI/CD) pipelines.\nKnowledge of performance testing tools like JMeter or LoadRunner.\nUnderstanding of security testing principles and tools.\nExperience with testing mobile applications and web services.\n',1,'3450000','lahore'),(8,'Mern intern','no experience','2023-09-18','2023-09-14','With these changes, you can now filter jobs by providing a minimum and maximum salary range. The jobs displayed will be filtered based on the selected range.',1,'30,000k','lahore'),(9,'Fellowship Program','2+years','2023-09-18','2023-09-28','Type Conversion: If job.salary is stored as a string and you are comparing it to numeric values, you might need to convert it to a number using parseFloat or parseInt to ensure accurate comparisons.\n\nError Handling: Implement error handling in your code to catch any potential issues with data retrieval or filtering. This can help you identify any specific errors that occur during the filtering process.',1,'230000','islamabad'),(10,'Assistant Manager','3+years','2023-09-18','2023-10-04','Data in Your Database: Make sure that the data in your database includes jobs with salaries that fall within the specified range. If there are no jobs that match the given salary range, it will appear as if no jobs are shown.\n\nData Type Matching: Ensure that the data type of the salary attribute in your job objects matches the data type you\'re comparing it to in the filter. If the salary attribute in your data is stored as a string, you might need to convert it to a number for accurate filtering.\n\nCheck for Typos: Double-check that there are no typos or case sensitivity issues in the job.salary values or in the filter input.',2,'3400000','Islamabad'),(11,'Super User','3+','2023-09-26','2023-09-28','Controlling everything',2,'100000','Kolachi');
+INSERT INTO `jobs` VALUES (2,'Mern Developer','3+years','2023-09-17','2023-10-03','The MERN stack is a popular and powerful technology stack for building modern web applications. It consists of four main technologies: MongoDB, Express.js, React, and Node.js. Each component of the stack plays a specific role in the development process, and together they provide a robust and efficient platform for creating web applications.\n\n',1,'2232300','lahore'),(3,'Data Analyst','4+years','2023-09-18','2023-10-07','As a Data Analyst, you will play a crucial role in our organization by turning data into actionable insights. You will be responsible for collecting, analyzing, and interpreting complex data sets to provide valuable information that drives informed decision-making.\n\nKey Responsibilities:\n\nData Collection: Gather and consolidate data from various sources, including databases, spreadsheets, and external APIs.\n\nData Cleaning: Clean, preprocess, and validate data to ensure accuracy and reliability.\n\nData Analysis: Utilize statistical techniques and data visualization tools to identify trends, patterns, and outliers in the data.\n\nReporting: Create clear and concise reports and dashboards that communicate insights to stakeholders.\n\nPredictive Modeling: Develop and implement predictive models to forecast future trends and outcomes.\n\nA/B Testing: Design and analyze A/B tests to optimize product performance and user experience.\n\nData Insights: Collaborate with cross-functional teams to provide data-driven insights and recommendations.\n\nData Governance: Ensure data integrity and compliance with data privacy regulations.\n\nQualifications:\n\nBachelor\'s degree in a related field (e.g., Statistics, Mathematics, Computer Science).\nProficiency in data analysis tools such as Python, R, or SQL.\nStrong knowledge of data visualization tools like Tableau or Power BI.\nExperience with data cleaning, transformation, and manipulation.\nExcellent problem-solving skills and attention to detail.\nStrong communication skills to convey complex findings in a clear and understandable way.\nAbility to work independently and as part of a team.\nPreferred Qualifications:\n\nMaster\'s degree in Data Science or a related field.\nExperience with machine learning algorithms and predictive modeling.\nKnowledge of big data technologies (e.g., Hadoop, Spark).\nFamiliarity with cloud computing platforms (e.g., AWS, Azure, Google Cloud).',1,'800000','islamabad'),(7,'SQA','3+year','2023-09-18','2023-09-12','\nCertainly! Here\'s a description for a Software Quality Assurance (SQA) position:\n\nJob Title: Software Quality Assurance (SQA) Engineer\n\nJob Description:\n\nAs a Software Quality Assurance (SQA) Engineer, you will play a vital role in ensuring the quality and reliability of our software products. You will work closely with cross-functional teams to develop and execute test plans, identify defects, and contribute to the delivery of high-quality software solutions.\n\nKey Responsibilities:\n\nTest Planning: Collaborate with product managers and developers to create comprehensive test plans and test cases that cover all aspects of software functionality.\n\nTest Execution: Conduct manual and automated tests to identify defects, verify fixes, and validate new features.\n\nRegression Testing: Continuously monitor and conduct regression testing to ensure that software updates do not introduce new issues.\n\nBug Tracking: Document defects accurately, including steps to reproduce and relevant information, and manage defect tracking systems.\n\nTest Automation: Develop and maintain automated test scripts to increase testing efficiency and coverage.\n\nPerformance Testing: Perform load and performance testing to identify bottlenecks and ensure optimal system performance.\n\nSecurity Testing: Conduct security testing to identify vulnerabilities and ensure that our software is secure.\n\nQuality Assurance Processes: Contribute to the improvement of quality assurance processes and best practices within the organization.\n\nQualifications:\n\nBachelor\'s degree in Computer Science, Software Engineering, or a related field.\nProven experience in software quality assurance and testing.\nKnowledge of testing methodologies, tools, and best practices.\nProficiency in test automation tools such as Selenium, JUnit, or similar.\nStrong analytical and problem-solving skills.\nExcellent communication and collaboration skills to work effectively with development and product teams.\nFamiliarity with Agile and DevOps methodologies is a plus.\nPreferred Qualifications:\n\nISTQB or similar certification is a plus.\nExperience with continuous integration and continuous delivery (CI/CD) pipelines.\nKnowledge of performance testing tools like JMeter or LoadRunner.\nUnderstanding of security testing principles and tools.\nExperience with testing mobile applications and web services.\n',1,'3450000','lahore'),(8,'Mern intern','no experience','2023-09-18','2023-09-14','With these changes, you can now filter jobs by providing a minimum and maximum salary range. The jobs displayed will be filtered based on the selected range.',1,'30,000k','lahore'),(9,'Fellowship Program','2+years','2023-09-18','2023-09-28','Type Conversion: If job.salary is stored as a string and you are comparing it to numeric values, you might need to convert it to a number using parseFloat or parseInt to ensure accurate comparisons.\n\nError Handling: Implement error handling in your code to catch any potential issues with data retrieval or filtering. This can help you identify any specific errors that occur during the filtering process.',1,'230000','islamabad'),(10,'Assistant Manager','3+years','2023-09-18','2023-10-04','Data in Your Database: Make sure that the data in your database includes jobs with salaries that fall within the specified range. If there are no jobs that match the given salary range, it will appear as if no jobs are shown.\n\nData Type Matching: Ensure that the data type of the salary attribute in your job objects matches the data type you\'re comparing it to in the filter. If the salary attribute in your data is stored as a string, you might need to convert it to a number for accurate filtering.\n\nCheck for Typos: Double-check that there are no typos or case sensitivity issues in the job.salary values or in the filter input.',NULL,'3400000','Islamabad'),(12,'Android Developer','2+ year','2023-09-29','2023-10-07','About Us:\n[Your Company Name] is a leading technology company that specializes in [mention your company\'s area of expertise, e.g., mobile app development, e-commerce solutions, etc.]. We are dedicated to pushing the boundaries of innovation and creating cutting-edge solutions that enhance the lives of our users.\n\nJob Description:\n\nAre you passionate about Android app development and eager to work on exciting projects in a dynamic team environment? If so, we want you to join our team as an Android Developer! In this role, you will play a pivotal role in designing, developing, and maintaining high-quality Android applications that delight our users.\n\nKey Responsibilities:\n\nCollaborate with cross-functional teams to define, design, and ship new features for our Android apps.\nTranslate designs and wireframes into high-quality code.\nEnsure the performance, quality, and responsiveness of applications.\nIdentify and fix bottlenecks and bugs in the Android applications.\nMaintain code quality and participate in code reviews.\nStay up-to-date with the latest industry trends, technologies, and best practices to continuously improve our Android apps.\nRequirements:\n\nBachelor\'s degree in Computer Science or a related field (or equivalent experience).\nProven experience in Android app development using Java or Kotlin.\nStrong understanding of Android design principles and guidelines.\nExperience with RESTful APIs and third-party libraries.\nProficient understanding of code versioning tools, such as Git.\nAbility to work independently and as part of a collaborative team.\nExcellent problem-solving skills and attention to detail.\nStrong communication and interpersonal skills.',4,'85k+','Lahore');
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,10 +258,11 @@ CREATE TABLE `leaverequest` (
   `reason` text,
   `applying_date` date DEFAULT NULL,
   `emp_id` int DEFAULT NULL,
+  `toDate` date DEFAULT NULL,
   PRIMARY KEY (`leave_req_id`),
   KEY `emp_id` (`emp_id`),
   CONSTRAINT `leaverequest_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +271,7 @@ CREATE TABLE `leaverequest` (
 
 LOCK TABLES `leaverequest` WRITE;
 /*!40000 ALTER TABLE `leaverequest` DISABLE KEYS */;
-INSERT INTO `leaverequest` VALUES (1,'Approved','2023-09-19','testing ','2023-09-18',NULL),(2,'Rejected','2023-09-20','testing 121emp','2023-09-18',121),(3,'Rejected','2023-09-27','232','2023-09-18',232),(4,'Approved','2023-09-25','testing 232','2023-09-18',232),(5,'Approved','2023-09-26','reason','2023-09-24',234455),(6,'Pending','2023-09-25','reason','2023-09-24',234455),(7,'Pending','2023-09-27','Urgent Work dude','2023-09-26',234455),(8,'Approved','2023-09-27','Aise hi','2023-09-26',121);
+INSERT INTO `leaverequest` VALUES (3,'Rejected','2023-09-27','232','2023-09-18',2,NULL),(21,'Approved','2023-10-04','Testing aliArshad 2','2023-09-30',2,'2023-10-06'),(22,'Approved','2023-10-07','oneDayLeave','2023-09-29',2,NULL),(23,'Approved','2023-10-08','8','2023-09-29',2,NULL),(24,'Approved','2023-11-09','no ','2023-10-01',2,'2023-11-11'),(25,'Rejected','2023-11-09','sick leave','2023-10-01',2,NULL),(26,'Pending','2023-11-11','sd','2023-10-03',2,'2023-11-15'),(27,'Pending','2023-10-12','sdasdsdas','2023-10-03',2,NULL),(28,'Pending','2023-10-08','we','2023-10-03',2,NULL),(29,'Pending','2023-10-05','nop','2023-10-03',2,'2023-10-16');
 /*!40000 ALTER TABLE `leaverequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +317,7 @@ CREATE TABLE `users` (
   KEY `emp_id` (`emp_id`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE,
   CONSTRAINT `users_ibfk_2` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +326,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'zjdlf@gmail.com','$2b$10$8gpm.48ECA2WtT7ds0cIPOcyi7496Uq1NZdtVci1tkzxrN7mT.pNy',2,121),(4,'nofil@gail.com','27402740',2,7),(5,'nofil@gal.com','27402740',2,7),(6,'nofil@OUTLOOKl.com','27402740',2,7),(7,'nofil@OUTOKl.com','27402740',2,7),(8,'nofil@OUOKl.com','$2b$10$iGkNoE4U.uhWvKeJNNvbo.c5y5PkrwzM9yIuQSVDqEpj7IQJdmt6O',2,7),(9,'nofil@Ol.com','$2b$10$XvZI32u322jkNM179QXp7OObybEyR0vXMQOn6t4Tm41QOdgrKSj2G',2,7),(10,'nofil@.com','$2b$10$xhas8DDwwe.tNXqgDug5kONy4Ma/goPjSZYYaQSr24OiwVEvK5Ple',2,7),(14,'nofl.com','$2b$10$do5hXDdTvYneUHlDho7hD.c2WAm3p1TvfiXGm4.tFe.I7jJLaTJBq',2,878),(15,'nofil@gmail.com','$2b$10$NkkjAqhcgAUo9dYpHCPANu17IQwJwZKY4RNpafMgG0f07lY7fBvzq',2,171),(17,'bawag@gmail.com','$2b$10$wWjy794DM6rDmf/FWxZh6O3FDMERjJ5n6tPeHHoMqqtpWTILoddaG',2,234455),(18,'naufal@gmail.com','$2b$10$NkkjAqhcgAUo9dYpHCPANu17IQwJwZKY4RNpafMgG0f07lY7fBvzq',1,1),(19,'su@mail.pk','$2b$10$EVHOT6zdSJeCxfcmcUNIgOS9l9bSY3XvUe51F1B35.NCSXTBJpMkO',2,16);
+INSERT INTO `users` VALUES (1,'aliarshad@gmail.com','$2b$10$eh3Ln9Wd28b.x8ZugZ6x.uibpjFvc6WbcN8U3/55QagcPixONBLLq',2,2),(2,'muhammadihtisham60@gmail.com','$2b$10$8gpm.48ECA2WtT7ds0cIPOcyi7496Uq1NZdtVci1tkzxrN7mT.pNy',1,1),(38,'huzaifa@gmail.com','$2b$10$ZhrcwS71N4MnkVG8KF7UYOynenDHokEHHzQZBgsfvU36zt3fDqSTi',2,3),(39,'bb@mail','$2b$10$r4XgNsFIR5E4BhyXMUu0K.KEu69gK1NCDcYq4Ky0r.bOx/PvBilIK',2,6),(40,'zeeshanalico24@gmail.com','$2b$10$wuMSsh7LH9rqgdY9YJ.lu.O1ouvdqbz37thQrvwctOHhH2xAKFjL2',2,25);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -456,6 +479,51 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getDashboardTotals` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getDashboardTotals`()
+BEGIN
+    DECLARE totalEmployees INT;
+    DECLARE totalDepartments INT;
+    DECLARE totalJobs INT;
+    DECLARE totalApplications INT;
+    DECLARE totalPresent INT;
+    DECLARE totalAbsent INT;
+	DECLARE totalLeave INT;
+    
+    SELECT COUNT(*) INTO totalEmployees FROM employee;
+    SELECT COUNT(*) INTO totalDepartments FROM department;
+    SELECT COUNT(*) INTO totalJobs FROM jobs;
+    SELECT COUNT(*) INTO totalApplications FROM applications;
+    SELECT COUNT(*) INTO totalPresent
+    
+    FROM attendance
+    WHERE DATE(attendance_date) = CURDATE() AND status = 'Present';
+
+    -- Calculate total absent employees for today
+    SELECT COUNT(*) INTO totalAbsent
+    FROM attendance
+    WHERE DATE(attendance_date) = CURDATE() AND status = 'Absent';
+    
+    SELECT COUNT(*) INTO totalLeave
+    FROM attendance
+    WHERE DATE(attendance_date) = CURDATE() AND status = 'Leave';
+    
+    SELECT totalEmployees, totalDepartments, totalJobs, totalApplications, totalPresent, totalAbsent, totalLeave;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `GetDepartmentsWithTotalEmployees` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -500,6 +568,7 @@ BEGIN
         lr.emp_id,
         lr.att_status,
         lr.leave_date,
+        lr.toDate,
         lr.reason,
         lr.applying_date,
         lr.leave_req_id,
@@ -567,7 +636,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `markAbsentIntoAttendance`()
 BEGIN 
 	INSERT INTO attendance (emp_id, attendance_date, status)
-	SELECT emp_id, Date(NOW()), "Late" FROM employee WHERE emp_id NOT IN (
+	SELECT emp_id, Date(NOW()), "Absent" FROM employee WHERE emp_id NOT IN (
 		SELECT emp_id FROM attendance WHERE attendance_date = DATE(NOW())
 	);
 END ;;
@@ -598,6 +667,33 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `multipleAttendanceApproval` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `multipleAttendanceApproval`(IN id INT, IN p_att_status VARCHAR(10), IN p_fromDate DATE, IN p_toDate DATE)
+BEGIN
+		DECLARE currentDate DATE;
+		SET currentDate = p_fromDate;
+        WHILE currentDate <= p_toDate DO
+			INSERT INTO attendance (emp_id, attendance_date, status) VALUES (id, currentDate, p_att_status);
+			SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+		END WHILE;
+        
+		UPDATE leaverequest	SET att_status = 'Approved'
+		WHERE emp_id = id AND leave_date = p_fromDate;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `registerEmployee` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -609,31 +705,32 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `registerEmployee`(
-     IN p_address VARCHAR(255),
+    IN p_address VARCHAR(255),
     IN p_applicant_name VARCHAR(255),
-    IN p_cgpa varchar(20),
+    IN p_cgpa varchar(10),
     IN p_city VARCHAR(255),
-    IN p_cnic VARCHAR(255),
+    IN p_cnic VARCHAR(15),
     IN p_degree VARCHAR(255),
     IN p_dep_id INT,
     IN p_dob DATE,
     IN p_email VARCHAR(255),
-    IN p_emp_id INT,
+    IN p_hashed_password varchar(255),
+    IN p_emp_id int,
     IN p_gender VARCHAR(10),
     IN p_github_profile_url VARCHAR(255),
     IN p_hire_date DATE,
     IN p_job_id INT,
     IN p_linkedin_profile_url VARCHAR(255),
     IN p_major VARCHAR(255),
-    IN p_phone_number VARCHAR(255),
+    IN p_phone_number VARCHAR(15),
     IN p_role_id INT,
-    IN p_salary int,
+    IN p_salary DECIMAL(10, 2),
     IN p_university VARCHAR(255),
-    IN p_zipcode VARCHAR(255)
+    IN p_zipcode VARCHAR(10)
 )
 BEGIN
     INSERT INTO employee (
-          address,
+        address,
         name,
         cgpa,
         city,
@@ -654,9 +751,9 @@ BEGIN
         salary,
         university,
         zipcode
-    ) 
+    )
     VALUES (
-         p_address,
+        p_address,
         p_applicant_name,
         p_cgpa,
         p_city,
@@ -678,8 +775,34 @@ BEGIN
         p_university,
         p_zipcode
     );
+
+    INSERT INTO users (user_email, user_password, role_id, emp_id)
+    VALUES (p_email, p_hashed_password, p_role_id, p_emp_id);
+
+    INSERT INTO attendance (emp_id, attendance_date, status)
+    VALUES (p_emp_id, p_hire_date, 'Present');
     
-    DELETE FROM applications WHERE application_id = p_emp_id;
+	DELETE FROM applications WHERE application_id = p_emp_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `rejectApplication` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `rejectApplication`(p_application_id int)
+BEGIN
+	delete from applications where application_id =p_application_id;
+    select * from applicatons where application_id=p_application_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -696,4 +819,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-25 22:18:39
+-- Dump completed on 2023-10-05 10:57:04

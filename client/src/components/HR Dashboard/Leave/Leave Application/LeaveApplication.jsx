@@ -162,7 +162,7 @@ export default function LeaveApplication() {
         </div>
         <Table striped bordered hover responsive>
           <thead>
-            <tr>
+            <tr  style={{ borderBottom: '3px solid white' }}>
               <th>Emp ID</th>
               <th>Employee Name</th>
               <th>Department</th>

@@ -6,12 +6,13 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
 import Toast from '../../../../UIModules/Toast/Toast';
 import ReactPaginate from 'react-paginate';
+import { Table } from 'react-bootstrap';
 // import './ManageEmployee.css'
 import styles from './ManageEmployee.module.css'
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
-  const [currentDate, setCurrentDate] = useState(new Date().toISOString().slice(0,10));
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().slice(0, 10));
   const [dep, setDep] = useState([])
   const [jobPositions, setJobPositions] = useState([])
   const [empId, setEmpId] = useState('');
@@ -75,7 +76,7 @@ Lead Talent Acquisition
       setDep(response.data);
     } catch (error) {
       console.error('Error fetching data dep :', error);
-      
+
     }
   };
   useEffect(() => {
@@ -137,38 +138,14 @@ Lead Talent Acquisition
     setShowConfirmation(false);
   };
 
+
+
   return (
     <div id="full-content" className={`${styles.container} full-co`}>
       <div id='content'>
 
-        <h2 className="mb-4">Manage Employee</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <input
-            type="text"
-            id="employeeNameFilter"
-            placeholder="Search by Employee Name"
-            className="form-control round"
-            style={{ width: '335px', marginBottom: '10px' }}
-            value={filters.employeeName}
-            onChange={(e) => handleFilter('employeeName', e.target.value)}
-          // style={{ flex: '1' }}
-          />
-          <div style={{ marginLeft: '490px' }}>items per page</div>
-          <select
-            name="itemsPerPage"
-            style={{ width: '100px' }}
-            id="itemsPerPage"
-            className="form-control round"
-            // style={{ borderRadius: '8px', outline: 'none', padding: '9px' }}
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
 
+        <h2 className="mb-4">Manage Employee</h2>
         <div style={{ display: 'flex', gap: '20px' }}>
           <select
             value={filters.department}
@@ -205,12 +182,40 @@ Lead Talent Acquisition
             ))}
           </select>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '10px' }}>
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Employee Name"
+            className="form-control round"
+            style={{ width: '335px', marginBottom: '10px' }}
+            value={filters.employeeName}
+            onChange={(e) => handleFilter('employeeName', e.target.value)}
+          // style={{ flex: '1' }}
+          />
+          <div style={{ marginLeft: '490px' }}>items per page</div>
+          <select
+            name="itemsPerPage"
+            style={{ width: '100px', marginTop: '-5px' }}
+            id="itemsPerPage"
+            className="form-control round"
+            // style={{ borderRadius: '8px', outline: 'none', padding: '9px' }}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
 
 
 
-        <table className="table" >
+
+
+        <Table striped bordered hover responsive className="custom-scrollbar-table" >
           <thead className={`${styles.header}`}>
-            <tr>
+            <tr style={{ borderBottom: '3px solid white' }}>
               <th>Emp ID</th>
               <th>Name</th>
               <th>Email Address</th>
@@ -218,12 +223,10 @@ Lead Talent Acquisition
               <th>
                 Job Position
               </th>
-              <th>
-                Department
-              </th>
-              <th>
-                Gender
-              </th>
+              <th>Department</th>
+              <th>Gender</th>
+              <th>Hiring Date</th>
+              <th>Salary</th>
               <th style={{ lineHeight: '34px' }}>Actions</th>
             </tr>
           </thead>
@@ -231,49 +234,55 @@ Lead Talent Acquisition
             {currentEmployees
               .map(employee => (
                 <tr key={employee.emp_id}>
-                  <td>{employee.emp_id}</td>
-                  <td>{employee.name}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.phone_number}</td>
-                  <td>{employee.job_name}</td>
-                  <td>{employee.dep_name}</td>
-                  <td>{employee.gender}</td>
+                  <td><div style={{ width: '65px' }}>{employee.emp_id}</div></td>
+                  <td><div style={{ width: '130px' }}>{employee.name}</div></td>
+                  <td><div style={{ width: '200px' }}>{employee.email}</div></td>
+                  <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td>
+                  <td><div style={{ width: '200px' }}>{employee.job_name}</div></td>
+                  <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
+                  <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
+                  <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
+                  <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
                   <td>
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      // style={{backgroundColor:'#FF2400'}}
-                      onClick={() => {
-                        setEmpId(employee.emp_id)
-                        setShowConfirmation(true)
-                      }
-                      }
-                    >
-                      Terminate
-                    </button>
+                    <div style={{ width: '270px' }}>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        style={{ width: '150px', marginRight: '10px' }}
+                        onClick={() => {
+                          setEmpId(employee.emp_id);
+                          setExperienceData((prevData) => {
+                            return prevData.replace('[employee name]', employee.name)
+                              .replace('[Job Title]', employee.job_name)
+                              .replace('[department name]', employee.dep_name)
+                              .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
+                          });
+                          setExperienceConfirmation(true);
+                        }}
+                      >
+                        Experience Letter
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        style={{ width: '100px' }}
+                        onClick={() => {
+                          setEmpId(employee.emp_id);
+                          setShowConfirmation(true);
+                        }}
+                      >
+                        Terminate
+                      </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      // style={{backgroundColor:'#FF2400'}}
-                      onClick={() => {
-                        setEmpId(employee.emp_id)
-                        setExperienceData((prevData) => {
-                          return prevData.replace('[employee name]', employee.name).replace('[Job Title]', employee.job_name).replace('[department name]', employee.dep_name).replace('[hiring date]', employee?.hire_date?.slice(0,10));
-                        });
-                        setExperienceConfirmation(true);
-                      }
-                      }
-                    >
-                      Experience Letter
-                    </button>
+
+                    </div>
 
                   </td>
                 </tr>
               ))}
           </tbody>
-        </table>
-        <div style={{ margin: 'auto' }}>
+        </Table>
+        <div style={{ margin: '30px auto ' }}>
 
           <ReactPaginate
             previousLabel={'Previous'}
@@ -294,6 +303,8 @@ Lead Talent Acquisition
         {/* Confirmation Modal */}
         <Modal
           show={showConfirmation}
+          backdrop="static" // Prevents clicking outside the modal from closing it
+          keyboard={false}
           onHide={() => { setShowConfirmation(false) }}>
           <Modal.Header closeButton>
             <Modal.Title>Confirm Removal</Modal.Title>
@@ -302,7 +313,7 @@ Lead Talent Acquisition
             Are you sure you want to remove this employee?  <br /> Because it will also remove the Account of Employee.
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowConfirmation(false)}>
+            <Button variant="secondary" onClick={() => { setShowConfirmation(false) }}>
               Cancel
             </Button>
             <Button variant="danger" onClick={() => {
@@ -313,7 +324,8 @@ Lead Talent Acquisition
           </Modal.Footer>
         </Modal>
 
-        <Modal show={experienceConfirmation}
+        <Modal show={experienceConfirmation} backdrop="static" // Prevents clicking outside the modal from closing it
+          keyboard={false}
           onHide={() => { setExperienceConfirmation(false) }}>
           <Modal.Header closeButton>
             <Modal.Title>Experience Letter</Modal.Title>
@@ -328,7 +340,10 @@ Lead Talent Acquisition
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={() => setExperienceConfirmation(false)}
+              onClick={() => {
+                setExperienceConfirmation(false)
+                window.location.reload()
+              }}
             >
               Cancel
             </Button>
