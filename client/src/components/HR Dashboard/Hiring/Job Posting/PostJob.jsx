@@ -5,7 +5,7 @@ import '../../../BasicStyle.css';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
-import { config, increaseDateByOneDay } from './../../../../constants.js';
+import { config } from './../../../../constants.js';
 import ReactPaginate from 'react-paginate';
 import styles from './PostJob.module.css'
 // import './PostJob.css'
@@ -14,10 +14,9 @@ export default function PostJob() {
   const [jobDetails, setJobDetails] = useState([])
   const [alljobs, setAllJobs] = useState([]);//get
   const [dep, setDep] = useState([])//get
-
+  const [getExperience, setExperience] = useState([])
   const [confirmationModal, setConfirmationModal] = useState(false); // State for the confirmation modal
   const [jobToRemove, setJobToRemove] = useState(null); // State to track the job to be removed
-
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getJobs', config);
@@ -37,15 +36,31 @@ export default function PostJob() {
       console.error('Error fetching data dep :', error);
     }
   };
-
+  const fetchData1 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getExperience');
+      setExperience(response.data);
+    } catch (error) {
+      console.error('Error fetching Experience:', error);
+    }
+  };
   useEffect(() => {
     fetchData();
     fetchData2();
+    fetchData1();
   }, [])
 
-  const changeHandler = (e) => {
+  const changeHandler = async (e) => {
     const { name, value } = e.target;
     console.log(name, value);
+    // if(name==='dep_id'){
+    //   const response=await axios.get(BaseUrl+`/getDegreesById/${value}`)
+    //   console.log(response.data);
+    //   setDegrees(response.data)
+    //   setJobDetails((prevState) => {
+    //     return { ...prevState, [name]: value };
+    //   });
+    // }
     setJobDetails((prevState) => {
       return { ...prevState, [name]: value };
     });
@@ -58,7 +73,7 @@ export default function PostJob() {
     try {
       const response = await axios.post(BaseUrl + '/jobPost', jobDetails, config);
       if (response.data.success) {
-        Toast('Job posted succeessfuly', 'success');
+        Toast(`${response.data.message}`, 'success');
         setShowModal(false);
         await fetchData();
         setJobDetails({});
@@ -156,6 +171,7 @@ export default function PostJob() {
                   name='title'
                   placeholder="Job Title"
                   value={jobDetails.title || ''}
+                  required
                   onChange={changeHandler}
                 />
               </Form.Group>
@@ -174,13 +190,19 @@ export default function PostJob() {
               <Form.Group controlId="experienceRequired">
                 <Form.Label className='mt-3'>Experience Required</Form.Label>
                 <Form.Control
-                  type="text"
+                  required
+                  as="select"
                   name='experience'
-                  placeholder="Enter experience required"
                   value={jobDetails.experience || ''}
                   onChange={changeHandler}
-                  required
-                />
+                >
+                  <option style={{ display: 'none' }}>Experience</option>
+                  {getExperience.map((exp) => (
+                    <option key={exp.experience} value={exp.experience}>
+                      {exp.experience}
+                    </option>
+                  ))}
+                </Form.Control>
               </Form.Group>
               <Form.Group controlId="locationrequired">
                 <Form.Label className='mt-3'>Location</Form.Label>
@@ -199,6 +221,7 @@ export default function PostJob() {
                   type="text"
                   name='salary'
                   placeholder="Salary"
+                  required
                   value={jobDetails.salary || ''}
                   onChange={changeHandler}
                 />
@@ -208,11 +231,12 @@ export default function PostJob() {
                 <Form.Label className='mt-3'>Select Department</Form.Label>
                 <Form.Control
                   as="select"
+                  required
                   name='dep_id'
                   value={jobDetails.dep_id || ''}
                   onChange={changeHandler}
                 >
-                  <option >Select...</option>
+                  <option style={{ display: 'none' }}>Department</option>
                   {dep.map((dept) => (
                     <option key={dept.dep_id} value={dept.dep_id}>
                       {dept.dep_name}
@@ -220,6 +244,27 @@ export default function PostJob() {
                   ))}
                 </Form.Control>
               </Form.Group>
+
+              {/* <Form.Group controlId="degrees">
+                <Form.Label className='mt-3'>Select Degree</Form.Label>
+                <Form.Control
+                  as="select"
+                  name='deg_id'
+                  required
+                  value={jobDetails.deg_id|| ''}
+                  onChange={changeHandler}
+                >
+                  <option style={{ display: 'none' }}>Degree</option>
+                  {degrees.map((deg) => (
+                    <option key={deg.deg_id} value={deg.deg_id}>
+                      {deg.degree}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group> */}
+
+                    
+
               <Form.Group controlId="expiration">
                 <Form.Label className='mt-3'>Expiration Date</Form.Label>
                 <Form.Control
@@ -248,8 +293,8 @@ export default function PostJob() {
           Post a New Job
         </Button>
 
-        <Row className={`mb-2 ${styles.slideIn}`} style={{ marginTop: '10px',marginBottom:'-30px' }}>
-          <Col style={{ marginBottom:'-30px' }} >
+        <Row className={`mb-2 ${styles.slideIn}`} style={{ marginTop: '10px', marginBottom: '-30px' }}>
+          <Col style={{ marginBottom: '-30px' }} >
             <InputGroup className="filter-inputs">
               <select
                 name="department"
@@ -375,8 +420,8 @@ export default function PostJob() {
                     <td>{job.title}</td>
                     <td>{job.dep_name}</td>
                     <td>{job.experience}</td>
-                    <td>{increaseDateByOneDay(job?.date_posted.slice(0, 10))}</td>
-                    <td>{increaseDateByOneDay(job?.expiry_date?.slice(0, 10))}</td>
+                    <td>{job?.date_posted.slice(0, 10)}</td>
+                    <td>{job?.expiry_date?.slice(0, 10)}</td>
                     <td>{job?.status}</td>
                     <td>
                       <button className="btn btn-danger" onClick={() => handleRemoveJob(job.job_id)}>

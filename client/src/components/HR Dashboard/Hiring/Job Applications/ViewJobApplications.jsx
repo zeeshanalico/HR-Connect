@@ -10,6 +10,13 @@ import { Link } from 'react-router-dom'
 import Toast from "./../../../../UIModules/Toast/Toast.jsx";
 import ReactPaginate from "react-paginate";
 import './ViewJobApplications.css'
+const inputStyle = {
+  backgroundImage: "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" focusable=\"false\" role=\"img\" fill=\"currentColor\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" class=\"css-v86lqu eac13zx0\"%3E%3Cpath fill-rule=\"evenodd\" d=\"M13.335 14.749a6.5 6.5 0 111.414-1.414l6.105 6.104a.5.5 0 010 .707l-.708.708a.5.5 0 01-.707 0l-6.104-6.105zM14 9.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z\" clip-rule=\"evenodd\"%3E%3C/path%3E%3C/svg%3E')",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right calc(0.375em + 0.1875rem) center",
+  backgroundSize: "calc(1em + 0.5rem) calc(1em + 0.5rem)",
+  paddingRight: "2em" // Adjust this value as needed
+};
 export default function ViewJobApplications() {
 
   const [jobApplications, setJobApplications] = useState([]);
@@ -22,6 +29,7 @@ export default function ViewJobApplications() {
   const [applicantJobName, setApplicantJobName] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [dep, setDep] = useState([])
   const [offerLetter, setOfferLetter] = useState(`
   Subject: Offer of Employment
  
@@ -98,9 +106,18 @@ Signed By:_____________________`);
       console.error("Error fetching data jobs:", error);
     }
   };
+  const fetchData2 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getDepartment');
+      setDep(response.data);
+    } catch (error) {
+      console.error('Error fetching data dep :', error);
 
+    }
+  };
   useEffect(() => {
     fetchData();
+    fetchData2();
   }, []);
 
   // ------------------------------------------------------------------------------------------------
@@ -110,7 +127,11 @@ Signed By:_____________________`);
     jobTitle: '',
     status: '',
     experience: '',
-    desired_salary: ''
+    desired_salary: '',
+    gender: '',
+    startDate: '',
+    endDate: '',
+    department: ''
   });
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -118,10 +139,15 @@ Signed By:_____________________`);
 
   const filteredApplications = jobApplications
     .filter((app) => app?.applicant_name?.toLowerCase()?.includes(filters.applicantName.toLowerCase()))
+    .filter((emp) => emp?.gender.includes(filters.gender))
     .filter((app) => app?.title?.toLowerCase()?.includes(filters.jobTitle.toLowerCase()))
     .filter((app) => app?.experience?.toLowerCase()?.includes(filters.experience.toLowerCase()))
     .filter((app) => app?.desired_salary?.toLowerCase()?.includes(filters.desired_salary.toLowerCase()))
+    .filter((app) => app?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
     .filter((app) => app?.status?.toLowerCase()?.includes(filters.status.toLowerCase())) || []
+
+
+
   const offset = currentPage * itemsPerPage;
   const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
 
@@ -197,7 +223,7 @@ Signed By:_____________________`);
             className="form-control"
             value={filters.applicantName}
             onChange={(e) => handleFilter('applicantName', e.target.value)}
-            style={{ width: '365px', marginRight: '10px' }}
+            style={{ ...inputStyle, width: '365px', marginRight: '10px' }}
           />
           <input
             type="text"
@@ -206,7 +232,7 @@ Signed By:_____________________`);
             className="form-control"
             value={filters.jobTitle}
             onChange={(e) => handleFilter('jobTitle', e.target.value)}
-            style={{ width: '350px', marginRight: '10px' }}
+            style={{ ...inputStyle, width: '350px', marginRight: '10px' }}
           />
           <input
             type="text"
@@ -215,10 +241,10 @@ Signed By:_____________________`);
             className="form-control"
             value={filters.experience}
             onChange={(e) => handleFilter('experience', e.target.value)}
-            style={{ width: '350px', marginRight: '10px' }}
+            style={{ ...inputStyle, width: '350px', marginRight: '10px' }}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'10px',marginBottom:'10px'}}>
           <input
             type="text"
             id="employeeNameFilter"
@@ -226,7 +252,7 @@ Signed By:_____________________`);
             className="form-control"
             value={filters.desired_salary}
             onChange={(e) => handleFilter('desired_salary', e.target.value)}
-            style={{ width: '328px', marginRight: '10px' }}
+            style={{ ...inputStyle, width: '328px', marginRight: '10px' }}
           />
           <select
             value={filters.status}
@@ -242,17 +268,30 @@ Signed By:_____________________`);
             <option value="Interview">Interview</option>
             <option value="Hired">Hired</option>
           </select>
-          <span style={{ margin: '20px 0 10px 140px' }}>items per page &ensp;</span>
           <select
-            name="itemsPerPage"
-            id="itemsPerPage"
-            style={{ borderRadius: '5px', margin: '5px', outline: 'none', padding: '9px', width: 'fitcontent', }}
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
+            value={filters.gender}
+            style={{ width: '300px', marginLeft: '10px' }}
+            className="form-control round"
+            onChange={(e) => handleFilter('gender', e.target.value)}
           >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
+            <option value={''} style={{ display: 'none' }}>Gender</option>
+            <option value={''}>All</option>
+            <option value={'Male'}>Male</option>
+            <option value={'Female'}>Female</option>
+          </select>
+          <select
+            style={{ width: '250px', marginLeft: '10px',marginRight: '10px' }}
+            value={filters.department}
+            className="form-control round"
+            onChange={(e) => handleFilter('department', e.target.value)}
+          >
+            <option value={''} style={{ display: 'none' }}>Department</option>
+            <option value={''}>All</option>
+            {dep.map((department) => (
+              <option value={department.dep_name} key={department.dep_name}>
+                {department.dep_name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -261,21 +300,22 @@ Signed By:_____________________`);
             <tr style={{ borderBottom: '3px solid white' }}>
               <th style={{ fontWeight: 'bold' }}>ID</th>
               <th>Applicant Name</th>
-              <th>Applicant Email</th>
-              <th>Applicant Phone</th>
-              <th>Resume</th>
-              <th>Job Title</th>
+              <th>Department</th>
+              <th>Apply for Job Position</th>
               <th>Experience</th>
               <th>Desired Salary</th>
               <th>Status</th>
+              <th>Gender</th>
               <th>Action</th>
+              <th>Applicant Email</th>
+              <th>Applicant Phone</th>
               <th>CGPA</th>
               <th>University</th>
+              <th>Qualification</th>
               <th>Degree</th>
-              <th>Major</th>
+              <th>Resume</th>
               <th>LinkedIn Profile</th>
               <th>Github Profile</th>
-              <th>Gender</th>
               <th>ZipCode</th>
             </tr>
           </thead>
@@ -285,16 +325,12 @@ Signed By:_____________________`);
                 <tr key={application.application_id}>
                   <td>{application.application_id}</td>
                   <td><div style={{ width: '170px' }}>{application.applicant_name}</div></td>
-                  <td>{application.email}</td>
-                  <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
-                  <td> <div style={{ width: '170px' }}>
-                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
-                  </div>
-                  </td>
+                  <td><div style={{ width: '170px' }}>{application.dep_name}</div></td>
                   <td><div style={{ width: '150px' }}>{application.title}</div></td>
                   <td>{application.experience}</td>
-                  <td><div style={{ width: '100px' }}>{application.desired_salary}</div></td>
+                  <td><div style={{ width: '100px' }}>{application.desired_salary} PKR</div></td>
                   <td>{application.status}</td>
+                  <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
                   <td>
                     {application.status === "Pending" ? (
                       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -309,7 +345,8 @@ Signed By:_____________________`);
                             setApplicantJobName(application.title);
                           }}
                           style={{
-                            marginRight: '5px',width: '150px' }} // Add margin between buttons
+                            marginRight: '5px', width: '150px'
+                          }} // Add margin between buttons
                         >
                           Call for Interview
                         </Button>
@@ -378,10 +415,16 @@ Signed By:_____________________`);
                       )
                     )}
                   </td>
+                  <td>{application.email}</td>
+                  <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
                   <td><div style={{ width: 'fitcontent' }}>{application.cgpa}</div></td>
                   <td><div style={{ width: '200px' }}>{application.university}</div></td>
+                  <td><div style={{ width: '170px' }}>{application.qualification}</div></td>
                   <td><div style={{ width: 'fitcontent' }}>{application.degree}</div></td>
-                  <td><div style={{ width: 'fitcontent' }}>{application.major}</div></td>
+                  <td> <div style={{ width: '170px' }}>
+                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
+                  </div>
+                  </td>
                   <td>
                     <div style={{ width: '130px' }}>
                       <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.linkedin_profile_url.toString()}>
@@ -396,14 +439,34 @@ Signed By:_____________________`);
                       </a>
                     </div>
                   </td>
-                  <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
                   <td><div style={{ width: 'fitcontent' }}>{application.zipcode}</div></td>
                 </tr>
               ))}
           </tbody>
         </Table>
-        <div style={{ margin: '20px auto 0px auto' }}>
 
+        <div style={{ margin: '20px auto 0px auto', display: 'flex', alignItems: 'center' }}>
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            style={{
+              borderRadius: '5px',
+              outline: 'none',
+              padding: '8px',
+              marginTop:"-18px",
+              marginRight:'10px',
+              border:'none',
+              flex: '1', // Use flex to take up available space
+            }}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <optgroup label="Items per page">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </optgroup>
+          </select>
           <ReactPaginate
             previousLabel={'Previous'}
             nextLabel={'Next'}

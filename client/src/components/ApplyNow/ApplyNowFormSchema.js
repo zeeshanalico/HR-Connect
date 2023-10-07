@@ -12,10 +12,11 @@ const initialValues = {
     gender: '',
     address: '',
     zipcode: '',
-    job_id: '', // You may set this to the job title if needed
+    job_id: '',
+    dep_id: '',
+    qualification: '',
     university: '',
     degree: '',
-    major: '',
     desired_salary: '',
     dob: '',
     cv_file: '', // You may set this to null or an empty string if needed
@@ -28,7 +29,7 @@ const validationSchema = Yup.object().shape({
         .required('Full Name is required'),
     email: Yup.string().email('Invalid email address').required('Email is required'),
     phone_number: Yup.string()
-        .matches(/^[0-9]{10,11}$/,'Phone number must be 11 or 12 digits')
+        .matches(/^[0-9]{10,11}$/, 'Phone number must be 11 or 12 digits')
         .required('Phone number is required'),
     cnic: Yup.string()
         .matches(/^\d{5}-\d{7}-\d{1}$/, 'Format : XXXXX-XXXXXXX-X')
@@ -39,11 +40,24 @@ const validationSchema = Yup.object().shape({
         .url('Invalid GitHub URL format'),
     linkedin_profile_url: Yup.string()
         .matches(/(linkedin\.com)/, 'Invalid LinkedIn URL format, it must contain ".com"')
-        .url('Invalid LinkedIn URL format'), experience: Yup.string().required('Experience is required'),
+        .url('Invalid LinkedIn URL format'),
+    experience: Yup.string().required('Experience is required'),
+    // cgpa: Yup.number()
+    //     .typeError('CGPA must be a number')
+    //     .min(0, 'CGPA cannot be negative')
+    //     .max(4, 'CGPA cannot be greater than 4')
+    //     .required('CGPA is required'),
     cgpa: Yup.number()
         .typeError('CGPA must be a number')
         .min(0, 'CGPA cannot be negative')
         .max(4, 'CGPA cannot be greater than 4')
+        .test('is-four-digits', 'CGPA must have maximun 4 digits e.g. 2.34', (value) => {
+            if (value === undefined || value === null) {
+                return true;
+            }
+            const cgpaString = value.toString();
+            return cgpaString.length <= 4;
+        })
         .required('CGPA is required'),
     gender: Yup.string().required('Gender is required'),
     address: Yup.string()
@@ -57,12 +71,10 @@ const validationSchema = Yup.object().shape({
     university: Yup.string()
         .matches(/^[A-Za-z\s]{1,50}$/, 'University can only contain alphabets and have a max length of 50 characters')
         .required('University is required'),
+    qualification: Yup.string()
+        .required('Qualification is required'),
     degree: Yup.string()
-        .matches(/^[A-Za-z\s]+$/, 'Degree can only contain alphabets')
         .required('Degree is required'),
-    major: Yup.string()
-        .matches(/^[A-Za-z\s]+$/, 'Major can only contain alphabets')
-        .required('Major is required'),
     desired_salary: Yup.number()
         .typeError('Desired Salary must be a number')
         .min(0, 'Desired Salary cannot be negative')

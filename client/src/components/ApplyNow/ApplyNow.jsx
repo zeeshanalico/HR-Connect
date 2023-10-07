@@ -9,18 +9,47 @@ import './ApplyNow.css';
 import { BaseUrl } from './../../constants.js';
 import Toast from '../../UIModules/Toast/Toast';
 import { useLocation, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
 import { Formik, ErrorMessage, Form, Field } from 'formik';
 import { initialValues, validationSchema } from './ApplyNowFormSchema';
-
+const qualificationOptions = [
+  // "Intermediate",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctor of Philosophy",
+];
 export default function ApplyNow() {
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const jobTitle = searchParams.get('job_title');
   const jobId = searchParams.get('job_id');
+  const depId = searchParams.get('dep_id');
   const jobTitleFromState = location.state && location.state.job_title;
   const navigate = useNavigate();
+  const [degrees, setDegrees] = useState([]);
+  const [getExperience, setExperience] = useState([]);
+
+
+  const fetchData = async () => {
+    const response = await axios.get(BaseUrl + `/getDegreesById/${depId}`)
+    console.log(response.data);
+    setDegrees(response.data)
+    
+  }
+  const fetchData1 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getExperience');
+      console.log(response.data);
+      setExperience(response.data);
+    } catch (error) {
+      console.error('Error fetching Experience:', error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+    fetchData1();
+  }, [])
+
 
   const handleSubmit = async (values, { resetForm }) => {
     console.log(values);
@@ -50,7 +79,7 @@ export default function ApplyNow() {
       </RouterLink>
 
       <Formik
-        initialValues={{ ...initialValues, job_id: jobId, job_title: jobTitle, cv_file: null }}
+        initialValues={{ ...initialValues, job_id: jobId, dep_id: depId, job_title: jobTitle, cv_file: null }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}    >
         {({ errors, touched, values, setFieldValue }) => (
@@ -113,14 +142,18 @@ export default function ApplyNow() {
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
 
-            <label htmlFor="experience">Experience</label>
-            <Field
-              id='experience'
-              name="experience"
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-
-              placeholder="Experience"
-            />
+            <label htmlFor="experience" >Experience</label>
+            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }} 
+              onChange={(e) => setFieldValue('experience', e.target.value)}
+              value={values.experience}
+            >
+              <option value="" style={{ display: 'none' }} label="Select Experience" />
+              {getExperience.map((option) => (
+                <option key={option.experience} value={option.experience}>
+                  {option.experience}
+                </option>
+              ))}
+            </Field>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="experience" component="span" className="error-message" />
 
             <label htmlFor="cgpa">CGPA</label>
@@ -157,7 +190,6 @@ export default function ApplyNow() {
               id='job_id'
               disabled
               name="job_title"
-              placeholder="Enter LinkeIn Profile Link"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="job_title" component="span" className="error-message" />
 
@@ -170,23 +202,68 @@ export default function ApplyNow() {
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
 
-            <label htmlFor="degree">Qualification</label>
+            {/* <label htmlFor="degree">Qualification</label>
             <Field
               id='degree'
               name="degree"
               style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
               placeholder="Qualification"
             />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" /> */}
+
+            <label htmlFor="qualification" >Qualification</label>
+            <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }} 
+              onChange={(e) => setFieldValue('qualification', e.target.value)}
+              value={values.qualification}
+            >
+              <option value="" style={{ display: 'none' }} label="Select Qualification" />
+              {qualificationOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="qualification" component="span" className="error-message" />
+
+            <label htmlFor="degree">Degree</label>
+            <Field
+              as="select"
+              id="degree"
+              name="degree"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              onChange={(e) => setFieldValue('degree', e.target.value)}
+              value={values.degree}
+            >
+              <option value="" style={{ display: 'none' }} label="Select Degree" />
+              {degrees ? (
+                degrees.map((option) => (
+                  <option key={option.deg_id} value={option.degree}>
+                    {option.degree}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>Loading degrees...</option>
+              )}
+            </Field>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" />
 
-            <label htmlFor="major">Major</label>
+            {/* <label htmlFor="degree">Degree</label>
+            <Field
+              id='degree'
+              name="degree"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              placeholder="Degree"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" /> */}
+
+            {/* <label htmlFor="major">Major</label>
             <Field
               id='major'
               style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
               name="major"
               placeholder="Major e.g. CS,SE,IT,AI "
             />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="major" component="span" className="error-message" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="major" component="span" className="error-message" /> */}
 
             <label htmlFor="desired_salary">Desired Salary</label>
             <Field
@@ -223,10 +300,10 @@ export default function ApplyNow() {
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="gender" component="span" className="error-message" />
 
             <label htmlFor="cv_file">Upload Resume</label>
-            <input id="file" name="cv_file" type="file"  accept=".pdf,.docx" onChange={(event) => {
+            <input id="file" name="cv_file" type="file" accept=".pdf" onChange={(event) => {
               setFieldValue("cv_file", event.target.files[0]);
             }} />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }}  name="cv_file" component="div" className="error-message" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cv_file" component="div" className="error-message" />
 
             <button className={styles.submitButton} style={{ marginTop: '10px' }} type="submit">Submit</button>
           </Form>

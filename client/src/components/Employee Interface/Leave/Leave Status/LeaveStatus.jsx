@@ -28,17 +28,6 @@ const LeaveStatus = () => {
         fetchData();
     }, [])
 
-function increaseDateByOneDay(dateString) {
-    const currentDate = new Date(dateString);
-    currentDate.setDate(currentDate.getDate() + 1);
-
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-    const day = String(currentDate.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
     return (
         <div id="full-content" className="container mt-4">
           <h2 className="mb-4">Leave Application History</h2>
@@ -59,8 +48,8 @@ function increaseDateByOneDay(dateString) {
                         return (
                             <tr>
                                 <td>{h?.applying_date?.slice(0, 10)}</td>
-                                <td>{increaseDateByOneDay(h?.leave_date?.slice(0, 10))}</td>
-                                <td>{h.toDate ? increaseDateByOneDay(h?.toDate?.slice(0, 10)):'N/A'}</td>
+                                <td>{h?.leave_date?.slice(0, 10)}</td>
+                                <td>{h.toDate ?h?.toDate?.slice(0, 10):'N/A'}</td>
                                 <td>{h.reason}</td>
                                 <td>{h.att_status}</td>
                             </tr>

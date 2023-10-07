@@ -7,9 +7,7 @@ import ReactPaginate from 'react-paginate';
 
 const TodayAttendance = () => {
   const [todayAllAttendance, setTodayAllAttendance] = useState([]);
-  const [status, setStatus] = useState('All');
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [currentPage, setCurrentPage] = useState(0);
+
 
   const fetchData = async () => {
     try {
@@ -24,48 +22,113 @@ const TodayAttendance = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  // ----------------------------------
 
-  const handleItemsPerPageChange = (e) => {
-    const selectedItemsPerPage = parseInt(e.target.value);
-    setItemsPerPage(selectedItemsPerPage);
-    setCurrentPage(0); // Reset to first page when changing items per page
+  const [filters, setFilters] = useState({
+    empId: '',
+    employeeName: '',
+    department: '',
+    gender: '',
+    status: ''
+  });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  const filteredEmployees = todayAllAttendance
+    // .filter((emp) => emp.emp_id === filters.empId)
+    .filter((emp) => emp.emp_id.toString().includes(filters.empId.toString()))
+    .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
+    .filter((emp) => emp?.gender.includes(filters.gender))
+    .filter((emp) => emp?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
+    .filter((emp) => emp?.status?.toLowerCase()?.includes(filters.status.toLowerCase()))
+  const offset = currentPage * itemsPerPage;
+  const currentEmployees = filteredEmployees.slice(offset, offset + itemsPerPage);
+
+  console.log('filteredEmployee ', filteredEmployees);
+  const handleFilter = (filterType, value) => {
+    console.log(filterType, value);
+    setFilters({ ...filters, [filterType]: value });
+    setCurrentPage(0);
   };
 
-  // Apply filtering to the entire dataset
-  const filteredAttendance = todayAllAttendance.filter((employee) =>
-    status === 'All' || employee.status.toLowerCase() === status.toLowerCase()
-  );
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0);
 
-  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredAttendance.slice(indexOfFirstItem, indexOfLastItem);
+  };
 
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Today's Attendance</h2>
       <div id="content">
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,margin:'10px' }}>
-          <select name="status" className="form-control round" style={{width:'250px'}} onChange={(e) => setStatus(e.target.value)}>
-            <option value={''} style={{display:'none'}}>Search by Attendance Status</option>
-            <option value={'All'}>All</option>
-            <option value={'Absent'}>Absent</option>
-            <option value={'Leave'}>Leave</option>
-            <option value={'Present'}>Present</option>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <select
+            value={filters.department}
+            className="form-control round"
+            onChange={(e) => handleFilter('department', e.target.value)}
+          >
+            <option value={''} style={{ display: 'none' }}>Department</option>
+            <option value={''}>All</option>
+            {todayAllAttendance.map((department) => (
+              <option value={department.dep_name} key={department.dep_name}>
+                {department.dep_name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filters.gender}
+            className="form-control round"
+            onChange={(e) => handleFilter('gender', e.target.value)}
+          >
+            <option value={''} style={{ display: 'none' }}>Gender</option>
+            <option value={''}>All</option>
+            <option value={'Male'}>Male</option>
+            <option value={'Female'}>Female</option>
+          </select>
+          <select
+            value={filters.status}
+            className="form-control round"
+            onChange={(e) => handleFilter('status', e.target.value)}
+          >
+            <option value={''} style={{ display: 'none' }}>Status</option>
+            <option value={''}>All</option>
+            {todayAllAttendance.map((att, index) => { return <option key={index} value={att.status}>{att.status}</option> })}
           </select>
 
-          <label htmlFor="itemsPerPageSelect" style={{ marginRight: '-100px',marginLeft:'500px' }}>Items per Page:</label>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '10px' }}>
+          <input
+            type="text"
+            id="empId"
+            placeholder="Search by Employee ID"
+            className="form-control round"
+            style={{ width: '335px', marginBottom: '10px' }}
+            value={filters.empId}
+            onChange={(e) => handleFilter('empId', e.target.value)}
+          />
+          <input
+            type="text"
+            id="employeeNameFilter"
+            placeholder="Search by Employee Name"
+            className="form-control round"
+            style={{ width: '335px', marginBottom: '10px' }}
+            value={filters.employeeName}
+            onChange={(e) => handleFilter('employeeName', e.target.value)}
+          />
+          <div style={{ marginLeft: '60px' }}>items per page</div>
           <select
-            id="itemsPerPageSelect"
-            className="form-control"
-            value={itemsPerPage}
-            style={{ width: '70px', marginLeft: '70px' }}
+            name="itemsPerPage"
+            style={{ width: '100px', marginTop: '-5px' }}
+            id="itemsPerPage"
+            className="form-control round"
             onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
           >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
           </select>
         </div>
 
@@ -83,7 +146,7 @@ const TodayAttendance = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map(employee => (
+            {currentEmployees.map(employee => (
               <tr
                 key={employee.emp_id}
                 className={employee.status === 'Leave' ? 'table-warning' : employee.status === 'Present' ? 'table-success' : 'table-danger'}
@@ -104,7 +167,7 @@ const TodayAttendance = () => {
           <ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
-            pageCount={Math.ceil(filteredAttendance.length / itemsPerPage)}
+            pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)}
             onPageChange={({ selected }) => setCurrentPage(selected)}
             containerClassName={"pagination"}
             activeClassName={"active"}

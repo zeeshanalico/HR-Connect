@@ -10,44 +10,12 @@ import Navbar from '../../Navbar';
 import Toast from '../../../../UIModules/Toast/Toast.jsx';
 import { config } from './../../../../constants.js';
 import * as Yup from 'yup';
-
-// const validationSchema = Yup.object().shape({
-//   applicant_name: Yup.string().required('Full Name is required'),
-//   email: Yup.string().email('Invalid email address').required('Email is required'),
-//   phone_number: Yup.string()
-//     .matches(/^\d{11}$/, 'Phone number must be 11 digits')
-//     .required('Phone number is required'),
-//   cnic: Yup.string()
-//     .matches(/^\d{5}-\d{7}-\d{1}$/, 'Format : XXXXX-XXXXXXX-X')
-//     .required('CNIC is required'),
-//   city: Yup.string().required('City is required'),
-//   github_profile_url: Yup.string().url('Invalid GitHub URL format'),
-//   linkedin_profile_url: Yup.string().url('Invalid LinkedIn URL format'),
-//   experience: Yup.string().required('Experience is required'),
-//   cgpa: Yup.number()
-//     .typeError('CGPA must be a number')
-//     .min(0, 'CGPA cannot be negative')
-//     .max(4, 'CGPA cannot be greater than 4')
-//     .required('CGPA is required'),
-//   gender: Yup.string().required('Gender is required'),
-//   address: Yup.string().required('Address is required'),
-//   zipcode: Yup.number()
-//     .typeError('Zip Code must be a number')
-//     .min(0, 'Zip Code cannot be negative')
-//     .required('Zip Code is required'),
-//   job_id: Yup.string().required('Job ID is required'),
-//   job_name: Yup.string(),
-//   university: Yup.string().required('University is required'),
-//   degree: Yup.string().required('Degree is required'),
-//   major: Yup.string().required('Major is required'),
-//   desired_salary: Yup.number()
-//     .typeError('Desired Salary must be a number')
-//     .min(0, 'Desired Salary cannot be negative')
-//     .required('Desired Salary is required'),
-//   dob: Yup.date()
-//     .max(new Date(), 'Date of Birth cannot be in the future')
-//     .required('Date of Birth is required'),
-// });
+const qualificationOptions = [
+  // "Intermediate",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "Doctor of Philosophy",
+];
 
 const validationSchema = Yup.object().shape({
   // Newly added fields
@@ -85,20 +53,24 @@ const validationSchema = Yup.object().shape({
     .required('University is required'),
   dep_id: Yup.string().required('Department is required'),
   degree: Yup.string()
-    .matches(/^[A-Za-z\s]+$/, 'Degree can only contain alphabets')
     .required('Degree is required'),
   salary: Yup.string()
     .matches(/^[0-9]+$/, 'Salary can only contain digits')
     .required('Salary is required')
     .min(0, 'Desired Salary cannot be negative')
     .required('Desired Salary is required'),
-  major: Yup.string()
-    .matches(/^[A-Za-z\s]+$/, 'Major can only contain alphabets')
-    .required('Major is required'),
+  qualification: Yup.string().required('Qualification is required'),
   cgpa: Yup.number()
     .typeError('CGPA must be a number')
     .min(0, 'CGPA cannot be negative')
     .max(4, 'CGPA cannot be greater than 4')
+    .test('is-four-digits', 'CGPA must have maximun 4 digits e.g. 2.34', (value) => {
+      if (value === undefined || value === null) {
+        return true;
+      }
+      const cgpaString = value.toString();
+      return cgpaString.length <= 4;
+    })
     .required('CGPA is required'),
   linkedin_profile_url: Yup.string()
     .matches(/(linkedin\.com)/, 'Invalid LinkedIn URL format, it must contain ".com"')
@@ -129,8 +101,8 @@ export default function EmployeeInfo({ id }) {
     hire_date: '',
     job_id: "",
     linkedin_profile_url: "",
-    major: '',
-    phone_number: '03',
+    qualification: '',
+    phone_number: '',
     role_id: "",
     salary: "",
     university: "",
@@ -141,11 +113,13 @@ export default function EmployeeInfo({ id }) {
   const [roles, setRoles] = useState([]);//get
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // Add a loading state
+  const [degrees, setDegrees] = useState([]);
+
 
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getJobPositions');
+      const response = await axios.get(BaseUrl + '/getJobPositions', config);
       setJobPositions(response.data);
     } catch (error) {
       console.error('Error fetching data jobpositons:', error);
@@ -190,54 +164,21 @@ export default function EmployeeInfo({ id }) {
 
 
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    if (name === 'dep_id') {
+      const response = await axios.get(BaseUrl + `/getDegreesById/${value}`)
+      console.log(response.data);
+      setDegrees(response.data)
+      setEmployeeInformation((prevState) => {
+        return { ...prevState, [name]: value };
+      });
+    }
     setEmployeeInformation((prevState) => {
       return { ...prevState, [name]: value };
     });
   }
-
-
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log(employeeInformation);
-  //   setLoading(true);
-  //   try {
-  //     let postData = {
-  //       ...employeeInformation,
-  //       cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
-  //     };
-  //     if (id) {
-  //       console.log(postData, id);
-  //       const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id }, config);
-  //       if (response.data.success) {
-  //         Toast("Employee Registered Successfully!", 'info');
-  //         navigate('/hrdash/manageEmployee');
-  //       } else {
-  //         Toast(`${response.data.message}`, 'error');
-  //       }
-  //     } else {
-  //       const response = await axios.post(BaseUrl + '/registerEmployee', postData, config);
-  //       if (response.data.success) {
-  //         Toast("Employee Registered Successfully!", 'info');
-  //         navigate('/hrdash/manageEmployee');
-  //       } else {
-  //         Toast(`${response.data.message}`, 'error');
-  //       }
-  //     }
-  //   } catch (error) {
-  //     Toast("Error in registration: check console for further Details", 'error');
-  //     console.error('Error in submission:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-
-
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -251,7 +192,7 @@ export default function EmployeeInfo({ id }) {
       await validationSchema.validate(postData, { abortEarly: false });
       if (id) {
         console.log(postData, id);
-        const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id }, config);
+        const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id, }, config);
         if (response.data.success) {
           Toast("Employee Registered Successfully!", 'info');
           navigate('/hrdash/manageEmployee');
@@ -285,6 +226,17 @@ export default function EmployeeInfo({ id }) {
       setLoading(false);
     }
   };
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   console.log(employeeInformation);
+    
+  //     let postData = {
+  //       ...employeeInformation,
+  //       cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
+  //     };
+     
+  //     console.log(postData);
+  // };
 
   return (
     <div className="col main pt-3 mt-3">
@@ -435,26 +387,50 @@ export default function EmployeeInfo({ id }) {
                     required
                   />
                 </div>
+
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="emp_role" required className="form-label">Employee job:</label>
-                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={handleChange}  >
-                    <option>--select</option>
-                    {jobPositions.map((job) => (
-                      <option key={job.job_id} value={job.job_id}>
-                        {job.job_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3 rounded-input">
+
                   <label htmlFor="DepartmentName" required className="form-label">Department Name:</label>
                   <select name="dep_id" className="form-control round" value={employeeInformation?.dep_id} onChange={handleChange} >
-                    <option>--select--</option>
+                    <option style={{ display: 'none' }} label="Select Department" />
                     {dep.map((dep) => (
                       <option key={dep.dep_id} value={dep.dep_id}>
                         {dep.dep_name}
                       </option>
                     ))}
+                  </select>
+                </div>
+                {id ? (<div className="mb-3 rounded-input">
+                <label htmlFor="degree" required className="form-label">Degree:</label>
+                  <input
+                    type="text"
+                    className="form-control round"
+                    id="degree"
+                    name='degree'
+                    value={employeeInformation?.degree}
+                    // onChange={handleChange}
+                  />
+                </div>) : (<div className="mb-3 rounded-input">
+                  <label htmlFor="degree" required className="form-label">Degree:</label>
+                  <select name="degree" className="form-control round" value={employeeInformation?.degree} onChange={handleChange}  >
+                    <option style={{ display: 'none' }} label="Select Degree" />
+                    {degrees?.map((option) => (
+                      <option key={option.deg_id} value={option.deg_id}>
+                        {option.degree}
+                      </option>))
+                    }
+                  </select>
+                </div>)}
+                <div className="mb-3 rounded-input">
+                  <label htmlFor="job_id" required className="form-label">Job Positions:</label>
+                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={handleChange}  >
+                    <option value="" style={{ display: 'none' }} label="Select Job" />
+                    {jobPositions.map((option) => (
+                      <option key={option.job_id} value={option.job_id}>
+                        {option.job_name}
+
+                      </option>))
+                    }
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
@@ -469,17 +445,7 @@ export default function EmployeeInfo({ id }) {
 
                   />
                 </div>
-                <div className="mb-3 rounded-input">
-                  <label htmlFor="cgpa" className="form-label">CGPA:</label>
-                  <input
-                    type="text"
-                    className="form-control round"
-                    id="cgpa"
-                    name='cgpa'
-                    value={employeeInformation?.cgpa}
-                    onChange={handleChange}
-                  />
-                </div>
+
                 <div className="mb-3 rounded-input">
                   <label htmlFor="HireDate" required className="form-label">Hire Date:</label>
                   <input
@@ -507,7 +473,17 @@ export default function EmployeeInfo({ id }) {
                 ))}
               </select>
             </div>
-
+              <div className="mb-3 rounded-input">
+                <label htmlFor="emp_role" required className="form-label">Qualification:</label>
+                <select name="qualification" className="form-control round" value={employeeInformation?.qualification} onChange={handleChange}  >
+                  <option style={{ display: 'none' }}>Qualification</option>
+                  {qualificationOptions.map((job) => (
+                    <option key={job} value={job}>
+                      {job}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="mb-3 rounded-input">
                 <label htmlFor="uni" className="form-label">University</label>
                 <input
@@ -520,26 +496,14 @@ export default function EmployeeInfo({ id }) {
 
                 />
               </div>
-
               <div className="mb-3 rounded-input">
-                <label htmlFor="" className="form-label">Degree:</label>
+                <label htmlFor="cgpa" className="form-label">CGPA:</label>
                 <input
                   type="text"
                   className="form-control round"
-                  id="degree"
-                  name='degree'
-                  value={employeeInformation?.degree}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="mb-3 rounded-input">
-                <label htmlFor="LoginPassword" className="form-label">Major:</label>
-                <input
-                  type="text"
-                  className="form-control round"
-                  id="major"
-                  name='major'
-                  value={employeeInformation?.major}
+                  id="cgpa"
+                  name='cgpa'
+                  value={employeeInformation?.cgpa}
                   onChange={handleChange}
                 />
               </div>

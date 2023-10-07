@@ -33,9 +33,7 @@ const AttendanceHistory = () => {
     } catch (error) {
       Toast('Error catch', 'error');
       console.error('Error fetching data attendance history:', error);
-
     }
-
   };
 
   useEffect(() => {

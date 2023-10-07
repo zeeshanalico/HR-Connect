@@ -64,8 +64,9 @@ Lead Talent Acquisition
 
   const fetchData1 = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getJobPositions');
+      const response = await axios.get(BaseUrl + '/getJobPositions',config);
       setJobPositions(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching data jobpositons:', error);
     }
@@ -99,7 +100,7 @@ Lead Talent Acquisition
 
   const filteredEmployees = employees
     .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
-    .filter((emp) => emp?.gender?.toLowerCase()?.includes(filters.gender.toLowerCase()))
+    .filter((emp) => emp?.gender.includes(filters.gender))
     .filter((emp) => emp?.job_name?.toLowerCase()?.includes(filters.jobPosition.toLowerCase()))
     .filter((emp) => emp?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
   const offset = currentPage * itemsPerPage;
@@ -152,7 +153,8 @@ Lead Talent Acquisition
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
           >
-            <option value={'All'} style={{ display: 'none' }}>Department</option>
+            <option value={''} style={{ display: 'none' }}>Department</option>
+            <option value={''}>All</option>
             {dep.map((department) => (
               <option value={department.dep_name} key={department.dep_name}>
                 {department.dep_name}
@@ -164,7 +166,8 @@ Lead Talent Acquisition
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
           >
-            <option value={'All'} style={{ display: 'none' }}>Gender</option>
+            <option value={''} style={{ display: 'none' }}>Gender</option>
+            <option value={''}>All</option>
             <option value={'Male'}>Male</option>
             <option value={'Female'}>Female</option>
           </select>
@@ -174,7 +177,9 @@ Lead Talent Acquisition
             className={`form-control round ${styles.searchin}`}
             onChange={(e) => handleFilter('jobPosition', e.target.value)}
           >
-            <option value={'All'} style={{ display: 'none' }}>Job Position</option>
+            <option value={''} style={{ display: 'none' }}>Job Position</option>
+            <option value={''}>All</option>
+
             {jobPositions.map((job) => (
               <option value={job.job_name} key={job.job_name}>
                 {job.job_name}
@@ -219,7 +224,7 @@ Lead Talent Acquisition
               <th>Emp ID</th>
               <th>Name</th>
               <th>Email Address</th>
-              <th style={{ lineHeight: '34px' }}>Ph. #</th>
+              {/* <th style={{ lineHeight: '34px' }}>Ph. #</th> */}
               <th>
                 Job Position
               </th>
@@ -233,12 +238,13 @@ Lead Talent Acquisition
           <tbody>
             {currentEmployees
               .map(employee => (
+                <>
                 <tr key={employee.emp_id}>
                   <td><div style={{ width: '65px' }}>{employee.emp_id}</div></td>
                   <td><div style={{ width: '130px' }}>{employee.name}</div></td>
                   <td><div style={{ width: '200px' }}>{employee.email}</div></td>
-                  <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td>
-                  <td><div style={{ width: '200px' }}>{employee.job_name}</div></td>
+                  {/* <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td> */}
+                  <td><div style={{ width: '130px' }}>{employee.job_name}</div></td>
                   <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
                   <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
                   <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
@@ -279,6 +285,10 @@ Lead Talent Acquisition
 
                   </td>
                 </tr>
+                {/* <tr>
+                3434
+                </tr> */}
+                </>
               ))}
           </tbody>
         </Table>

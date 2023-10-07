@@ -5,15 +5,35 @@ import ApplyNow from './ApplyNow';
 import { Card, Button, InputGroup, FormControl } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import './ApplyPage.css';
-import { BaseUrl,increaseDateByOneDay } from './../../constants.js';
+import { BaseUrl } from './../../constants.js';
+
+const inputStyle = {
+  backgroundImage: "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" focusable=\"false\" role=\"img\" fill=\"currentColor\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" class=\"css-v86lqu eac13zx0\"%3E%3Cpath fill-rule=\"evenodd\" d=\"M13.335 14.749a6.5 6.5 0 111.414-1.414l6.105 6.104a.5.5 0 010 .707l-.708.708a.5.5 0 01-.707 0l-6.104-6.105zM14 9.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z\" clip-rule=\"evenodd\"%3E%3C/path%3E%3C/svg%3E')",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right calc(0.375em + 0.1875rem) center",
+  backgroundSize: "calc(1em + 0.5rem) calc(1em + 0.5rem)",
+  paddingRight: "2em" // Adjust this value as needed
+};
+// const inputStyle = {
+//   backgroundImage: "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" focusable=\"false\" role=\"img\" fill=\"currentColor\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" class=\"css-v86lqu eac13zx0\"%3E%3Cpath fill-rule=\"evenodd\" d=\"M13.335 14.749a6.5 6.5 0 111.414-1.414l6.105 6.104a.5.5 0 010 .707l-.708.708a.5.5 0 01-.707 0l-6.104-6.105zM14 9.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z\" clip-rule=\"evenodd\"%3E%3C/path%3E%3C/svg%3E')",
+//   backgroundRepeat: "no-repeat",
+//   backgroundPosition: "right calc(0.375em + 0.1875rem) center",
+//   backgroundSize: "calc(1.5em + 0.75rem) calc(1.5em + 0.75rem)", // Increase the size here
+//   paddingRight: "2em" // Adjust this value as needed
+// };
+
 
 export default function ApplyPage() {
   // State for filters and pagination
   const [filters, setFilters] = useState({
     location: '',
     jobTitle: '',
+    experience: '',
+    salary: '',
+    datePosted: ''
   });
   const [allJobs, setAllJobs] = useState([]);
+  const [getExperience, setExperience] = useState([]);
   const [expandedJobs, setExpandedJobs] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -21,15 +41,38 @@ export default function ApplyPage() {
   // Fetch data on component mount
   useEffect(() => {
     fetchData();
+    fetchData1();
   }, []);
+  // function getUniqueObjectsByAttribute(arr, attribute) {
+  //   const uniqueMap = new Map();
+  //   const result = [];
 
+  //   for (const obj of arr) {
+  //     const attrValue = obj[attribute].trim();
+
+  //     if (!uniqueMap.has(attrValue)) {
+  //       uniqueMap.set(attrValue, obj);
+  //       result.push(obj);
+  //     }
+  //   }
+
+  //   return result;
+  // }
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getJobsforApply');
       setAllJobs(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error('Error fetching data jobs:', error);
-      // throw error;
+    }
+  };
+  const fetchData1 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getExperience');
+      setExperience(response.data);
+    } catch (error) {
+      console.error('Error fetching Experience:', error);
     }
   };
 
@@ -45,14 +88,14 @@ export default function ApplyPage() {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
-    setCurrentPage(0); 
+    setCurrentPage(0);
   };
 
   // Handle items per page change
   const handleItemsPerPageChange = (e) => {
     const newItemsPerPage = parseInt(e.target.value, 10);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(0); 
+    setCurrentPage(0);
   };
 
   // Filter jobs based on filters and current page
@@ -63,6 +106,15 @@ export default function ApplyPage() {
     )
     .filter((job) =>
       job.title.toLowerCase().includes(filters.jobTitle.toLowerCase())
+    )
+    .filter((job) =>
+      job.salary.toLowerCase().includes(filters.salary.toLowerCase())
+    )
+    .filter((job) =>
+      job.date_posted.toLowerCase().includes(filters.datePosted.toLowerCase())
+    )
+    .filter((job) =>
+      job.experience.toLowerCase().includes(filters.experience.toLowerCase())
     )
     .filter((job) =>
       job.expiry_date >= currentDate
@@ -79,19 +131,54 @@ export default function ApplyPage() {
 
         <h2 className='titleof' style={{ margin: '50px 0 -40px 30px' }} >Jobs Available</h2>
         <hr />
-        <InputGroup className="filter-inputs">
+        <InputGroup className="filter-inputs" style={{ marginBottom: '2px' }}>
           <FormControl
             className='formcont'
             name="jobTitle"
-            placeholder="Filter by Job Title"
+            placeholder="Search Jobs"
+            style={inputStyle}
             value={filters.jobTitle}
+            onChange={handleFilterChange}
+
+            autoComplete="off"
+          />
+          <FormControl
+            className='formcont'
+            name="salary"
+            style={inputStyle}
+            placeholder="Filter by Salary"
+            value={filters.salary}
+            onChange={handleFilterChange}
+            autoComplete="off"
+          />
+          <select
+            name="experience"
+            id="experience"
+            onChange={handleFilterChange}
+            value={filters.experience}
+            style={{ margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%' }}
+          >
+            <option value="" style={{ display: 'none' }}>Experience</option>
+            <option value="">All</option>
+            {getExperience.map((exp, index) => { return <option key={index} value={exp.experience}>{exp.experience}</option> })}
+
+          </select>
+        </InputGroup>
+        <InputGroup className="filter-inputs">
+          <FormControl
+            className='formcont'
+            type='date'
+            name="datePosted"
+            value={filters.datePosted}
+            // style={inputStyle}
             onChange={handleFilterChange}
             autoComplete="off"
           />
           <FormControl
             className='formcont'
             name="location"
-            placeholder="Filter by Location"
+            placeholder="Search by Location"
+            style={inputStyle}
             value={filters.location}
             onChange={handleFilterChange}
             autoComplete="off"
@@ -100,7 +187,7 @@ export default function ApplyPage() {
           <select
             name="itemsPerPage"
             id="itemsPerPage"
-            style={{ margin: '30px auto' }}
+            style={{ margin: '30px auto', borderRadius: '0 6px  6px 0' }}
             onChange={handleItemsPerPageChange}
             value={itemsPerPage}
           >
@@ -133,14 +220,14 @@ export default function ApplyPage() {
                   <p>---Description---</p>
                   <p>{job.description}</p>
                   <hr className='hr1' />
-                  <p>Date Posted: {increaseDateByOneDay(job.date_posted.slice(0, 10))}</p>
+                  <p>Date Posted: {job.date_posted.slice(0, 10)}</p>
                   <p>Salary: {job.salary}</p>
-                  <p>Last Date to Apply: {increaseDateByOneDay(job.expiry_date.slice(0, 10))}</p>
+                  <p>Last Date to Apply: {job.expiry_date.slice(0, 10)}</p>
                   <RouterLink
                     to={{
                       pathname: '/applyPage/applyNow',
-                      search: `?job_title=${job.title}&job_id=${job.job_id}`,
-                      state: { job_title: job.title },
+                      search: `?job_title=${job.title}&job_id=${job.job_id}&dep_id=${job.dep_id}&experience=${job.experience}`,
+                      state: { job_title: job.title, dep_id: job.dep_id,experience:job.experience },
                     }}
                   >
                     <Button variant="primary">Apply Now</Button>

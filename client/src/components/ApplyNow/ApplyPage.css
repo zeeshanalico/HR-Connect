@@ -182,3 +182,23 @@
   color: white!important;
 }
 
+.search-container {
+  position: relative;
+  width: 300px; /* Adjust the width as needed */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style the search symbol */
+.search-input::placeholder::before {
+  content: "\f002"; /* Unicode for the search icon () */
+  font-family: FontAwesome; /* You may need to include the FontAwesome library */
+  padding-right: 5px;
+  color: #888;
+  font-size: 14px; /* Adjust the font size as needed */
+}
