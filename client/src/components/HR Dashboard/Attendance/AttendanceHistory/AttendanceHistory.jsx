@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BaseUrl, config } from '../../../../constants';
+import { BaseUrl, config, inputStyle } from '../../../../constants';
 import '../../BasicStyle.css';
 import Toast from '../../../../UIModules/Toast/Toast';
-
-const inputStyle = {
-  border: 'none',
-  height: '30px',
-  outline: 'none',
-  width: 'fit-content',
-  cursor: 'pointer',
-  backgroundColor: 'transparent',
-};
-
 const AttendanceHistory = () => {
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [filters, setFilters] = useState({
@@ -97,18 +87,18 @@ const AttendanceHistory = () => {
         <div>
           <input
             type="text"
-            placeholder="Employee Name"
+            placeholder="Search by Employee Name"
             name="name"
             value={filters.name}
-            style={{width:"48%",display:'inline'}}
+            style={{ width: "48%", display: 'inline', ...inputStyle }}
             className="form-control"
-            
+
             onChange={handleFilterChange}
-            />
+          />
           <input
             type="text"
-            placeholder="Employee id"
-            style={{width:"48%",display:'inline',marginLeft:'20px'}}
+            placeholder="Search by Employee ID"
+            style={{ width: "48%", display: 'inline', marginLeft: '20px', ...inputStyle }}
             className="form-control"
             name="emp_id"
             value={filters.emp_id}
@@ -119,38 +109,27 @@ const AttendanceHistory = () => {
           <select
             name="status"
             value={filters.status}
-            style={{ display: 'inline', width: '320px', margin: '8px 8px 8px 0',  }}
+            style={{ display: 'inline', width: '475px', margin: '8px 20px 8px 0', ...inputStyle, WebkitAppearance: 'none' }}
             onChange={handleFilterChange}
             className="form-control"
           >
-            <option value={'All'}>Status</option>
+            <optgroup>Items/Page</optgroup>
+            <option value={'All'}>Search by Status</option>
             <option value={'Absent'}>Absent</option>
             <option value={'Leave'}>Leave</option>
             <option value={'Present'}>Present</option>
           </select>
           <select
             className="form-control"
-            style={{ display: 'inline', width: '320px' }}
+            style={{ display: 'inline', width: '475px' }}
             value={sortByDate}
             onChange={handleSortByDateChange}
           >
-            <option style={{ display: 'none' }} value="All">Attedence Date</option>
+            <option style={{ display: 'none' }} value="All">Sort By Attendence Date</option>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
-          <label className="mr-2" style={{marginLeft:'97px'}}> Show items per page:</label>
-          <select
-            style={{ display: 'inline', width: '70px' }}
-            className="form-control"
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-          >
-            {itemsPerPageOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+
         </div>
 
         <table className="table">
@@ -197,34 +176,49 @@ const AttendanceHistory = () => {
             ))}
           </tbody>
         </table>
-        <div className="pagination" style={{ margin: 'auto' }}>
-          <button
-            className="page-link"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
+        <div style={{ display: 'flex', margin: 'auto' }}>
+          <select
+            style={{ display: 'inline', flex: '0', width: '70px', marginRight: '5px' }}
+            className="form-control"
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
           >
-            Previous
-          </button>
-          {Array.from({ length: totalPages }, (_, index) => (
+            <optgroup label='Items/Page'></optgroup>
+            {itemsPerPageOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <div className="pagination" style={{ flex: "1" }}>
             <button
-              key={index}
-              className={`page-link ${index + 1 === currentPage ? 'active-button' : ''}`}
-              style={{
-                backgroundColor: index + 1 === currentPage ? '#007BFF' : 'white',
-                color: index + 1 === currentPage ? 'white' : 'black',
-              }}
-              onClick={() => handlePageChange(index + 1)}
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
             >
-              {index + 1}
+              Previous
             </button>
-          ))}
-          <button
-            className="page-link"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                className={`page-link ${index + 1 === currentPage ? 'active-button' : ''}`}
+                style={{
+                  backgroundColor: index + 1 === currentPage ? '#007BFF' : 'white',
+                  color: index + 1 === currentPage ? 'white' : 'black',
+                }}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </div>
 
       </div>

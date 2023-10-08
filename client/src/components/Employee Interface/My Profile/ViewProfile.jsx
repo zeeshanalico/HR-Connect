@@ -290,7 +290,7 @@ export default function ViewProfile() {
                     <Table striped bordered hover>
                       <tbody>
                         <tr>
-                          <td className="text-secondary"><strong>My Employee ID</strong></td>
+                          <td className="text-secondary"><strong>ID No.</strong></td>
                           <td>{empInfo.emp_id}</td>
                           <td className="text-secondary"><strong>CNIC</strong></td>
                           <td>{empInfo.cnic}</td>
@@ -308,7 +308,7 @@ export default function ViewProfile() {
                           <td>{empInfo.DOB?.toString().slice(0, 10)}</td>
                         </tr>
                         <tr>
-                          <td className="text-secondary"><strong>Phone Number </strong></td>
+                          <td className="text-secondary"><strong>Ph. #</strong></td>
                           <td>{empInfo.phone_number}</td>
                           <td className="text-secondary"><strong>Salary</strong></td>
                           <td>{empInfo.salary?.toString()?.slice(0, -3)} PKR</td>

@@ -24,6 +24,8 @@ export default function ApplyNow() {
   const jobTitle = searchParams.get('job_title');
   const jobId = searchParams.get('job_id');
   const depId = searchParams.get('dep_id');
+  const inputExp = searchParams.get('experience');
+  console.log(inputExp);
   const jobTitleFromState = location.state && location.state.job_title;
   const navigate = useNavigate();
   const [degrees, setDegrees] = useState([]);
@@ -34,8 +36,9 @@ export default function ApplyNow() {
     const response = await axios.get(BaseUrl + `/getDegreesById/${depId}`)
     console.log(response.data);
     setDegrees(response.data)
-    
+
   }
+
   const fetchData1 = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getExperience');
@@ -49,6 +52,13 @@ export default function ApplyNow() {
     fetchData();
     fetchData1();
   }, [])
+  const [expLimit,setExpLimit]=useState(false)
+
+  const expChange = (e) => {
+    console.log(e.target.value.trim());
+    console.log(inputExp.trim());
+    setExpLimit(Number(e.target.value?.[0]) < Number(inputExp?.[0]));
+  }
 
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -143,8 +153,12 @@ export default function ApplyNow() {
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
 
             <label htmlFor="experience" >Experience</label>
-            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }} 
-              onChange={(e) => setFieldValue('experience', e.target.value)}
+            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }}
+              onChange={(e) => {
+                setFieldValue('experience', e.target.value);
+                expChange(e);
+
+              }}
               value={values.experience}
             >
               <option value="" style={{ display: 'none' }} label="Select Experience" />
@@ -155,7 +169,7 @@ export default function ApplyNow() {
               ))}
             </Field>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="experience" component="span" className="error-message" />
-
+              {expLimit && <div style={{color:'red'}}>Sorry! You are not eligible for this job based on your selected experience</div>}
             <label htmlFor="cgpa">CGPA</label>
             <Field
               id='cgpa'
@@ -212,7 +226,7 @@ export default function ApplyNow() {
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" /> */}
 
             <label htmlFor="qualification" >Qualification</label>
-            <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }} 
+            <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }}
               onChange={(e) => setFieldValue('qualification', e.target.value)}
               value={values.qualification}
             >

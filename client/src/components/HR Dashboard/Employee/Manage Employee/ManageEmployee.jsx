@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { BaseUrl, config } from './../../../../constants.js';
+import { BaseUrl, config, inputStyle } from './../../../../constants.js';
 // import '../../BasicStyle.css'
 import { Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios'
@@ -64,7 +64,7 @@ Lead Talent Acquisition
 
   const fetchData1 = async () => {
     try {
-      const response = await axios.get(BaseUrl + '/getJobPositions',config);
+      const response = await axios.get(BaseUrl + '/getJobPositions', config);
       setJobPositions(response.data);
       console.log(response.data);
     } catch (error) {
@@ -149,6 +149,7 @@ Lead Talent Acquisition
         <h2 className="mb-4">Manage Employee</h2>
         <div style={{ display: 'flex', gap: '20px' }}>
           <select
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.department}
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
@@ -162,6 +163,7 @@ Lead Talent Acquisition
             ))}
           </select>
           <select
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.gender}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
@@ -173,6 +175,7 @@ Lead Talent Acquisition
           </select>
           <select
             value={filters.jobPosition}
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             autoComplete='off'
             className={`form-control round ${styles.searchin}`}
             onChange={(e) => handleFilter('jobPosition', e.target.value)}
@@ -190,28 +193,13 @@ Lead Talent Acquisition
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '10px' }}>
           <input
             type="text"
+            style={{ ...inputStyle, width: '335px', marginBottom: '10px', WebkitAppearance: 'none' }}
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
-            style={{ width: '335px', marginBottom: '10px' }}
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
-          // style={{ flex: '1' }}
           />
-          <div style={{ marginLeft: '490px' }}>items per page</div>
-          <select
-            name="itemsPerPage"
-            style={{ width: '100px', marginTop: '-5px' }}
-            id="itemsPerPage"
-            className="form-control round"
-            // style={{ borderRadius: '8px', outline: 'none', padding: '9px' }}
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
         </div>
 
 
@@ -239,62 +227,75 @@ Lead Talent Acquisition
             {currentEmployees
               .map(employee => (
                 <>
-                <tr key={employee.emp_id}>
-                  <td><div style={{ width: '65px' }}>{employee.emp_id}</div></td>
-                  <td><div style={{ width: '130px' }}>{employee.name}</div></td>
-                  <td><div style={{ width: '200px' }}>{employee.email}</div></td>
-                  {/* <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td> */}
-                  <td><div style={{ width: '130px' }}>{employee.job_name}</div></td>
-                  <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
-                  <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
-                  <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
-                  <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
-                  <td>
-                    <div style={{ width: '270px' }}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        style={{ width: '150px', marginRight: '10px' }}
-                        onClick={() => {
-                          setEmpId(employee.emp_id);
-                          setExperienceData((prevData) => {
-                            return prevData.replace('[employee name]', employee.name)
-                              .replace('[Job Title]', employee.job_name)
-                              .replace('[department name]', employee.dep_name)
-                              .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
-                          });
-                          setExperienceConfirmation(true);
-                        }}
-                      >
-                        Experience Letter
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        style={{ width: '100px' }}
-                        onClick={() => {
-                          setEmpId(employee.emp_id);
-                          setShowConfirmation(true);
-                        }}
-                      >
-                        Terminate
-                      </button>
+                  <tr key={employee.emp_id}>
+                    <td><div style={{ width: '65px' }}>{employee.emp_id}</div></td>
+                    <td><div style={{ width: '130px' }}>{employee.name}</div></td>
+                    <td><div style={{ width: '200px' }}>{employee.email}</div></td>
+                    {/* <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td> */}
+                    <td><div style={{ width: '130px' }}>{employee.job_name}</div></td>
+                    <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
+                    <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
+                    <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
+                    <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
+                    <td>
+                      <div style={{ width: '270px' }}>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          style={{ width: '150px', marginRight: '10px' }}
+                          onClick={() => {
+                            setEmpId(employee.emp_id);
+                            setExperienceData((prevData) => {
+                              return prevData.replace('[employee name]', employee.name)
+                                .replace('[Job Title]', employee.job_name)
+                                .replace('[department name]', employee.dep_name)
+                                .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
+                            });
+                            setExperienceConfirmation(true);
+                          }}
+                        >
+                          Experience Letter
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          style={{ width: '100px' }}
+                          onClick={() => {
+                            setEmpId(employee.emp_id);
+                            setShowConfirmation(true);
+                          }}
+                        >
+                          Terminate
+                        </button>
 
 
-                    </div>
+                      </div>
 
-                  </td>
-                </tr>
-                {/* <tr>
+                    </td>
+                  </tr>
+                  {/* <tr>
                 3434
                 </tr> */}
                 </>
               ))}
           </tbody>
         </Table>
-        <div style={{ margin: '30px auto ' }}>
-
+        <div style={{ display:'flex' ,alignItems:'center',margin:'10px  auto'}}>
+          <select
+            name="itemsPerPage"
+            style={{ width: '100px',flex:'0', border:'none',outline:'none',  marginTop: '-20px',marginRight:'10px' }}
+            id="itemsPerPage"
+            className="form-control round"
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <optgroup label='Items/Page'></optgroup>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
           <ReactPaginate
+          style={{flex:'1'}}
             previousLabel={'Previous'}
             nextLabel={'Next'}
             pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)} // Use filteredApplications.length

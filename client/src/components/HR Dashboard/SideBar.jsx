@@ -33,6 +33,13 @@ export default function SideBar() {
             </Dropdown.Menu>
           </Dropdown>
         </li>
+          <RouterLink to="/hrdash/payroll">
+            <a className="nav-link text-secondary" href="/hrdash/payroll">
+            <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+            <i className="fas fa-users"></i><span className="ml-3">Pay-Roll</span>
+            </a>
+          </RouterLink>
+
         <li className="nav-item mb-2">
           <Dropdown as="div">
             <Dropdown.Toggle variant="link" className="nav-link text-secondary">

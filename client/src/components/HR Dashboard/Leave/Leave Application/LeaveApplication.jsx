@@ -5,10 +5,10 @@ import Table from 'react-bootstrap/Table';
 import './../../BasicStyle.css';
 import axios from 'axios';
 import Toast from '../../../../UIModules/Toast/Toast';
-import { BaseUrl, config } from '../../../../constants';
+import { BaseUrl, config ,inputStyle} from '../../../../constants';
 import ReactPaginate from 'react-paginate';
-import { DatePicker } from 'antd';
-// import 'antd/dist/antd.css';
+
+
 
 export default function LeaveApplication() {
   const [leaveApplications, setLeaveApplications] = useState([]);
@@ -67,27 +67,9 @@ export default function LeaveApplication() {
     .filter((job) => job?.emp_name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
     .filter((job) => job?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
     .filter((job) => job?.att_status?.toLowerCase()?.includes(filters.status.toLowerCase()))
-    .filter((job) => job?.applying_date >= filters?.startDate)
-    .filter((job) => !filters.endDate || job?.applying_date < filters.endDate);
+    // .filter((job) => job?.applying_date >= filters?.startDate)
+    // .filter((job) => !filters.endDate || job?.applying_date < filters.endDate);
 
-    // .filter((job) => {
-    //   const startDate = new Date(job?.applying_date);
-    //   const endDate = new Date(job?.endDate);
-    //   if (!filters.startDate && !filters.endDate) return true;
-    //   if (filters.startDate && !filters.endDate) {
-    //     return startDate >= new Date(filters.startDate);
-    //   }
-    //   if (!filters.startDate && filters.endDate) {
-    //     return endDate <= new Date(filters.endDate);
-    //   }
-    //   return startDate >= new Date(filters.startDate) && endDate <= new Date(filters.endDate);
-    // });
-  // .filter((job) => {
-  //   console.log('job.applying_date:', job?.applying_date);
-  //   console.log('filters.startDate:', filters?.startDate);
-  //   console.log('filters.endDate:', filters?.endDate);
-  //   return job?.applying_date >= filters?.startDate && job?.applying_date <= filters?.endDate;
-  // })
   const offset = currentPage * itemsPerPage;
   const currentApplications = filteredApplications.slice(offset, offset + itemsPerPage);
 
@@ -154,7 +136,7 @@ export default function LeaveApplication() {
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Leave Applications</h2>
       <div id="content">
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center',marginBottom:'10px' }}>
           <input
             type="text"
             id="employeeNameFilter"
@@ -162,21 +144,21 @@ export default function LeaveApplication() {
             className="form-control"
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
-            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
+            style={{ width: '33%', marginRight: '10px', marginBottom: '5px',...inputStyle,WebkitAppearance:'none' }}
           />
           <select
             className="form-control round"
-            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
+            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' ,...inputStyle,WebkitAppearance:'none'}}
             value={filters.department}
             onChange={(e) => handleFilter('department', e.target.value)}
           >
-            <option value="" style={{ display: 'none' }}>Department</option>
+            <option value="" style={{ display: 'none' }}>Search by Department</option>
             <option value="">All</option>
             {dep.map((department) => (<option value={department.dep_name}>{department.dep_name}</option>))}
           </select>
           <select
             value={filters.status}
-            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
+            style={{ width: '33%', marginRight: '10px', marginBottom: '5px',...inputStyle,WebkitAppearance:'none' }}
             s
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
@@ -202,7 +184,7 @@ export default function LeaveApplication() {
           }}
           style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
         /> */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
             type="date"
             id="startDate"
@@ -219,22 +201,7 @@ export default function LeaveApplication() {
             onChange={(e) => handleFilter('endDate', e.target.value)}
             style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
           />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ margin: '0 10px 10px 790px', lineHeight: '1px' }}>items per page &ensp;</div>
-          <select
-            name="itemsPerPage"
-            id="itemsPerPage"
-            style={{ borderRadius: '5px', outline: 'none', padding: '8px', width: 'fitcontent', margin: '10px' }}
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
-        </div>
-
+        </div> */}
         <Table striped bordered hover responsive>
           <thead>
             <tr style={{ borderBottom: '3px solid white' }}>
@@ -314,8 +281,18 @@ export default function LeaveApplication() {
             }
           </tbody>
         </Table>
-        <div style={{ margin: 'auto' }}>
-
+        <div style={{ margin: 'auto',display:'flex' ,margin:'10px auto'}}>
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            style={{ height:'37px',borderRadius: '5px',marginTop:'0px',flex:'0', outline: 'none', padding: '8px', width: 'fitcontent', margin: '10px' ,border:'none'}}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
           <ReactPaginate
             previousLabel={'Previous'}
             nextLabel={'Next'}

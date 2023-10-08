@@ -7,6 +7,7 @@ import Toast from "../../../../UIModules/Toast/Toast";
 import { BaseUrl, start_time, end_time } from "../../../../constants";
 import axios from "axios";
 import { config } from "../../../../constants";
+import Clock from './Clock.jsx'
 
 export default function MarkAttendance() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -36,10 +37,8 @@ export default function MarkAttendance() {
       console.log(response?.data[0]?.status);
 
       if (response?.data[0]?.status) {
-        console.log("If part");
         setAttendanceMarked(true);
       } else {
-        console.log("Else Part");
         setAttendanceMarked(false);
       }
     } catch (error) {
@@ -125,13 +124,14 @@ export default function MarkAttendance() {
 
   return (
     <div className="full-content" id="full-content">
-      {<h2>{currentTime}</h2>}
-      {<p>You can mark your attendance in between {start_time} and {end_time}</p>}
-
-      <h2 className="mb-4">Mark Attendance</h2>
+      {/* {<h2>{currentTime}</h2>} */}
+    
       <div id="content">
+      <Clock/>
+        <h2 className="mb-4" style={{margin:'auto'}}>Mark Attendance</h2>
         <p>Date: {todayDate}</p>
         <p>Day: {day}</p>
+      {<p className="alert-primary">You can mark your attendance in between {start_time} AM to {end_time} AM</p>}
         {
           attendanceMarked ? (
             <div className="alert alert-success" role="alert">
@@ -154,7 +154,7 @@ export default function MarkAttendance() {
             </>
           )
         }
-        <Button
+        {/* <Button
           variant="primary"
           className="mt-3"
           onClick={() => {
@@ -162,7 +162,7 @@ export default function MarkAttendance() {
           }}
         >
           Apply for Leave
-        </Button>
+        </Button> */}
 
 
       </div>

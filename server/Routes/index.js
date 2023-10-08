@@ -27,26 +27,35 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const uploadDirectory = `${__dirname}/../uploads`;
 const current_date = getCurrentDate();
-
-
-function increaseDateByOneDay(dateString) {
-  const currentDate = new Date(dateString);
-  currentDate.setDate(currentDate.getDate() + 1);
-
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-  const day = String(currentDate.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
 //------------------------------------------------------hiring/post a job---------------------------------------------------------------------------
 
 router.get("/getDepartment", (req, res) => {
   console.log("/getDepartment");
   mysql.query("select * from department", (error, result) => {
     if (error) {
-      res.json({ message: error.sqlMessage });
+      console.log(error);
+      res.json({ message: 'an error occured while fetching Departmnts', success: false });
+    } else {
+      res.json(result);
+    }
+  });
+});
+router.get("/getDegrees", (req, res) => {
+  console.log("/getDegrees");
+  mysql.query("select * from degrees", (error, result) => {
+    if (error) {
+      console.log(error);
+      res.json({ message: 'an error occured while fetching degrees', success: false });
+    } else {
+      res.json(result);
+    }
+  });
+});
+router.get("/getExperience", (req, res) => {
+  console.log("/getExperience");
+  mysql.query("select * from experience", (error, result) => {
+    if (error) {
+      res.json({ message: 'error occured while fetching Experience', success: false });
     } else {
       res.json(result);
     }
@@ -83,7 +92,19 @@ router.get("/getJobs", verifyToken, checkUserRole(1), (req, res) => {
       if (error) {
         res.json({ message: error.sqlMessage });
       } else {
-        // const data = result.map((obj) => { return { ...obj, expiry_date: increaseDateByOneDay(obj.expiry_date), date_posted:increaseDateByOneDay(obj.date_posted) } });
+        res.json(result);
+      }
+    }
+  );
+});
+router.get("/getJobPositions", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/getJobpositions");
+  mysql.query(
+    "select * from  jobpositions",
+    (error, result) => {
+      if (error) {
+        res.json({ message: 'error' });
+      } else {
         res.json(result);
       }
     }
@@ -101,17 +122,6 @@ router.get("/getJobsforApply", (req, res) => {
       }
     }
   );
-});
-router.get("/getJobPositions", (req, res) => {
-  console.log("/getJobPositons");
-  mysql.query("SELECT * FROM jobpositions", (err, results) => {
-    if (err) {
-      console.error("Error fetching job positions:", err);
-      res.json({ success: false, message: error.sqlMessage });
-    } else {
-      res.json(results);
-    }
-  });
 });
 
 ///////------------------------hr-----------------------------
@@ -136,9 +146,25 @@ router.get("/getEmployees", verifyToken, checkUserRole(1), (req, res) => {
     (err, results) => {
       if (err) {
         console.error("Error fetching job emp info:", err);
-        res.json({ message: error.sqlMessage });
+        res.json({ message: 'error' });
       } else {
         res.json(results);
+      }
+    }
+  );
+});
+
+router.post("/updateDepartment", (req, res) => {
+  const { depId, depName } = req.body;
+  console.log("/updateDepartment");
+  mysql.query(
+    "UPDATE Department SET dep_name = ? WHERE dep_id = ?;", [depName, depId],
+    (err, results) => {
+      if (err) {
+        console.error("Error Updating Department Name:", err);
+        res.json({ message: error.sqlMessage });
+      } else {
+        res.json({ success: true, message: 'Department updated successfully' });
       }
     }
   );
@@ -149,7 +175,7 @@ router.post("/deleteJob", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/deleteJob");
   const { job_id } = req.body;
   mysql.query(
-    "DELETE FROM jobs WHERE job_id = ?;",
+    "call deletejob",
     [job_id],
     (error, result) => {
       if (error) {
@@ -162,7 +188,7 @@ router.post("/deleteJob", verifyToken, checkUserRole(1), (req, res) => {
 });
 router.post("/deleteDep", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/deleteDep");
-  const { dep_id} = req.body;
+  const { dep_id } = req.body;
   mysql.query(
     "DELETE FROM department WHERE dep_id = ?;",
     [dep_id],
@@ -170,7 +196,7 @@ router.post("/deleteDep", verifyToken, checkUserRole(1), (req, res) => {
       if (error) {
         res.json({ message: error.sqlMessage, error, success: false });
       } else {
-        res.json({ success: true,message:'Deparment deleted Successfully' });
+        res.json({ success: true, message: 'Deparment deleted Successfully' });
       }
     }
   );
@@ -188,24 +214,26 @@ router.post("/jobPost", verifyToken, checkUserRole(1), (req, res) => {
     dep_id,
     salary,
     location,
+    summary
   } = req.body;
   mysql.query(
-    "insert into jobs(title,experience,date_posted,expiry_date,description,dep_id,salary,location) values(?,?,?,?,?,?,?,?);",
+    "CALL postjob(?, ?, ?, ?, ?, ?, ?,?);",
     [
       title,
       experience,
-      current_date,
       expiry_date,
       description,
       dep_id,
       salary,
       location,
+      summary
     ],
     (error, result) => {
       if (error) {
-        res.json({ message: error.sqlMessage, error, success: false });
+        console.log(error);
+        res.json({ message:"error posting job" , error, success: false });
       } else {
-        res.json({ success: true });
+        res.json({ success: true, message: 'Jobs Posted Successfully' });
       }
     }
   );
@@ -230,7 +258,6 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
     job_id,
     university,
     degree,
-    major,
     gender,
     zipcode,
     experience,
@@ -238,6 +265,8 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
     github_profile_url,
     dob,
     cgpa,
+    qualification,
+    dep_id
   } = req.body;
   const fileName = `${job_id}_${applicant_name}.pdf`; // Generate a unique file name
   const cv_file = req.file.buffer; // Use req.file.buffer to access the file data
@@ -253,7 +282,6 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
     job_id,
     university,
     degree,
-    major,
     gender,
     zipcode,
     experience,
@@ -261,7 +289,8 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
     github_profile_url,
     dob,
     cgpa,
-  ];
+    qualification,
+    dep_id];
   const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
   console.log(dataArray);
 
@@ -275,7 +304,7 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
       });
     } else {
       mysql.query(
-        "INSERT INTO applications (applicant_name, email, cnic, city, phone_number, desired_salary, cv_pdf, address, job_id,university,degree,major,gender,zipcode,experience,linkedin_profile_url,github_profile_url,dob,cgpa) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO applications (applicant_name, email, cnic, city, phone_number, desired_salary, cv_pdf, address, job_id,university,degree,gender,zipcode,experience,linkedin_profile_url,github_profile_url,dob,cgpa,qualification,dep_id) VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)",
         dataArray,
         (error, result) => {
           if (error) {
@@ -314,7 +343,7 @@ router.post("/getResume", (req, res) => {
 router.get("/getJobApplications", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getJobApplications");
   mysql.query(
-    "select application_id,a.gender,a.zipcode,a.university,a.degree,a.major,a.experience,desired_salary,a.linkedin_profile_url,a.github_profile_url,a.cgpa,a.dob, a.applicant_name, a.email,a.phone_number, a.status,j.job_id,title from applications a inner join jobs j on a.job_id=j.job_id;",
+    "select application_id,a.gender,a.qualification,d.dep_name,a.zipcode,a.university,a.degree,a.experience,desired_salary,a.linkedin_profile_url,a.github_profile_url,a.cgpa,a.dob, a.applicant_name, a.email,a.phone_number, a.status,j.job_id,title from applications a inner join jobs j on a.job_id=j.job_id inner join department d on a.dep_id=d.dep_id;",
     (error, result) => {
       if (error) {
         res.json({ message: error.sqlMessage, error, success: false });
@@ -461,7 +490,7 @@ router.post('/upload', verifyToken, uploadImage.single('image'), (req, res) => {
 
   const { filename } = req.file;
   mysql.query('INSERT INTO images (image_file_name) VALUES (?)', [filename], (err) => {
-    if (err){console.log(err);}
+    if (err) { console.log(err); }
     res.status(200).json({ message: 'File uploaded successfully' });
   });
 });
@@ -495,23 +524,63 @@ router.get('/images', verifyToken, (req, res) => {
 // });
 
 // ------------------------------------------------------------Departments--------------------------------------------------------------------------------------------
-router.post("/addDepartment", (req, res) => {
-  console.log("/addDepartment");
-  const { newDepartmentName } = req.body;
+// router.post("/addDepartment", (req, res) => {
+//   console.log("/addDepartment");
+//   const { newDepartmentName } = req.body;
+//   const query = "INSERT INTO Department (dep_name) VALUES (?)";
+//   mysql.query(query, [newDepartmentName], (error, results) => {
+//     if (error) {
+//       console.error("Error adding department:", error);
+//       return res.json({ success: false, message: "Error adding department." });
+//     }
+//     res.json({ success: true, message: "Department added successfully." });
+//   });
+// });
 
-  if (!newDepartmentName) {
-    return res.json({
-      success: false,
-      message: "Department name is required.",
-    });
-  }
-  const query = "INSERT INTO Department (dep_name) VALUES (?)";
-  mysql.query(query, [newDepartmentName], (error, results) => {
+// router.post("/addDepartment", (req, res) => {
+//   const { newDepartmentName, newDegrees } = req.body;
+//   const insertDepartmentQuery = "INSERT INTO Department (dep_name) VALUES (?)";
+//   mysql.query(insertDepartmentQuery, [newDepartmentName], (error, departmentResult) => {
+//     if (error) {
+//       console.error("Error adding department:", error);
+//       return res.json({ success: false, message: "Error adding department." });
+//     }
+//     const depId = departmentResult.insertId;
+//     const insertDegreeQuery = "INSERT INTO department_degree (dep_id, deg_id) VALUES ?";
+//     const degreeValues = newDegrees.map((degree) => [depId, degree]);
+
+//     mysql.query(insertDegreeQuery, [degreeValues], (degreeError, degreeResult) => {
+//       if (degreeError) {
+//         console.error("Error adding degrees:", degreeError);
+//         return res.json({ success: false, message: "Error adding degrees." });
+//       }
+//       res.json({ success: true, message: "Department and degrees added successfully." });
+//     });
+//   });
+// });
+
+router.post("/addDepartment", (req, res) => {
+  const { newDepartmentName, newDegrees } = req.body;
+  const insertDepartmentQuery = "INSERT INTO Department (dep_name) VALUES (?)";
+  mysql.query(insertDepartmentQuery, [newDepartmentName], (error, departmentResult) => {
     if (error) {
       console.error("Error adding department:", error);
       return res.json({ success: false, message: "Error adding department." });
     }
-    res.json({ success: true, message: "Department added successfully." });
+    const depId = departmentResult.insertId;
+    const uniqueDegrees = new Set(newDegrees);
+    const uniqueDegreeArray = Array.from(uniqueDegrees);
+
+    const insertDegreeQuery = "INSERT INTO department_degree (dep_id, deg_id) VALUES ?";
+    const degreeValues = uniqueDegreeArray.map((degree) => [depId, degree]);
+
+    mysql.query(insertDegreeQuery, [degreeValues], (degreeError, degreeResult) => {
+      if (degreeError) {
+        console.error("Error adding degrees:", degreeError);
+        return res.json({ success: false, message: "Error adding degrees." });
+      }
+      res.json({ success: true, message: "Department and degrees added successfully." });
+    });
   });
 });
 
@@ -534,12 +603,12 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
       hire_date,
       job_id,
       linkedin_profile_url,
-      major,
       phone_number,
       role_id,
       salary,
       university,
-      zipcode
+      zipcode,
+      qualification
     } = req.body;
     // const requiredFields = [address,
     //   applicant_name,
@@ -556,7 +625,8 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
     //   hire_date,
     //   job_id,
     //   linkedin_profile_url,
-    //   major,
+    //   qualification,
+
     //   phone_number,
     //   role_id,
     //   salary,
@@ -589,7 +659,7 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
         hire_date,
         job_id,
         linkedin_profile_url,
-        major,
+        qualification,
         phone_number,
         role_id,
         salary,
@@ -686,7 +756,7 @@ router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) =
     const employee = response.data;
 
     mysql.query(
-      "delete from employee where emp_id = ?;",
+      "call deleteEmp(?);",
       [emp_id],
       (error, result) => {
         if (error) {
@@ -695,7 +765,6 @@ router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) =
         } else {
           const mailOptions = {
             from: process.env.EMAIL_USERNAME,
-            // to: "muhammadihtisham60@gmail.com",
             to: employee.email,
             subject: "Offer Letter",
             text: `Subject: Job Offer - HR Connect
@@ -980,6 +1049,19 @@ router.get("/getAttendance/:id", (req, res) => {
   });
 });
 
+router.get("/getDegreesById/:id", (req, res) => {
+  console.log("/getDegreesById");
+  const { id } = req.params;
+  mysql.query(`select dd.deg_id,d.name as degree from department_degree dd inner join degrees d on d.deg_id=dd.deg_id where dd.dep_id=?;`, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
 router.get("/getApplicant/:id", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getApplicant");
   const { id } = req.params;
@@ -1259,6 +1341,49 @@ router.get('/decodeToken', verifyToken, (req, res) => {
   const { user_id, role_id, emp_id } = req.user;
   res.json({ success: true, user_id, role_id, emp_id });
 });
+// ------------Payroll---------------------------------------------
 
+
+router.get("/getEmployeesforPayRoll", verifyToken, checkUserRole(1), (req, res) => {
+  console.log("/getEmployeesforPayRoll");
+  mysql.query('call getPayroll();', (err, results) => {
+    if (err) {
+      console.error("Error fetching Payroll EmpInfo:", err);
+      res.json({ message: 'error' });
+    } else {
+      res.json(results[0]);
+    }
+  }
+  );
+});
+
+
+router.post('/approveSalary', (req, res) => {
+  const { empId, empSal } = req.body;
+  console.log(empId, empSal);
+  console.log("/approveSalary");
+  mysql.query("insert into salary(emp_id,salary_amount,salary_status,salary_date) values(?,?,'Paid',Now())",[empId, empSal], (error, result) => {
+    if (error) {
+      console.log(error);
+      res.json({ message: 'an error occured while approving salaries', success: false });
+    } else {
+      res.json({ message: 'Salary Approved!', success: true });
+    }
+  })
+})
+
+router.post('/updateSalary', (req, res) => {
+  console.log("/updateSalary");
+  const {updatedSalary, empId } = req.body;
+  console.log(empId, updatedSalary);
+  mysql.query("update employee set salary = ? where emp_id= ?",[updatedSalary,empId], (error, result) => {
+    if (error) {
+      console.log(error);
+      res.json({ message: 'an error occured while updating salaries', success: false });
+    } else {
+      res.json({ message: 'Salary Updated Successfully!', success: true });
+    }
+  })
+})
 
 module.exports = router;

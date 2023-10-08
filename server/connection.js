@@ -6,7 +6,8 @@ const config = {
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    database: process.env.DATABASE
+    database: process.env.DATABASE,
+    timezone: 'utc',
 }
 // console.log(config);
 const connection = mysql.createConnection(config);

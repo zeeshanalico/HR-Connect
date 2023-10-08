@@ -5,9 +5,10 @@ import '../../../BasicStyle.css';
 import axios from 'axios'
 import { BaseUrl } from './../../../../constants.js'
 import Toast from '../../../../UIModules/Toast/Toast';
-import { config } from './../../../../constants.js';
+import { config,inputStyle } from './../../../../constants.js';
 import ReactPaginate from 'react-paginate';
 import styles from './PostJob.module.css'
+
 // import './PostJob.css'
 export default function PostJob() {
   const [showModal, setShowModal] = useState(false);
@@ -53,14 +54,6 @@ export default function PostJob() {
   const changeHandler = async (e) => {
     const { name, value } = e.target;
     console.log(name, value);
-    // if(name==='dep_id'){
-    //   const response=await axios.get(BaseUrl+`/getDegreesById/${value}`)
-    //   console.log(response.data);
-    //   setDegrees(response.data)
-    //   setJobDetails((prevState) => {
-    //     return { ...prevState, [name]: value };
-    //   });
-    // }
     setJobDetails((prevState) => {
       return { ...prevState, [name]: value };
     });
@@ -78,10 +71,10 @@ export default function PostJob() {
         await fetchData();
         setJobDetails({});
       } else {
-        console.error('Error deleting job:', response.data.error);
+        console.error('Error posting job:', response.data.error);
       }
     } catch (error) {
-      console.error('Error deleting job:', error);
+      console.error('Error Posting job:', error);
     }
   };
 
@@ -171,6 +164,15 @@ export default function PostJob() {
                   name='title'
                   placeholder="Job Title"
                   value={jobDetails.title || ''}
+                  required
+                  onChange={changeHandler}
+                />
+                <Form.Label className='mt-3'>Job Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  name='summary'
+                  placeholder="Job Summary"
+                  value={jobDetails.summary || ''}
                   required
                   onChange={changeHandler}
                 />
@@ -298,12 +300,12 @@ export default function PostJob() {
             <InputGroup className="filter-inputs">
               <select
                 name="department"
-                style={{ margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%', outline: "none" }}
+                style={{padding:'0 10px', margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%', outline: "none" ,WebkitAppearance:'none',...inputStyle}}
                 className="formcont"
                 value={filters.department}
                 onChange={handleFilterChange}
               >
-                <option value={''} style={{ display: 'none' }}>Department</option>
+                <option value={''} style={{ display: 'none' }}>Search by Department</option>
                 <option value={''}>All</option>
                 {dep.map((department, index) => (
                   <option value={department.dep_name} key={index}>
@@ -326,7 +328,7 @@ export default function PostJob() {
                 />
                 <FormControl
                   type="date"
-                  style={{ margin: '7px 7px 7px 0' }}
+                  style={{ margin: '7px 7px 7px 0', }}
                   id="jobPostedDateFilter"
                   placeholder="Posted Date"
                   name="datePosted"
@@ -369,33 +371,19 @@ export default function PostJob() {
                 name="jobTitle"
                 placeholder="Filter by Job Title"
                 value={filters.jobTitle}
-                style={{ margin: '7px 7px 7px 0' }}
+                style={{ margin: '7px 7px 7px 0', WebkitAppearance: 'none', ...inputStyle }}
                 onChange={handleFilterChange}
                 autoComplete="off"
               />
               <FormControl
                 className="formcont"
                 name="experienceRequired"
-                style={{ margin: '7px 7px 7px 0' }}
+                style={{ margin: '7px 7px 7px 0', WebkitAppearance: 'none', ...inputStyle }}
                 placeholder="Search By Experience"
                 value={filters.experienceRequired}
                 onChange={handleFilterChange}
                 autoComplete="off"
               />
-              <label htmlFor="itemsPerPage" style={{ marginTop: '10px', color: 'black' }}>
-                Items Per Page:&ensp;
-              </label>
-              <select
-                style={{ margin: '7px 7px 7px 0' }}
-                name="itemsPerPage"
-                id="itemsPerPage"
-                onChange={handleItemsPerPageChange}
-                value={itemsPerPage}
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
             </InputGroup>
           </Col>
         </Row>
@@ -433,8 +421,21 @@ export default function PostJob() {
             }
           </tbody>
         </table>
-        <div style={{ margin: 'auto' }}>
+        <div style={{ display:'flex',margin: 'auto' }}>
+        <select
+                name="itemsPerPage"
+                id="itemsPerPage"
+                style={{flex:'0',padding:'-10px',height:'37px',marginRight:'5px',width:'100px',borderRadius:'5px',outline:'none',border:'none'}}
+                onChange={handleItemsPerPageChange}
+                value={itemsPerPage}
+              >
+                <optgroup label="items/page"></optgroup>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
           <ReactPaginate
+            style={{flex:'1'}}
             previousLabel={'Previous'}
             nextLabel={'Next'}
             pageCount={Math.ceil(filteredJobs.length / itemsPerPage)}

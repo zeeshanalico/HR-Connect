@@ -256,12 +256,12 @@ Signed By:_____________________`);
           />
           <select
             value={filters.status}
-            style={{ width: '315px' }}
+            style={{ width: '315px',WebkitAppearance:'none',...inputStyle }}
             name="job_id"
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
           >
-            <option value='' style={{ display: 'none' }}>Status</option>
+            <option value='' style={{ display: 'none' }}>Search by Status</option>
             <option value=''>All</option>
             <option value="Pending">Pending</option>
             <option value="Rejected">Rejected</option>
@@ -270,22 +270,22 @@ Signed By:_____________________`);
           </select>
           <select
             value={filters.gender}
-            style={{ width: '300px', marginLeft: '10px' }}
+            style={{ width: '300px', marginLeft: '10px',WebkitAppearance:'none',...inputStyle }}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
           >
-            <option value={''} style={{ display: 'none' }}>Gender</option>
+            <option value={''} style={{ display: 'none' }}>Search by Gender</option>
             <option value={''}>All</option>
             <option value={'Male'}>Male</option>
             <option value={'Female'}>Female</option>
           </select>
           <select
-            style={{ width: '250px', marginLeft: '10px',marginRight: '10px' }}
+            style={{ width: '250px', marginLeft: '10px',marginRight: '10px',WebkitAppearance:'none',...inputStyle }}
             value={filters.department}
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
           >
-            <option value={''} style={{ display: 'none' }}>Department</option>
+            <option value={''} style={{ display: 'none' }}>Search by Department</option>
             <option value={''}>All</option>
             {dep.map((department) => (
               <option value={department.dep_name} key={department.dep_name}>

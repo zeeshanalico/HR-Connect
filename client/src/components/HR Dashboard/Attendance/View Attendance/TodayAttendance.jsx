@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BaseUrl, config } from '../../../../constants';
+import { BaseUrl, config, inputStyle } from '../../../../constants';
 import axios from 'axios';
 import { Row, Col } from 'react-bootstrap';
 import Toast from '../../../../UIModules/Toast/Toast';
@@ -67,9 +67,10 @@ const TodayAttendance = () => {
           <select
             value={filters.department}
             className="form-control round"
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             onChange={(e) => handleFilter('department', e.target.value)}
           >
-            <option value={''} style={{ display: 'none' }}>Department</option>
+            <option value={''} style={{ display: 'none' }}>Search by Department</option>
             <option value={''}>All</option>
             {todayAllAttendance.map((department) => (
               <option value={department.dep_name} key={department.dep_name}>
@@ -78,16 +79,18 @@ const TodayAttendance = () => {
             ))}
           </select>
           <select
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.gender}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
           >
-            <option value={''} style={{ display: 'none' }}>Gender</option>
+            <option value={''} style={{ display: 'none' }}>Search by Gender</option>
             <option value={''}>All</option>
             <option value={'Male'}>Male</option>
             <option value={'Female'}>Female</option>
           </select>
           <select
+            style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.status}
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
@@ -98,13 +101,13 @@ const TodayAttendance = () => {
           </select>
 
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '20px' }}>
           <input
             type="text"
             id="empId"
             placeholder="Search by Employee ID"
             className="form-control round"
-            style={{ width: '335px', marginBottom: '10px' }}
+            style={{ width: '315px',marginBottom: '10px',...inputStyle, WebkitAppearance: 'none' }}
             value={filters.empId}
             onChange={(e) => handleFilter('empId', e.target.value)}
           />
@@ -113,23 +116,10 @@ const TodayAttendance = () => {
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
-            style={{ width: '335px', marginBottom: '10px' }}
+            style={{ width: '315px', marginBottom: '10px' ,...inputStyle, WebkitAppearance: 'none'}}
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
           />
-          <div style={{ marginLeft: '60px' }}>items per page</div>
-          <select
-            name="itemsPerPage"
-            style={{ width: '100px', marginTop: '-5px' }}
-            id="itemsPerPage"
-            className="form-control round"
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
         </div>
 
 
@@ -162,11 +152,24 @@ const TodayAttendance = () => {
             ))}
           </tbody>
         </table>
-        <div style={{ margin: 'auto' }}>
-
+        <div style={{ margin: 'auto' ,display:'flex',}}>
+        <select
+            name="itemsPerPage"
+            style={{ width: '100px', marginRight: '5px',flex:'0',border:'none',outline:'none' }}
+            id="itemsPerPage"
+            className="form-control round"
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <optgroup label='Items/page'></optgroup>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
           <ReactPaginate
             previousLabel={"Previous"}
             nextLabel={"Next"}
+            style={{flex:'1'}}
             pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)}
             onPageChange={({ selected }) => setCurrentPage(selected)}
             containerClassName={"pagination"}

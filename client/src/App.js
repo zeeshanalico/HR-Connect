@@ -28,6 +28,7 @@ import PageNotFound from "./components/PageNotFound/PageNotFound";
 import { config, BaseUrl } from "./constants";
 import axios from 'axios'
 import Loading from "./components/Loader/Loading";
+import PayRollPage from './components/HR Dashboard/PayRoll/PayRollPage.jsx'
 
 export default function App() {
 
@@ -108,6 +109,7 @@ export default function App() {
           {roleIDFetched && <Route path="/hrdash/addEmployee/:id" element={<AddEmployee />} />}
           {roleIDFetched && <Route path="/hrdash/addEmployee" element={renderRoute(<AddEmployee />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/manageEmployee" element={renderRoute(<ManageEmployeePage />, 1)} />}
+          {roleIDFetched && <Route path="/hrdash/payroll" element={renderRoute(<PayRollPage />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/todayAttendance" element={renderRoute(<TodayAttendancePage />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/attendanceHistory" element={renderRoute(<AttendanceHistoryPage />, 1)} />}
           {roleIDFetched && <Route path="/hrdash/viewDepartment" element={renderRoute(<ViewDepartmentPage />, 1)} />}

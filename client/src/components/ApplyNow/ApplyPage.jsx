@@ -122,6 +122,17 @@ export default function ApplyPage() {
   const offset = currentPage * itemsPerPage;
   const currentJobs = filteredJobs.slice(offset, offset + itemsPerPage);
 
+  const [inputType, setInputType] = useState('text');
+
+  const handleFocus = () => {
+    setInputType('date');
+  };
+
+  const handleBlur = (e) => {
+    if (!e.target.value) {
+      setInputType('text');
+    }
+  };
   return (
     <div className="apply-page">
       <RouterLink to="/">
@@ -129,7 +140,7 @@ export default function ApplyPage() {
       </RouterLink>
       <div className="page-header">
 
-        <h2 className='titleof' style={{ margin: '50px 0 -40px 30px' }} >Jobs Available</h2>
+        <h2 className='titleof' style={{ margin: '50px 0 -40px 30px' ,fontWeight:'bold',fontSize:'36px'}} >Jobs Available</h2>
         <hr />
         <InputGroup className="filter-inputs" style={{ marginBottom: '2px' }}>
           <FormControl
@@ -146,7 +157,7 @@ export default function ApplyPage() {
             className='formcont'
             name="salary"
             style={inputStyle}
-            placeholder="Filter by Salary"
+            placeholder="Search by Salary"
             value={filters.salary}
             onChange={handleFilterChange}
             autoComplete="off"
@@ -156,9 +167,10 @@ export default function ApplyPage() {
             id="experience"
             onChange={handleFilterChange}
             value={filters.experience}
-            style={{ margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%' }}
+            style={{ ...inputStyle, margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%', WebkitAppearance: 'none' }}
+
           >
-            <option value="" style={{ display: 'none' }}>Experience</option>
+            <option value="" style={{ display: 'none' }}>Search by Experience</option>
             <option value="">All</option>
             {getExperience.map((exp, index) => { return <option key={index} value={exp.experience}>{exp.experience}</option> })}
 
@@ -167,10 +179,13 @@ export default function ApplyPage() {
         <InputGroup className="filter-inputs">
           <FormControl
             className='formcont'
-            type='date'
+            type={inputType}
+            placeholder="Search by Posted Date"
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             name="datePosted"
+            style={inputStyle}
             value={filters.datePosted}
-            // style={inputStyle}
             onChange={handleFilterChange}
             autoComplete="off"
           />
@@ -183,18 +198,6 @@ export default function ApplyPage() {
             onChange={handleFilterChange}
             autoComplete="off"
           />
-          <label clasName='pageLabel' htmlFor="itemsPerPage" style={{ color: "white", marginTop: '30px' }}>Items Per Page:&ensp;</label>
-          <select
-            name="itemsPerPage"
-            id="itemsPerPage"
-            style={{ margin: '30px auto', borderRadius: '0 6px  6px 0' }}
-            onChange={handleItemsPerPageChange}
-            value={itemsPerPage}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-          </select>
         </InputGroup>
       </div>
       <span style={{ position: 'fixed', top: '300px', left: '600px', width: '400px' }}>
@@ -209,15 +212,15 @@ export default function ApplyPage() {
         currentJobs.map((job) => (
           <Card key={job.job_id} className="job-card">
             <Card.Header>
-              <Card.Title>{job.title}</Card.Title>
-              <Card.Subtitle>Experience Required: {job.experience}</Card.Subtitle>
-              <Card.Subtitle>Location: {job.location}</Card.Subtitle>
+              <Card.Title style={{ fontFamily: 'Arial', fontWeight: 'bolder', fontSize: '32px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>{job.title}</Card.Title>
+              <Card.Subtitle style={{ color: '#F7F7F7' }}>Experience Required: {job.experience}</Card.Subtitle>
+              <Card.Subtitle style={{ marginTop: '7px', color: '#F7F7F7' }}>Location: {job.location}</Card.Subtitle>
+              <Card.Subtitle style={{ marginTop: '7px', color: '#F7F7F7' }}>Summary: {job.summary}</Card.Subtitle>
             </Card.Header>
-            <Card.Body>
-
+            <div style={{padding:'0 10px 0 10px'}}>
               {expandedJobs[job.job_id] ? (
                 <div>
-                  <p>---Description---</p>
+                  <p style={{fontSize:'20px',fontWeight:'bold',textAlign:'center'}}>---Description---</p>
                   <p>{job.description}</p>
                   <hr className='hr1' />
                   <p>Date Posted: {job.date_posted.slice(0, 10)}</p>
@@ -227,14 +230,14 @@ export default function ApplyPage() {
                     to={{
                       pathname: '/applyPage/applyNow',
                       search: `?job_title=${job.title}&job_id=${job.job_id}&dep_id=${job.dep_id}&experience=${job.experience}`,
-                      state: { job_title: job.title, dep_id: job.dep_id,experience:job.experience },
+                      state: { job_title: job.title, dep_id: job.dep_id, experience: job.experience },
                     }}
                   >
-                    <Button variant="primary">Apply Now</Button>
+                    <Button variant="primary" style={{marginBottom:'5px'}}>Apply Now</Button>
                   </RouterLink>
                 </div>
               ) : null}
-            </Card.Body>
+            </div>
             <Card.Footer>
               <Button variant="link" onClick={() => toggleExpand(job.job_id)}>
                 {expandedJobs[job.job_id] ? 'show less' : 'show details'}
@@ -244,9 +247,24 @@ export default function ApplyPage() {
         ))
       )}
 
-      <div style={{ margin: '0 17%' }}>
+      <div style={{ margin: '0 17%', display: 'flex', alignItems: 'center' }}>
+        <div style={{ flex: '0', margin: '-11px 5px 5px 0' }}>
 
+          <select
+            name="itemsPerPage"
+            id="itemsPerPage"
+            style={{ padding: '8px', width: '105px', borderRadius: '5px', outline: 'none', border: 'none' }}
+            onChange={handleItemsPerPageChange}
+            value={itemsPerPage}
+          >
+            <optgroup label='Items/page'></optgroup>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+          </select>
+        </div>
         <ReactPaginate
+          style={{ flex: '2', marginLeft: '0px' }}
           previousLabel={'Previous'}
           nextLabel={'Next'}
           pageCount={Math.ceil(filteredJobs.length / itemsPerPage)}
@@ -264,3 +282,22 @@ export default function ApplyPage() {
     </div>
   );
 }
+
+
+const DatePickerInput = ` display: none;
+  position: absolute;
+  left: 100%;
+  top: 10%;
+  margin-left: 12px;
+  width: 0%;
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+`;

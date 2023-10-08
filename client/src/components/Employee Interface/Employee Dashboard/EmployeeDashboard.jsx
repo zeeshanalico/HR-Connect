@@ -107,6 +107,16 @@ export default function EmployeeDashboard() {
             </div>
           </div>
         </div>
+        <div className="col-xl-4 col-sm-6 py-2">
+          <div className="card text-white bg-danger h-100">
+            <div className="card-body bg-warning">
+              <div className="rotate">
+              <i class="fa fa-times-circle fa-4x"></i>                 
+               </div>
+                <h3>Performance Score : {((Number(empDashStats.present_count)/21)*100).toFixed(2)}</h3>
+            </div>
+          </div>
+        </div>
       </div>
       {/* You can add more cards for additional information */}
     </div>
