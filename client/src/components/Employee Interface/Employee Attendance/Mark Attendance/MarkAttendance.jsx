@@ -13,6 +13,7 @@ export default function MarkAttendance() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [attendanceMarked, setAttendanceMarked] = useState(false);
+  const [statOfAtt,setStatOfAtt]=useState('')
   const [todayDate] = useState(new Date().toISOString().split("T")[0]);
   const [day] = useState(
     new Date().toLocaleDateString("en-US", { weekday: "long" })
@@ -35,7 +36,7 @@ export default function MarkAttendance() {
       }, config);
       console.log("Response of data");
       console.log(response?.data[0]?.status);
-
+      setStatOfAtt(response?.data[0]?.status);
       if (response?.data[0]?.status) {
         setAttendanceMarked(true);
       } else {
@@ -135,7 +136,7 @@ export default function MarkAttendance() {
         {
           attendanceMarked ? (
             <div className="alert alert-success" role="alert">
-              You had marked your attendance for {todayDate} ({day}).
+              You Attendance for {todayDate} ({day}) is Marked as {statOfAtt}.
             </div>
           ) : (
             <>
