@@ -9,6 +9,7 @@
   "author": "Zeeshan",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.2",
     "axios": "^1.5.0",
     "bcrypt": "^5.1.1",
     "chalk": "^5.3.0",

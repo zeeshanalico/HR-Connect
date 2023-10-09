@@ -209,6 +209,14 @@ Signed By:_____________________`);
     setShowRejectModal(false);
   };
 
+
+  const [isColumnOpen, setIsColumnOpen] = useState(false);
+
+  const toggleColumn = () => {
+    setIsColumnOpen(!isColumnOpen);
+  };
+
+
   return (
     <div id="full-content" className="container mt-4">
       {/* <ToastContainer /> */}
@@ -294,6 +302,11 @@ Signed By:_____________________`);
             ))}
           </select>
         </div>
+        <div>
+        <Button onClick={toggleColumn} style={{fontWeight:'bolder',float:'right',margin:'10px' }} >
+                {isColumnOpen ? ' < ' : '>'}
+              </Button>
+        </div>
 
         <Table striped bordered hover responsive className="custom-scrollbar-table">
           <thead>
@@ -305,6 +318,7 @@ Signed By:_____________________`);
               <th>Experience</th>
               <th>Desired Salary</th>
               <th>Status</th>
+              {isColumnOpen && <>
               <th>Gender</th>
               <th>Action</th>
               <th>Applicant Email</th>
@@ -317,6 +331,7 @@ Signed By:_____________________`);
               <th>LinkedIn Profile</th>
               <th>Github Profile</th>
               <th>ZipCode</th>
+              </>}
             </tr>
           </thead>
           <tbody>
@@ -330,7 +345,9 @@ Signed By:_____________________`);
                   <td>{application.experience}</td>
                   <td><div style={{ width: '100px' }}>{application.desired_salary} PKR</div></td>
                   <td>{application.status}</td>
+                  {isColumnOpen && <>
                   <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
+
                   <td>
                     {application.status === "Pending" ? (
                       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -440,6 +457,7 @@ Signed By:_____________________`);
                     </div>
                   </td>
                   <td><div style={{ width: 'fitcontent' }}>{application.zipcode}</div></td>
+                  </>}
                 </tr>
               ))}
           </tbody>

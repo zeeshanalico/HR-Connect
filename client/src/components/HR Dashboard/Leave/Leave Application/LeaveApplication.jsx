@@ -170,6 +170,11 @@ export default function LeaveApplication() {
             <option value={'Pending'}>Pending</option>
           </select>
         </div>
+        <div>
+        <Button onClick={toggleColumn} style={{fontWeight:'bolder',float:'right',margin:'10px' }} >
+                {isColumnOpen ? ' < ' : '>'}
+              </Button>
+        </div>
         {/* <DatePicker.RangePicker
           value={[
             filters.startDate ? new Date(filters.startDate) : null,
@@ -211,16 +216,12 @@ export default function LeaveApplication() {
               <th>Applying Date</th>
               <th>From/Leave Date</th>
               <th>To Date</th>
+              {isColumnOpen && <>
               <th>Status</th>
               <th>Reason</th>
               <th>Action</th>
-              {/* <th>
-
-                <Button onClick={toggleColumn} style={{ width: '200px', margin: "5px 5px 5px 5px" }}>
-                  {isColumnOpen ? 'Close Details' : 'Show Reason Details'}
-                </Button>
-              </th> */}
-            </tr>
+              </>}
+ </tr>
           </thead>
           <tbody>
             {
@@ -234,6 +235,8 @@ export default function LeaveApplication() {
                     <td><div style={{ width: '120px' }}>{application?.applying_date?.slice(0, 10)}</div></td>
                     <td><div style={{ width: '120px' }}>{application?.leave_date?.slice(0, 10)}</div></td>
                     <td><div style={{ width: '120px' }}>{application.toDate ? application?.toDate?.slice(0, 10) : 'N/A'}</div></td>
+                    {isColumnOpen && <>
+
                     <td>{application.att_status}</td>
                     <td><div style={{ width: '200px' }}>{application.reason}</div></td>
                     <td>
@@ -271,21 +274,19 @@ export default function LeaveApplication() {
                         </>
                       )}</div>
                     </td>
-                    {isColumnOpen && (<td>
-                      <div>
-                        <p>This is your open column content.</p>
-                      </div></td>)}
+                      </>}
+                   
 
                   </tr>
                 })
             }
           </tbody>
         </Table>
-        <div style={{ margin: 'auto',display:'flex' ,margin:'10px auto'}}>
+        <div style={{ display:'flex' ,margin:'10px auto'}}>
           <select
             name="itemsPerPage"
             id="itemsPerPage"
-            style={{ height:'37px',borderRadius: '5px',marginTop:'0px',flex:'0', outline: 'none', padding: '8px', width: 'fitcontent', margin: '10px' ,border:'none'}}
+            style={{ height:'37px',borderRadius: '5px',marginRight:'5px',flex:'0', outline: 'none', padding: '8px', width: 'fitcontent' ,border:'none'}}
             onChange={handleItemsPerPageChange}
             value={itemsPerPage}
           >

@@ -1,4 +1,5 @@
 import React from 'react'
+import HoverButton from './HoverButton.jsx'
 import { useState, useEffect } from 'react';
 import { BaseUrl, config, inputStyle } from './../../../../constants.js';
 // import '../../BasicStyle.css'
@@ -9,6 +10,8 @@ import ReactPaginate from 'react-paginate';
 import { Table } from 'react-bootstrap';
 // import './ManageEmployee.css'
 import styles from './ManageEmployee.module.css'
+
+
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
@@ -138,6 +141,11 @@ Lead Talent Acquisition
     }
     setShowConfirmation(false);
   };
+  const [isColumnOpen, setIsColumnOpen] = useState(false);
+
+  const toggleColumn = () => {
+    setIsColumnOpen(!isColumnOpen);
+  };
 
 
 
@@ -190,16 +198,19 @@ Lead Talent Acquisition
             ))}
           </select>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '780px' }}>
           <input
             type="text"
-            style={{ ...inputStyle, width: '335px', marginBottom: '10px', WebkitAppearance: 'none' }}
+            style={{ ...inputStyle, width: '335px', flex:'0',marginBottom: '10px', WebkitAppearance: 'none' }}
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
           />
+          <Button onClick={toggleColumn} style={{flex:'1',fontWeight:'bolder' }} >
+                {isColumnOpen ? ' < ' : '>'}
+              </Button>
         </div>
 
 
@@ -216,11 +227,14 @@ Lead Talent Acquisition
               <th>
                 Job Position
               </th>
-              <th>Department</th>
-              <th>Gender</th>
-              <th>Hiring Date</th>
-              <th>Salary</th>
-              <th style={{ lineHeight: '34px' }}>Actions</th>
+              <th>Department
+              </th>
+              {isColumnOpen && <>
+                <th>Gender</th>
+                <th>Hiring Date</th>
+                <th>Salary</th>
+                <th style={{ lineHeight: '34px' }}>Actions</th>
+              </>}
             </tr>
           </thead>
           <tbody>
@@ -234,44 +248,45 @@ Lead Talent Acquisition
                     {/* <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td> */}
                     <td><div style={{ width: '130px' }}>{employee.job_name}</div></td>
                     <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
-                    <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
-                    <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
-                    <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
-                    <td>
-                      <div style={{ width: '270px' }}>
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          style={{ width: '150px', marginRight: '10px' }}
-                          onClick={() => {
-                            setEmpId(employee.emp_id);
-                            setExperienceData((prevData) => {
-                              return prevData.replace('[employee name]', employee.name)
-                                .replace('[Job Title]', employee.job_name)
-                                .replace('[department name]', employee.dep_name)
-                                .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
-                            });
-                            setExperienceConfirmation(true);
-                          }}
-                        >
-                          Experience Letter
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-danger"
-                          style={{ width: '100px' }}
-                          onClick={() => {
-                            setEmpId(employee.emp_id);
-                            setShowConfirmation(true);
-                          }}
-                        >
-                          Terminate
-                        </button>
+                    {isColumnOpen && <>
+                      <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
+                      <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
+                      <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
+                      <td>
+                        <div style={{ width: '270px' }}>
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            style={{ width: '150px', marginRight: '10px' }}
+                            onClick={() => {
+                              setEmpId(employee.emp_id);
+                              setExperienceData((prevData) => {
+                                return prevData.replace('[employee name]', employee.name)
+                                  .replace('[Job Title]', employee.job_name)
+                                  .replace('[department name]', employee.dep_name)
+                                  .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
+                              });
+                              setExperienceConfirmation(true);
+                            }}
+                          >
+                            Experience Letter
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-danger"
+                            style={{ width: '100px' }}
+                            onClick={() => {
+                              setEmpId(employee.emp_id);
+                              setShowConfirmation(true);
+                            }}
+                          >
+                            Terminate
+                          </button>
 
 
-                      </div>
+                        </div>
 
-                    </td>
+                      </td></>}
                   </tr>
                   {/* <tr>
                 3434
@@ -280,10 +295,10 @@ Lead Talent Acquisition
               ))}
           </tbody>
         </Table>
-        <div style={{ display:'flex' ,alignItems:'center',margin:'10px  auto'}}>
+        <div style={{ display: 'flex', alignItems: 'center', margin: '10px  auto' }}>
           <select
             name="itemsPerPage"
-            style={{ width: '100px',flex:'0', border:'none',outline:'none',  marginTop: '-20px',marginRight:'10px' }}
+            style={{ width: '100px', flex: '0', border: 'none', outline: 'none', marginTop: '-20px', marginRight: '10px' }}
             id="itemsPerPage"
             className="form-control round"
             onChange={handleItemsPerPageChange}
@@ -295,7 +310,7 @@ Lead Talent Acquisition
             <option value="20">20</option>
           </select>
           <ReactPaginate
-          style={{flex:'1'}}
+            style={{ flex: '1' }}
             previousLabel={'Previous'}
             nextLabel={'Next'}
             pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)} // Use filteredApplications.length
