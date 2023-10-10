@@ -201,21 +201,17 @@ Lead Talent Acquisition
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '780px' }}>
           <input
             type="text"
-            style={{ ...inputStyle, width: '335px', flex:'0',marginBottom: '10px', WebkitAppearance: 'none' }}
+            style={{ ...inputStyle, width: '335px', flex: '0', marginBottom: '10px', WebkitAppearance: 'none' }}
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
           />
-          <Button onClick={toggleColumn} style={{flex:'1',fontWeight:'bolder' }} >
-                {isColumnOpen ? ' < ' : '>'}
-              </Button>
+          <Button onClick={toggleColumn} style={{ flex: '1', fontWeight: 'bolder' }} >
+            {isColumnOpen ? ' << ' : '>>'}
+          </Button>
         </div>
-
-
-
-
 
         <Table striped bordered hover responsive className="custom-scrollbar-table" >
           <thead className={`${styles.header}`}>

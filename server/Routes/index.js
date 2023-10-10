@@ -231,7 +231,7 @@ router.post("/jobPost", verifyToken, checkUserRole(1), (req, res) => {
     (error, result) => {
       if (error) {
         console.log(error);
-        res.json({ message:"error posting job" , error, success: false });
+        res.json({ message: "error posting job", error, success: false });
       } else {
         res.json({ success: true, message: 'Jobs Posted Successfully' });
       }
@@ -368,7 +368,6 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
           from: process.env.EMAIL_USERNAME,
           // to: 'muhammadihtisham60@gmail.com',
           to: email,
-          to: "hmic828@gmail.com",
           subject: " Update on Your Application",
           text: `Dear ${applicantName},  
           I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and the time you invested in your application. 
@@ -446,6 +445,50 @@ router.post("/callForInterview", (req, res) => {
   );
 });
 
+router.post('/callSelectedApplicantForInterview', (req, res) => {
+  console.log("/callSelectedApplicantForInterview");
+  const { data, interviewDate, interviewTime } = req.body;
+  console.log(data, interviewDate, interviewTime);
+  data.forEach((employee) => {
+    const { application_id,email, applicant_name:applicantName,  job_id:applicantJobName } = employee;
+    mysql.query(
+      'update applications set status="interview" where application_id=?;',
+      [application_id],
+      (error, result) => {
+        if (error) {
+          res.json({ message: error.sqlMessage, error, success: false });
+        } else {
+          const mailOptions = {
+            from: process.env.EMAIL_USERNAME,
+            // to: 'muhammadihtisham60@gmail.com',
+            // to: email,
+            to: "zeeshanalico24@gmail.com",
+            subject: ": Invitation for Interview ",
+            text: `Dear ${applicantName},
+            I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and your recent application. After a thorough review of all applicants, we are pleased to inform you that you have been selected for an interview.
+            We would like to invite you to interview for the  ${applicantJobName} position on:
+            Date:  ${interviewDate} Time:  ${interviewTime} Location: HRConnect, Lahore, Pakistan
+            During the interview, you will have the opportunity to discuss your qualifications, learn more about our company, and meet with members of our team. Please be prepared to talk about your relevant experience and how it aligns with the requirements of the position.
+            Prior to the interview, we kindly ask that you review our website and research our company to familiarize yourself with our values, mission, and goals. This will help facilitate a productive discussion during the interview.
+            We look forward to meeting you in person and learning more about your qualifications and how you could contribute to HR Connect. If you have any questions or need any further information, please don't hesitate to reach out.
+            Thank you for considering a career with us, and congratulations once again on being selected for an interview. We wish you the best of luck and look forward to the opportunity to get to know you better.
+            `,
+          };
+
+          transporter.sendMail(mailOptions, (emailError, info) => {
+            if (emailError) {
+              console.error("Error sending email:", emailError);
+              res.status(500).json({ success: false, message: "Failed to send Inteview call letters", });
+            } else {
+              console.log("Email sent:", info.response);
+              res.status(200).json({ success: true, message: "Selected applicants called for Interview", });
+            }
+          });
+        }
+      }
+    );
+  })
+})
 
 router.post('/pdf', (req, res) => {
   console.log('/pdf');
@@ -1362,7 +1405,7 @@ router.post('/approveSalary', (req, res) => {
   const { empId, empSal } = req.body;
   console.log(empId, empSal);
   console.log("/approveSalary");
-  mysql.query("insert into salary(emp_id,salary_amount,salary_status,salary_date) values(?,?,'Paid',Now())",[empId, empSal], (error, result) => {
+  mysql.query("insert into salary(emp_id,salary_amount,salary_status,salary_date) values(?,?,'Paid',Now())", [empId, empSal], (error, result) => {
     if (error) {
       console.log(error);
       res.json({ message: 'an error occured while approving salaries', success: false });
@@ -1374,9 +1417,9 @@ router.post('/approveSalary', (req, res) => {
 
 router.post('/updateSalary', (req, res) => {
   console.log("/updateSalary");
-  const {updatedSalary, empId } = req.body;
+  const { updatedSalary, empId } = req.body;
   console.log(empId, updatedSalary);
-  mysql.query("update employee set salary = ? where emp_id= ?",[updatedSalary,empId], (error, result) => {
+  mysql.query("update employee set salary = ? where emp_id= ?", [updatedSalary, empId], (error, result) => {
     if (error) {
       console.log(error);
       res.json({ message: 'an error occured while updating salaries', success: false });

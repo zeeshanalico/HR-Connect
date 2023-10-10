@@ -21,6 +21,7 @@ export default function ViewJobApplications() {
 
   const [jobApplications, setJobApplications] = useState([]);
   const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [showInterviewAllModal, setShowInterviewAllModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false)
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [applicationId, setApplicationId] = useState("");
@@ -188,6 +189,7 @@ Signed By:_____________________`);
     setSelectedTime('')
   };
 
+
   const handleRejectApplication = async () => {
     // console.log(applicationId);
     try {
@@ -207,19 +209,74 @@ Signed By:_____________________`);
       console.log(e);
     }
     setShowRejectModal(false);
+
   };
 
-
-  const [isColumnOpen, setIsColumnOpen] = useState(false);
 
   const toggleColumn = () => {
     setIsColumnOpen(!isColumnOpen);
   };
 
 
+
+
+  const [selectedApplicants, setSelectedApplicants] = useState([])
+  const [isColumnOpen, setIsColumnOpen] = useState(false);
+
+  // const selectedCheck = (e, application) => {
+  //   const { name, value } = e.target;
+  //   setSelectedApplicants((prevState) => {
+  //     const exists = prevState.some((applicant) => applicant.applicant_id === value);
+
+  //     if (exists) {
+  //       return prevState.filter((applicant) => applicant.applicant_id !== value);
+  //     } else {
+  //       return [...prevState, application];
+  //     }
+  //   });
+  // };
+  
+  const selectedCheck = (e, application) => {
+    const { name, value, checked } = e.target;
+    console.log('checked ', checked, name, value);
+    if (checked) {
+      setSelectedApplicants((prevState) => [...prevState, application]);
+    } else{
+      console.log(checked);
+      console.log(selectedApplicants[0].application_id,value);
+      setSelectedApplicants((prevState) => prevState.filter((applicant) => applicant.application_id !== Number(value)));
+    }
+  };
+
+  console.log('selectedApplicants', selectedApplicants);
+
+
+  const handleAllSelectedApplicantsCall = async () => {
+    console.log(selectedDate, selectedTime);
+    console.log('selectedApplicants', selectedApplicants);
+    try {
+
+      const response = await axios.post(BaseUrl + '/callSelectedApplicantForInterview',
+        { data: selectedApplicants, interviewDate: selectedDate, interviewTime: selectedTime },
+        config)
+      if (response.data.success) {
+        Toast(`${response.data.message}`)
+      } else {
+        Toast(`${response.data.message}`, "error")
+      }
+    } catch (e) {
+      console.log(e);
+      Toast('catch Error', "error")
+
+    }
+    setShowInterviewAllModal(false);
+    setSelectedDate('')
+    setSelectedTime('')
+    await fetchData();
+  }
+
   return (
     <div id="full-content" className="container mt-4">
-      {/* <ToastContainer /> */}
       <h2 className="mb-4">Job Applications</h2>
 
       <div id="content">
@@ -252,7 +309,7 @@ Signed By:_____________________`);
             style={{ ...inputStyle, width: '350px', marginRight: '10px' }}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center' ,marginTop:'10px',marginBottom:'10px'}}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', marginBottom: '10px' }}>
           <input
             type="text"
             id="employeeNameFilter"
@@ -264,7 +321,7 @@ Signed By:_____________________`);
           />
           <select
             value={filters.status}
-            style={{ width: '315px',WebkitAppearance:'none',...inputStyle }}
+            style={{ width: '315px', WebkitAppearance: 'none', ...inputStyle }}
             name="job_id"
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
@@ -278,7 +335,7 @@ Signed By:_____________________`);
           </select>
           <select
             value={filters.gender}
-            style={{ width: '300px', marginLeft: '10px',WebkitAppearance:'none',...inputStyle }}
+            style={{ width: '300px', marginLeft: '10px', WebkitAppearance: 'none', ...inputStyle }}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
           >
@@ -288,7 +345,7 @@ Signed By:_____________________`);
             <option value={'Female'}>Female</option>
           </select>
           <select
-            style={{ width: '250px', marginLeft: '10px',marginRight: '10px',WebkitAppearance:'none',...inputStyle }}
+            style={{ width: '250px', marginLeft: '10px', marginRight: '10px', WebkitAppearance: 'none', ...inputStyle }}
             value={filters.department}
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
@@ -303,34 +360,40 @@ Signed By:_____________________`);
           </select>
         </div>
         <div>
-        <Button onClick={toggleColumn} style={{fontWeight:'bolder',float:'right',margin:'10px' }} >
-                {isColumnOpen ? ' < ' : '>'}
-              </Button>
+          {selectedApplicants.length !== 0 &&
+            <Button onClick={() => { setShowInterviewAllModal(true) }} style={{ fontWeight: 'bolder', float: 'left', margin: '10px' }} >
+              Call Selected Applicants
+            </Button>}
+
+          <Button onClick={toggleColumn} style={{ fontWeight: 'bolder', float: 'right', margin: '10px' }} >
+            {isColumnOpen ? ' < ' : '>'}
+          </Button>
         </div>
 
         <Table striped bordered hover responsive className="custom-scrollbar-table">
           <thead>
             <tr style={{ borderBottom: '3px solid white' }}>
-              <th style={{ fontWeight: 'bold' }}>ID</th>
+              <th>Select</th>
+              <th >ID</th>
               <th>Applicant Name</th>
               <th>Department</th>
               <th>Apply for Job Position</th>
               <th>Experience</th>
               <th>Desired Salary</th>
-              <th>Status</th>
               {isColumnOpen && <>
-              <th>Gender</th>
-              <th>Action</th>
-              <th>Applicant Email</th>
-              <th>Applicant Phone</th>
-              <th>CGPA</th>
-              <th>University</th>
-              <th>Qualification</th>
-              <th>Degree</th>
-              <th>Resume</th>
-              <th>LinkedIn Profile</th>
-              <th>Github Profile</th>
-              <th>ZipCode</th>
+                <th>Status</th>
+                <th>Gender</th>
+                <th>Action</th>
+                <th>Applicant Email</th>
+                <th>Applicant Phone</th>
+                <th>CGPA</th>
+                <th>University</th>
+                <th>Qualification</th>
+                <th>Degree</th>
+                <th>Resume</th>
+                <th>LinkedIn Profile</th>
+                <th>Github Profile</th>
+                <th>ZipCode</th>
               </>}
             </tr>
           </thead>
@@ -338,125 +401,155 @@ Signed By:_____________________`);
             {currentApplications
               .map((application) => (
                 <tr key={application.application_id}>
+                  <td>
+                    {application.status === "Pending" &&
+                      <label style={{ display: "inline-block", position: "relative", paddingLeft: "25px" }}>
+                        <input
+                          name="applicant_id"
+                          type="checkbox"
+                          value={application.application_id}
+                          onChange={(e) => {
+                            selectedCheck(e, application);
+                          }}
+                          // checked={selectedApplicants.some(applicant => applicant.applicant_id === application.application_id)}
+                          style={{
+                            position: "absolute",
+                            cursor: "pointer",
+                            top: '0',
+                            left: '0',
+                            height: '22px',
+                            width: '22px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #ccc',
+                            borderRadius: '3px',
+                            boxSizing: 'border-box'
+                          }}
+                        />
+                      </label>}
+
+
+
+
+                  </td>
                   <td>{application.application_id}</td>
                   <td><div style={{ width: '170px' }}>{application.applicant_name}</div></td>
                   <td><div style={{ width: '170px' }}>{application.dep_name}</div></td>
                   <td><div style={{ width: '150px' }}>{application.title}</div></td>
                   <td>{application.experience}</td>
                   <td><div style={{ width: '100px' }}>{application.desired_salary} PKR</div></td>
-                  <td>{application.status}</td>
                   {isColumnOpen && <>
-                  <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
+                    <td>{application.status}</td>
+                    <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
 
-                  <td>
-                    {application.status === "Pending" ? (
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => {
-                            setApplicationId(application.application_id);
-                            setShowInterviewModal(true);
-                            setEmail(application.email);
-                            setApplicantName(application.applicant_name);
-                            setApplicantJobName(application.title);
-                          }}
-                          style={{
-                            marginRight: '5px', width: '150px'
-                          }} // Add margin between buttons
-                        >
-                          Call for Interview
-                        </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => {
-                            setApplicationId(application.application_id);
-                            setShowRejectModal(true);
-                          }}
-                        >
-                          Reject
-                        </Button>
-                      </div>
-
-                    ) : (
-                      application.status === "Interview" && (
+                    <td>
+                      {application.status === "Pending" ? (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-
                           <Button
                             variant="success"
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
-                              setShowAcceptModal(true);
+                              setShowInterviewModal(true);
                               setEmail(application.email);
-                              setApplicantName(application.applicant_name)
-                              setApplicantJobName(application.title)
+                              setApplicantName(application.applicant_name);
+                              setApplicantJobName(application.title);
                             }}
                             style={{
-                              color: "black",
-                              backgroundColor: 'yellow',
-                              width: '150px',
-                              fontWeight: 'bold',
-                              marginRight: '5px'
-                              // marginBottom:'3px'
+                              marginRight: '5px', width: '150px'
                             }}
                           >
-                            Accept&ensp;for&ensp;job
+                            Call for Interview
                           </Button>
                           <Button
                             variant="danger"
-                            style={{ marginRight: '5px' }}
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
                             }}
-
-                          >Reject</Button>
-                          <Button
-                            variant="info"
-                            size="sm"
-                            style={{
-                              width: '150px',
-                            }}
-                            onClick={() => {
-                              setApplicationId(application.application_id);
-                              setOfferLetter((prevData) => {
-                                return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
-                              });
-                              setShowOfferLetterModal(true);
-                            }}
-                          >Send Offer Letter</Button>
+                          >
+                            Reject
+                          </Button>
                         </div>
-                      )
-                    )}
-                  </td>
-                  <td>{application.email}</td>
-                  <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
-                  <td><div style={{ width: 'fitcontent' }}>{application.cgpa}</div></td>
-                  <td><div style={{ width: '200px' }}>{application.university}</div></td>
-                  <td><div style={{ width: '170px' }}>{application.qualification}</div></td>
-                  <td><div style={{ width: 'fitcontent' }}>{application.degree}</div></td>
-                  <td> <div style={{ width: '170px' }}>
-                    <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
-                  </div>
-                  </td>
-                  <td>
-                    <div style={{ width: '130px' }}>
-                      <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.linkedin_profile_url.toString()}>
-                        LinkedIn Link
-                      </a>
+
+                      ) : (
+                        application.status === "Interview" && (
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                            <Button
+                              variant="success"
+                              size="sm"
+                              onClick={() => {
+                                setApplicationId(application.application_id);
+                                setShowAcceptModal(true);
+                                setEmail(application.email);
+                                setApplicantName(application.applicant_name)
+                                setApplicantJobName(application.title)
+                              }}
+                              style={{
+                                color: "black",
+                                backgroundColor: 'yellow',
+                                width: '150px',
+                                fontWeight: 'bold',
+                                marginRight: '5px'
+                                // marginBottom:'3px'
+                              }}
+                            >
+                              Accept&ensp;for&ensp;job
+                            </Button>
+                            <Button
+                              variant="danger"
+                              style={{ marginRight: '5px' }}
+                              size="sm"
+                              onClick={() => {
+                                setApplicationId(application.application_id);
+                                setShowRejectModal(true);
+                              }}
+
+                            >Reject</Button>
+                            <Button
+                              variant="info"
+                              size="sm"
+                              style={{
+                                width: '150px',
+                              }}
+                              onClick={() => {
+                                setApplicationId(application.application_id);
+                                setOfferLetter((prevData) => {
+                                  return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
+                                });
+                                setShowOfferLetterModal(true);
+                              }}
+                            >Send Offer Letter</Button>
+                          </div>
+                        )
+                      )}
+                    </td>
+                    <td>{application.email}</td>
+                    <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
+                    <td><div style={{ width: 'fitcontent' }}>{application.cgpa}</div></td>
+                    <td><div style={{ width: '200px' }}>{application.university}</div></td>
+                    <td><div style={{ width: '170px' }}>{application.qualification}</div></td>
+                    <td><div style={{ width: 'fitcontent' }}>{application.degree}</div></td>
+                    <td> <div style={{ width: '170px' }}>
+                      <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
                     </div>
-                  </td>
-                  <td>
-                    <div style={{ width: '130px' }}>
-                      <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.github_profile_url.toString()}>
-                        github Link
-                      </a>
-                    </div>
-                  </td>
-                  <td><div style={{ width: 'fitcontent' }}>{application.zipcode}</div></td>
+                    </td>
+                    <td>
+                      <div style={{ width: '130px' }}>
+                        <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.linkedin_profile_url.toString()}>
+                          LinkedIn Link
+                        </a>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ width: '130px' }}>
+                        <a className="nav-link text-secondary" target="_blank" rel='noreferrer' href={application.github_profile_url.toString()}>
+                          github Link
+                        </a>
+                      </div>
+                    </td>
+                    <td><div style={{ width: 'fitcontent' }}>{application.zipcode}</div></td>
                   </>}
                 </tr>
               ))}
@@ -471,9 +564,9 @@ Signed By:_____________________`);
               borderRadius: '5px',
               outline: 'none',
               padding: '8px',
-              marginTop:"-18px",
-              marginRight:'10px',
-              border:'none',
+              marginTop: "-18px",
+              marginRight: '10px',
+              border: 'none',
               flex: '1', // Use flex to take up available space
             }}
             onChange={handleItemsPerPageChange}
@@ -541,6 +634,49 @@ Signed By:_____________________`);
             </Button>
           </Modal.Footer>
         </Modal>
+
+
+        <Modal
+          show={showInterviewAllModal}
+          onHide={() => setShowInterviewAllModal(false)}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Call for Interview</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to call these applicants for interview?
+            <div>
+              <label>Date:</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                className="form-control" // React Bootstrap styling class
+              />
+            </div>
+            <div>
+              <label>Time:</label>
+              <input
+                type="time"
+                value={selectedTime}
+                onChange={handleTimeChange}
+                className="form-control" // React Bootstrap styling class
+              />
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowInterviewAllModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="success" onClick={handleAllSelectedApplicantsCall}>
+              Call for Interview
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <Modal show={showRejectModal} onHide={() => setShowRejectModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Reject Application</Modal.Title>
