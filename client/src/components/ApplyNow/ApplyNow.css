@@ -16,7 +16,16 @@
   border: 0.5px inset black;
   width: 430px!important;
 }
-
+.outerbox {
+  /* background-image: url("./../../assets/img/1pxfuel.jpg"); */
+/* background: linear-gradient(to top right, #ffffff, #b4a0ff); */
+  background-image: url("./../../assets/img/1pxfuel (2).jpg");
+  background-color: rgb(255, 255, 255);
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-position: center; */
+  margin-top: 0px;
+}
 .submit-button{
 
 width: 150px;

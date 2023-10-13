@@ -148,7 +148,7 @@ export default function LeaveApplication() {
           />
           <select
             className="form-control round"
-            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' ,...inputStyle,WebkitAppearance:'none'}}
+            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
             value={filters.department}
             onChange={(e) => handleFilter('department', e.target.value)}
           >
@@ -158,7 +158,7 @@ export default function LeaveApplication() {
           </select>
           <select
             value={filters.status}
-            style={{ width: '33%', marginRight: '10px', marginBottom: '5px',...inputStyle,WebkitAppearance:'none' }}
+            style={{ width: '33%', marginRight: '10px', marginBottom: '5px' }}
             s
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
@@ -214,31 +214,26 @@ export default function LeaveApplication() {
               <th>Employee Name</th>
               <th>Department</th>
               <th>Applying Date</th>
+              <th>Status</th>
+              <th>Action</th>
+              {isColumnOpen && <>
               <th>From/Leave Date</th>
               <th>To Date</th>
-              {isColumnOpen && <>
-              <th>Status</th>
               <th>Reason</th>
-              <th>Action</th>
               </>}
  </tr>
           </thead>
           <tbody>
             {
               currentApplications
-                .map((application) => {
+              .map((application) => {
 
                   return <tr key={application.emp_id}>
                     <td><div style={{ width: '60px' }}>{application.emp_id}</div></td>
                     <td><div style={{ width: '150px' }}>{application.emp_name}</div></td>
                     <td><div style={{ width: '220px' }}>{application.dep_name}</div></td>
-                    <td><div style={{ width: '120px' }}>{application?.applying_date?.slice(0, 10)}</div></td>
-                    <td><div style={{ width: '120px' }}>{application?.leave_date?.slice(0, 10)}</div></td>
-                    <td><div style={{ width: '120px' }}>{application.toDate ? application?.toDate?.slice(0, 10) : 'N/A'}</div></td>
-                    {isColumnOpen && <>
-
+                  <td><div style={{ width: '120px' }}>{application?.applying_date?.slice(0, 10)}</div></td>
                     <td>{application.att_status}</td>
-                    <td><div style={{ width: '200px' }}>{application.reason}</div></td>
                     <td>
                       <div style={{ width: '130px' }}>{application.att_status === 'Pending' && (
                         <>
@@ -274,6 +269,12 @@ export default function LeaveApplication() {
                         </>
                       )}</div>
                     </td>
+                    {isColumnOpen && <>
+                    <td><div style={{ width: '120px' }}>{application?.leave_date?.slice(0, 10)}</div></td>
+                    <td><div style={{ width: '120px' }}>{application.toDate ? application?.toDate?.slice(0, 10) : 'N/A'}</div></td>
+
+                    <td><div style={{ width: '200px' }}>{application.reason}</div></td>
+                    
                       </>}
                    
 

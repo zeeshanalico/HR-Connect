@@ -67,7 +67,7 @@ const TodayAttendance = () => {
           <select
             value={filters.department}
             className="form-control round"
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             onChange={(e) => handleFilter('department', e.target.value)}
           >
             <option value={''} style={{ display: 'none' }}>Search by Department</option>
@@ -79,7 +79,7 @@ const TodayAttendance = () => {
             ))}
           </select>
           <select
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.gender}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
@@ -90,7 +90,7 @@ const TodayAttendance = () => {
             <option value={'Female'}>Female</option>
           </select>
           <select
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.status}
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}

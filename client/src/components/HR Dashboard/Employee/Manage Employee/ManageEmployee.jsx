@@ -157,7 +157,7 @@ Lead Talent Acquisition
         <h2 className="mb-4">Manage Employee</h2>
         <div style={{ display: 'flex', gap: '20px' }}>
           <select
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.department}
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
@@ -171,7 +171,7 @@ Lead Talent Acquisition
             ))}
           </select>
           <select
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             value={filters.gender}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
@@ -183,7 +183,7 @@ Lead Talent Acquisition
           </select>
           <select
             value={filters.jobPosition}
-            style={{ ...inputStyle, WebkitAppearance: 'none' }}
+            // style={{ ...inputStyle, WebkitAppearance: 'none' }}
             autoComplete='off'
             className={`form-control round ${styles.searchin}`}
             onChange={(e) => handleFilter('jobPosition', e.target.value)}
@@ -201,7 +201,7 @@ Lead Talent Acquisition
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '780px' }}>
           <input
             type="text"
-            style={{ ...inputStyle, width: '335px', flex: '0', marginBottom: '10px', WebkitAppearance: 'none' }}
+            style={{ ...inputStyle, width: '600px', flex: '0', marginBottom: '10px', WebkitAppearance: 'none' }}
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
@@ -218,18 +218,17 @@ Lead Talent Acquisition
             <tr style={{ borderBottom: '3px solid white' }}>
               <th>Emp ID</th>
               <th>Name</th>
-              <th>Email Address</th>
               {/* <th style={{ lineHeight: '34px' }}>Ph. #</th> */}
               <th>
                 Job Position
               </th>
-              <th>Department
-              </th>
-              {isColumnOpen && <>
+              <th>Department</th>
                 <th>Gender</th>
+              <th style={{ lineHeight: '34px' }}>Actions</th>
+              {isColumnOpen && <>
+                <th>Email Address</th>
                 <th>Hiring Date</th>
                 <th>Salary</th>
-                <th style={{ lineHeight: '34px' }}>Actions</th>
               </>}
             </tr>
           </thead>
@@ -240,53 +239,51 @@ Lead Talent Acquisition
                   <tr key={employee.emp_id}>
                     <td><div style={{ width: '65px' }}>{employee.emp_id}</div></td>
                     <td><div style={{ width: '130px' }}>{employee.name}</div></td>
-                    <td><div style={{ width: '200px' }}>{employee.email}</div></td>
                     {/* <td><div style={{ width: '100px' }}>{employee.phone_number}</div></td> */}
                     <td><div style={{ width: '130px' }}>{employee.job_name}</div></td>
                     <td><div style={{ width: '200px' }}>{employee.dep_name}</div></td>
+                    <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
+                    <td>
+                      <div style={{ width: '270px' }}>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          style={{ width: '150px', marginRight: '10px' }}
+                          onClick={() => {
+                            setEmpId(employee.emp_id);
+                            setExperienceData((prevData) => {
+                              return prevData.replace('[employee name]', employee.name)
+                                .replace('[Job Title]', employee.job_name)
+                                .replace('[department name]', employee.dep_name)
+                                .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
+                            });
+                            setExperienceConfirmation(true);
+                          }}
+                        >
+                          Experience Letter
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          style={{ width: '100px' }}
+                          onClick={() => {
+                            setEmpId(employee.emp_id);
+                            setShowConfirmation(true);
+                          }}
+                        >
+                          Terminate
+                        </button>
+
+
+                      </div>
+
+                    </td>
                     {isColumnOpen && <>
-                      <td><div style={{ width: '70px' }}>{employee.gender}</div></td>
+                      <td><div style={{ width: '200px' }}>{employee.email}</div></td>
                       <td><div style={{ width: '100px' }}>{employee?.hire_date?.toString()?.slice(0, 10)}</div></td>
                       <td><div style={{ width: '100px' }}>{employee?.salary?.toString()?.slice(0, -3)} PKR</div></td>
-                      <td>
-                        <div style={{ width: '270px' }}>
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            style={{ width: '150px', marginRight: '10px' }}
-                            onClick={() => {
-                              setEmpId(employee.emp_id);
-                              setExperienceData((prevData) => {
-                                return prevData.replace('[employee name]', employee.name)
-                                  .replace('[Job Title]', employee.job_name)
-                                  .replace('[department name]', employee.dep_name)
-                                  .replace('[hiring date]', employee?.hire_date?.slice(0, 10));
-                              });
-                              setExperienceConfirmation(true);
-                            }}
-                          >
-                            Experience Letter
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-danger"
-                            style={{ width: '100px' }}
-                            onClick={() => {
-                              setEmpId(employee.emp_id);
-                              setShowConfirmation(true);
-                            }}
-                          >
-                            Terminate
-                          </button>
-
-
-                        </div>
-
-                      </td></>}
+                    </>}
                   </tr>
-                  {/* <tr>
-                3434
-                </tr> */}
                 </>
               ))}
           </tbody>

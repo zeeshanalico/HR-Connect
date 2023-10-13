@@ -235,15 +235,15 @@ Signed By:_____________________`);
   //     }
   //   });
   // };
-  
+
   const selectedCheck = (e, application) => {
     const { name, value, checked } = e.target;
     console.log('checked ', checked, name, value);
     if (checked) {
       setSelectedApplicants((prevState) => [...prevState, application]);
-    } else{
+    } else {
       console.log(checked);
-      console.log(selectedApplicants[0].application_id,value);
+      console.log(selectedApplicants[0].application_id, value);
       setSelectedApplicants((prevState) => prevState.filter((applicant) => applicant.application_id !== Number(value)));
     }
   };
@@ -321,7 +321,7 @@ Signed By:_____________________`);
           />
           <select
             value={filters.status}
-            style={{ width: '315px', WebkitAppearance: 'none', ...inputStyle }}
+            style={{ width: '315px' }}
             name="job_id"
             className="form-control round"
             onChange={(e) => handleFilter('status', e.target.value)}
@@ -335,7 +335,7 @@ Signed By:_____________________`);
           </select>
           <select
             value={filters.gender}
-            style={{ width: '300px', marginLeft: '10px', WebkitAppearance: 'none', ...inputStyle }}
+            style={{ width: '300px', marginLeft: '10px' }}
             className="form-control round"
             onChange={(e) => handleFilter('gender', e.target.value)}
           >
@@ -345,7 +345,7 @@ Signed By:_____________________`);
             <option value={'Female'}>Female</option>
           </select>
           <select
-            style={{ width: '250px', marginLeft: '10px', marginRight: '10px', WebkitAppearance: 'none', ...inputStyle }}
+            style={{ width: '250px', marginLeft: '10px', marginRight: '10px', }}
             value={filters.department}
             className="form-control round"
             onChange={(e) => handleFilter('department', e.target.value)}
@@ -377,13 +377,13 @@ Signed By:_____________________`);
               <th >ID</th>
               <th>Applicant Name</th>
               <th>Department</th>
-              <th>Apply for Job Position</th>
-              <th>Experience</th>
-              <th>Desired Salary</th>
+              <th>Status</th>
+              <th>Action</th>
               {isColumnOpen && <>
-                <th>Status</th>
+                <th>Apply for Job Position</th>
+                <th>Experience</th>
+                <th>Desired Salary</th>
                 <th>Gender</th>
-                <th>Action</th>
                 <th>Applicant Email</th>
                 <th>Applicant Phone</th>
                 <th>CGPA</th>
@@ -434,103 +434,103 @@ Signed By:_____________________`);
                   <td>{application.application_id}</td>
                   <td><div style={{ width: '170px' }}>{application.applicant_name}</div></td>
                   <td><div style={{ width: '170px' }}>{application.dep_name}</div></td>
-                  <td><div style={{ width: '150px' }}>{application.title}</div></td>
-                  <td>{application.experience}</td>
-                  <td><div style={{ width: '100px' }}>{application.desired_salary} PKR</div></td>
-                  {isColumnOpen && <>
-                    <td>{application.status}</td>
-                    <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
+                  <td>{application.status}</td>
+                  <td>
+                    {application.status === "Pending" ? (
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => {
+                            setApplicationId(application.application_id);
+                            setShowInterviewModal(true);
+                            setEmail(application.email);
+                            setApplicantName(application.applicant_name);
+                            setApplicantJobName(application.title);
+                          }}
+                          style={{
+                            marginRight: '5px', width: '150px'
+                          }}
+                        >
+                          Call for Interview
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => {
+                            setApplicationId(application.application_id);
+                            setShowRejectModal(true);
+                          }}
+                        >
+                          Reject
+                        </Button>
+                      </div>
 
-                    <td>
-                      {application.status === "Pending" ? (
+                    ) : (
+                      application.status === "Interview" && (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
+
                           <Button
                             variant="success"
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
-                              setShowInterviewModal(true);
+                              setShowAcceptModal(true);
                               setEmail(application.email);
-                              setApplicantName(application.applicant_name);
-                              setApplicantJobName(application.title);
+                              setApplicantName(application.applicant_name)
+                              setApplicantJobName(application.title)
                             }}
                             style={{
-                              marginRight: '5px', width: '150px'
+                              color: "black",
+                              backgroundColor: 'yellow',
+                              width: '150px',
+                              fontWeight: 'bold',
+                              marginRight: '5px'
+                              // marginBottom:'3px'
                             }}
                           >
-                            Call for Interview
+                            Accept&ensp;for&ensp;job
                           </Button>
                           <Button
                             variant="danger"
+                            style={{ marginRight: '5px' }}
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
                             }}
-                          >
-                            Reject
-                          </Button>
+
+                          >Reject</Button>
+                          <Button
+                            variant="info"
+                            size="sm"
+                            style={{
+                              width: '150px',
+                            }}
+                            onClick={() => {
+                              setApplicationId(application.application_id);
+                              setOfferLetter((prevData) => {
+                                return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
+                              });
+                              setShowOfferLetterModal(true);
+                            }}
+                          >Send Offer Letter</Button>
                         </div>
+                      )
+                    )}
+                  </td>
+                  {isColumnOpen && <>
+                    <td><div style={{ width: '150px' }}>{application.title}</div></td>
+                    <td>{application.experience}</td>
+                    <td><div style={{ width: '100px' }}>{application.desired_salary} PKR</div></td>
+                    <td><div style={{ width: 'fitcontent' }}>{application.gender}</div></td>
 
-                      ) : (
-                        application.status === "Interview" && (
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-
-                            <Button
-                              variant="success"
-                              size="sm"
-                              onClick={() => {
-                                setApplicationId(application.application_id);
-                                setShowAcceptModal(true);
-                                setEmail(application.email);
-                                setApplicantName(application.applicant_name)
-                                setApplicantJobName(application.title)
-                              }}
-                              style={{
-                                color: "black",
-                                backgroundColor: 'yellow',
-                                width: '150px',
-                                fontWeight: 'bold',
-                                marginRight: '5px'
-                                // marginBottom:'3px'
-                              }}
-                            >
-                              Accept&ensp;for&ensp;job
-                            </Button>
-                            <Button
-                              variant="danger"
-                              style={{ marginRight: '5px' }}
-                              size="sm"
-                              onClick={() => {
-                                setApplicationId(application.application_id);
-                                setShowRejectModal(true);
-                              }}
-
-                            >Reject</Button>
-                            <Button
-                              variant="info"
-                              size="sm"
-                              style={{
-                                width: '150px',
-                              }}
-                              onClick={() => {
-                                setApplicationId(application.application_id);
-                                setOfferLetter((prevData) => {
-                                  return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
-                                });
-                                setShowOfferLetterModal(true);
-                              }}
-                            >Send Offer Letter</Button>
-                          </div>
-                        )
-                      )}
-                    </td>
                     <td>{application.email}</td>
                     <td><div style={{ width: '170px' }}>{application.phone_number}</div></td>
                     <td><div style={{ width: 'fitcontent' }}>{application.cgpa}</div></td>
                     <td><div style={{ width: '200px' }}>{application.university}</div></td>
                     <td><div style={{ width: '170px' }}>{application.qualification}</div></td>
-                    <td><div style={{ width: 'fitcontent' }}>{application.degree}</div></td>
+                    <td><div style={{ width: '200px' }}>{application.degree}</div></td>
                     <td> <div style={{ width: '170px' }}>
                       <ViewResume application_id={application.application_id} applicant_name={application.applicant_name} job_id={application.job_id} />
                     </div>

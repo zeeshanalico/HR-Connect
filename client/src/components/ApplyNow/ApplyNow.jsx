@@ -52,7 +52,7 @@ export default function ApplyNow() {
     fetchData();
     fetchData1();
   }, [])
-  const [expLimit,setExpLimit]=useState(false)
+  const [expLimit, setExpLimit] = useState(false)
 
   const expChange = (e) => {
     console.log(e.target.value.trim());
@@ -83,6 +83,7 @@ export default function ApplyNow() {
   }
 
   return (
+    <div className='outerbox'>
     <div className={styles.container}>
       <RouterLink to="/applyPage">
         <i id="back-arrow" style={{ position: 'absolute', top: '35px', left: '40px', }} className="fa fa-arrow-left" aria-hidden="true" />
@@ -94,6 +95,9 @@ export default function ApplyNow() {
         onSubmit={handleSubmit}    >
         {({ errors, touched, values, setFieldValue }) => (
           <Form className={styles.form} method="post" enctype="multipart/form-data">
+            <h3 style={{margin:'auto'}}>Personal Information</h3>
+            <hr style={{ backgroundColor: 'white', height: '2px', border: 'none', width: '100%' }} />
+
             <label htmlFor="applicant_name">Applicant Name</label>
             <Field
               id='applicant_name'
@@ -151,9 +155,11 @@ export default function ApplyNow() {
               placeholder="Enter LinkeIn Profile Link"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
+            <h3 style={{margin:'auto' ,marginTop:'30px'}}>Professional Information</h3>
+            <hr style={{ backgroundColor: 'white', height: '2px', border: 'none', width: '100%' }} />
 
             <label htmlFor="experience" >Experience</label>
-            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }}
+            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', }}
               onChange={(e) => {
                 setFieldValue('experience', e.target.value);
                 expChange(e);
@@ -169,7 +175,7 @@ export default function ApplyNow() {
               ))}
             </Field>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="experience" component="span" className="error-message" />
-              {expLimit && <div style={{color:'red'}}>Sorry! You are not eligible for this job based on your selected experience</div>}
+            {expLimit && <div style={{ color: 'red' }}>Sorry! You are not eligible for this job based on your selected experience</div>}
             <label htmlFor="cgpa">CGPA</label>
             <Field
               id='cgpa'
@@ -198,6 +204,14 @@ export default function ApplyNow() {
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="zipcode" component="span" className="error-message" />
 
+            <label htmlFor="university">University</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='university'
+              name="university"
+              placeholder="Enter you Univery Name"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
             <label htmlFor="zipcode">Job Position</label>
             <Field
               style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
@@ -207,24 +221,10 @@ export default function ApplyNow() {
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="job_title" component="span" className="error-message" />
 
-            <label htmlFor="university">University</label>
-            <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              id='university'
-              name="university"
-              placeholder="Enter you Univery Name"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
 
-            {/* <label htmlFor="degree">Qualification</label>
-            <Field
-              id='degree'
-              name="degree"
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              placeholder="Qualification"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="degree" component="span" className="error-message" /> */}
 
+            <h3 style={{margin:'auto',marginTop:'30px'}}>Educational Information</h3>
+            <hr style={{ backgroundColor: 'white', height: '1px', border: 'none', width: '100%' }} />
             <label htmlFor="qualification" >Qualification</label>
             <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }}
               onChange={(e) => setFieldValue('qualification', e.target.value)}
@@ -323,6 +323,7 @@ export default function ApplyNow() {
           </Form>
         )}
       </Formik>
+    </div>
     </div>
   );
 }

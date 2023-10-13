@@ -9,7 +9,7 @@ const AttendanceHistory = () => {
     status: 'All',
     date: '',
     name: '',
-    emp_id: ''
+    emp_id: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -45,11 +45,11 @@ const AttendanceHistory = () => {
     setCurrentPage(1);
   };
 
-  const handleSortByDateChange = (e) => {
-    const selectedSortByDate = e.target.value;
-    setSortByDate(selectedSortByDate);
-    setCurrentPage(1);
-  };
+  // const handleSortByDateChange = (e) => {
+  //   const selectedSortByDate = e.target.value;
+  //   setSortByDate(selectedSortByDate);
+  //   setCurrentPage(1);
+  // };
   const filteredAndSortedAttendanceHistory = attendanceHistory
     .filter((emp) => {
       const { status, date, name, emp_id } = filters;
@@ -60,15 +60,16 @@ const AttendanceHistory = () => {
         (name === '' || emp?.name?.toLowerCase().includes(name.toLowerCase()))
       );
     })
-    .sort((a, b) => {
-      if (sortByDate === 'asc') {
-        return a.attendance_date?.localeCompare(b.attendance_date) || 0; // Add null/undefined check
-      } else if (sortByDate === 'desc') {
-        return b.attendance_date?.localeCompare(a.attendance_date) || 0; // Add null/undefined check
-      } else {
-        return 0; // No sorting by date
-      }
-    }); const indexOfLastItem = currentPage * itemsPerPage;
+    // .sort((a, b) => {
+    //   if (sortByDate === 'asc') {
+    //     return a.attendance_date?.localeCompare(b.attendance_date) || 0; // Add null/undefined check
+    //   } else if (sortByDate === 'desc') {
+    //     return b.attendance_date?.localeCompare(a.attendance_date) || 0; // Add null/undefined check
+    //   } else {
+    //     return 0; // No sorting by date
+    //   }
+    // });
+  const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredAndSortedAttendanceHistory.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -84,13 +85,13 @@ const AttendanceHistory = () => {
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Employee Attendance History</h2>
       <div id="content">
-        <div>
+        <div style={{display:'flex', gap:'10px',margin:'0px 10px'}}>
           <input
             type="text"
             placeholder="Search by Employee Name"
             name="name"
             value={filters.name}
-            style={{ width: "48%", display: 'inline', ...inputStyle }}
+            style={{  ...inputStyle }}
             className="form-control"
 
             onChange={handleFilterChange}
@@ -98,18 +99,17 @@ const AttendanceHistory = () => {
           <input
             type="text"
             placeholder="Search by Employee ID"
-            style={{ width: "48%", display: 'inline', marginLeft: '20px', ...inputStyle }}
+            style={{ ...inputStyle }}
             className="form-control"
             name="emp_id"
             value={filters.emp_id}
             onChange={handleFilterChange}
           />
         </div>
-        <div className="items-per-page">
+        <div style={{display:'flex', gap:'10px',margin:'10px'}}>
           <select
             name="status"
             value={filters.status}
-            style={{ display: 'inline', width: '475px', margin: '8px 20px 8px 0', ...inputStyle, WebkitAppearance: 'none' }}
             onChange={handleFilterChange}
             className="form-control"
           >
@@ -119,7 +119,14 @@ const AttendanceHistory = () => {
             <option value={'Leave'}>Leave</option>
             <option value={'Present'}>Present</option>
           </select>
-          <select
+          <input
+            type="date"
+            className="form-control"
+            name="date"
+            value={filters.date}
+            onChange={handleFilterChange}
+          />
+          {/* <select
             className="form-control"
             style={{ display: 'inline', width: '475px' }}
             value={sortByDate}
@@ -128,7 +135,7 @@ const AttendanceHistory = () => {
             <option style={{ display: 'none' }} value="All">Sort By Attendence Date</option>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
-          </select>
+          </select> */}
 
         </div>
 
@@ -198,19 +205,37 @@ const AttendanceHistory = () => {
             >
               Previous
             </button>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index}
-                className={`page-link ${index + 1 === currentPage ? 'active-button' : ''}`}
-                style={{
-                  backgroundColor: index + 1 === currentPage ? '#007BFF' : 'white',
-                  color: index + 1 === currentPage ? 'white' : 'black',
-                }}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
+            {Array.from({ length: totalPages }, (_, index) => {
+              if (
+                index === 0 ||                       // Always show the first page
+                index === totalPages - 1 ||          // Always show the last page
+                Math.abs(currentPage - (index + 1)) <= 1  // Show 1 page before and 1 page after the current page
+              ) {
+                return (
+                  <button
+                    key={index}
+                    className={`page-link ${index + 1 === currentPage ? 'active-button' : ''}`}
+                    style={{
+                      backgroundColor: index + 1 === currentPage ? '#007BFF' : 'white',
+                      color: index + 1 === currentPage ? 'white' : 'black',
+                    }}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                );
+              } else if (
+                index === 1 && currentPage >= 4 ||
+                index === totalPages - 2 && currentPage <= totalPages - 3
+              ) {
+                return (
+                  <span key={index} className="page-link" >
+                    . . .
+                  </span>
+                );
+              }
+              return null;
+            })}
             <button
               className="page-link"
               onClick={() => handlePageChange(currentPage + 1)}

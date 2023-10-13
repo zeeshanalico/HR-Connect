@@ -167,7 +167,7 @@ export default function ApplyPage() {
             id="experience"
             onChange={handleFilterChange}
             value={filters.experience}
-            style={{ ...inputStyle, margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%', WebkitAppearance: 'none' }}
+            style={{margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%' }}
 
           >
             <option value="" style={{ display: 'none' }}>Search by Experience</option>
@@ -283,21 +283,3 @@ export default function ApplyPage() {
   );
 }
 
-
-const DatePickerInput = ` display: none;
-  position: absolute;
-  left: 100%;
-  top: 10%;
-  margin-left: 12px;
-  width: 0%;
-  &::-webkit-calendar-picker-indicator {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-  }
-`;

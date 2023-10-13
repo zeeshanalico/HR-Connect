@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { BaseUrl, config } from '../../../constants';
+import { BaseUrl, config, inputStyle } from '../../../constants';
 import Toast from '../../../UIModules/Toast/Toast';
+import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 
 const PayRoll = () => {
@@ -12,6 +13,8 @@ const PayRoll = () => {
     const [empDetail, setEmpDetail] = useState({})
     const [empSal, setEmpSal] = useState('')
     const [incrementAmount, setIncrementAmount] = useState('');
+    const [dep, setDep] = useState([])
+    const [jobPositions, setJobPositions] = useState([])
 
     const fetchData = async () => {
         try {
@@ -24,8 +27,28 @@ const PayRoll = () => {
         }
     };
 
+    const fetchData1 = async () => {
+        try {
+            const response = await axios.get(BaseUrl + '/getJobPositions', config);
+            setJobPositions(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching data jobpositons:', error);
+        }
+    };
+    const fetchData2 = async () => {
+        try {
+            const response = await axios.get(BaseUrl + '/getDepartment');
+            setDep(response.data);
+        } catch (error) {
+            console.error('Error fetching data dep :', error);
+
+        }
+    };
     useEffect(() => {
-        fetchData()
+        fetchData();
+        fetchData1();
+        fetchData2();
     }, [])
 
     const handleSalaryApprove = async () => {
@@ -54,12 +77,114 @@ const PayRoll = () => {
         setShowPromotionModal(false);
     };
 
+    const calculateTax = (salary) => {
+        let tax = 0;
+
+        if (salary >= 300000) {
+            tax = salary * 0.15;
+        } else if (salary >= 200000 && salary < 300000) {
+            tax = salary * 0.12;
+        } else if (salary >= 100000 && salary < 200000) {
+            tax = salary * 0.10;
+        } else if (salary >= 50000 && salary < 100000) {
+            tax = salary * 0.08;
+        } else {
+            tax = salary * 0.05;
+        }
+        // Ensure tax is an integer (ignore decimal points)
+        // console.log(typeof tax)
+        tax = Math.floor(tax);
+        return tax;
+    };
+
+    const calculateCellValue = (employee) => {
+        console.log("calculated tax ", calculateTax(employee.salary));
+        if (employee?.performanceScore === 100) {
+            const updatedSalary = employee.salary - (calculateTax(employee.salary)) + (employee.salary * 0.02);
+            return `${updatedSalary.toString().slice(0, -3)} PKR`;
+        } else {
+            return employee?.salary ? (Number(employee.salary)-(calculateTax(employee.salary)) ) : 'N/A';
+        }
+    };
+
+    // ------------------------------------------------------------------------------------------------
+
+    const [filters, setFilters] = useState({
+        employeeName: '',
+        department: '',
+        jobPosition: '',
+        empId: '',
+    });
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const filteredEmployees = employees
+        .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
+        .filter((emp) => emp?.job_name?.toLowerCase()?.includes(filters.jobPosition.toLowerCase()))
+        .filter((emp) => emp?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
+    const offset = currentPage * itemsPerPage;
+    const currentEmployees = filteredEmployees.slice(offset, offset + itemsPerPage);
+    console.log('filteredEmployee ', filteredEmployees);
+    const handleFilter = (filterType, value) => {
+        console.log(filterType, value);
+        setFilters({ ...filters, [filterType]: value });
+        setCurrentPage(0);
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        const newItemsPerPage = parseInt(e.target.value, 10);
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(0);
+
+    };
+    // ------------------------------------------------------------------------------------------------
+
     return (
-        <div className="container mt-4">
+        <div className="container mt-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <h2 className="mb-4">Payroll Management</h2>
             {/* <button className="btn btn-primary mb-3" onClick={handleApproveAllClick}>
         Approve All Salaries
       </button> */}
+            <div style={{ display: 'flex', flex: '1', gap: '20px', width: "100%", margin: '10px auto' }}>
+                <input
+                    type="text"
+                    style={{ ...inputStyle, WebkitAppearance: 'none' }}
+                    id="employeeNameFilter"
+                    placeholder="Search by Employee Name"
+                    className="form-control round"
+                    value={filters.employeeName}
+                    onChange={(e) => handleFilter('employeeName', e.target.value)}
+                />
+                <select
+                    value={filters.department}
+                    className="form-control round"
+                    onChange={(e) => handleFilter('department', e.target.value)}
+                >
+                    <option value={''} style={{ display: 'none' }}>Department</option>
+                    <option value={''}>All</option>
+                    {dep.map((department) => (
+                        <option value={department.dep_name} key={department.dep_name}>
+                            {department.dep_name}
+                        </option>
+                    ))}
+                </select>
+
+                <select
+                    value={filters.jobPosition}
+                    autoComplete='off'
+                    className={`form-control round`}
+                    onChange={(e) => handleFilter('jobPosition', e.target.value)}
+                >
+                    <option value={''} style={{ display: 'none' }}>Job Position</option>
+                    <option value={''}>All</option>
+
+                    {jobPositions.map((job) => (
+                        <option value={job.job_name} key={job.job_name}>
+                            {job.job_name}
+                        </option>
+                    ))}
+                </select>
+            </div>
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -69,13 +194,14 @@ const PayRoll = () => {
                         <th>Basic Salary</th>
                         <th>Performance Score (%)</th>
                         <th>Bonus</th>
+                        <th>Tax</th>
                         <th>Net Salary</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {employees.map((employee) => (
+                    {currentEmployees.map((employee) => (
                         <tr key={employee.emp_id}>
                             <td>{employee?.name}</td>
                             <td>{employee?.dep_name}</td>
@@ -86,10 +212,11 @@ const PayRoll = () => {
                                 {employee?.performanceScore === 100 ? `$${(employee.salary * 0.02)}` : 'N/A'}
                             </td>
                             <td>
-                                {employee?.performanceScore === 100
-                                    ? `${(employee.salary + (employee.salary * 0.02)).toString().slice(0, -3)} PKR`
-                                    : `${(employee?.salary ? employee.salary.toString().slice(0, -3) : 'N/A')} PKR`}
+                                {employee?.salary ? calculateTax(employee.salary) : 'N/A'}
                             </td>
+                            <td>{calculateCellValue(employee)}</td>
+
+
                             <td>
                                 {employee?.salaryStatus === 'Paid' ? (
                                     <span className="badge bg-success">Paid</span>
@@ -127,6 +254,34 @@ const PayRoll = () => {
                     ))}
                 </tbody>
             </table>
+            <div style={{ display: 'flex', margin: '10px auto', gap: '5px' }}>
+                <select
+                    name="itemsPerPage"
+                    id="itemsPerPage"
+                    className="form-control round"
+                    onChange={handleItemsPerPageChange}
+                    value={itemsPerPage}
+                >
+                    <optgroup label='Items/Page'></optgroup>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+                <ReactPaginate
+                    previousLabel={'Previous'}
+                    nextLabel={'Next'}
+                    pageCount={Math.ceil(filteredEmployees.length / itemsPerPage)} // Use filteredApplications.length
+                    onPageChange={({ selected }) => setCurrentPage(selected)}
+                    containerClassName={'pagination'}
+                    activeClassName={'active'}
+                    pageClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                    previousClassName={'page-item'}
+                    previousLinkClassName={'page-link'}
+                    nextClassName={'page-item'}
+                    nextLinkClassName={'page-link'}
+                />
+            </div>
 
             {/* Promotion Modal */}
             <Modal show={showPromotionModal} onHide={() => setShowPromotionModal(false)}>
@@ -206,6 +361,7 @@ const PayRoll = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
         </div >
     );
 };
