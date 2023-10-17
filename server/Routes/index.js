@@ -12,8 +12,7 @@ const router = express.Router();
 const mysql = require("../connection");
 dotenv.config({ path: "./config.env" });
 const getCurrentDate = require("./../Utils/dateUtils.js");
-const { verifyToken, checkUserRole } = require('./../Middleware/verifyToken.js')
-
+const { verifyToken, checkUserRole } = require('./../Middleware/verifyToken.js');
 
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -40,7 +39,7 @@ router.get("/getDepartment", (req, res) => {
     }
   });
 });
-router.get("/getDegrees", (req, res) => {
+router.get("/getDegrees", verifyToken, (req, res) => {
   console.log("/getDegrees");
   mysql.query("select * from degrees", (error, result) => {
     if (error) {
@@ -165,6 +164,50 @@ router.post("/updateDepartment", (req, res) => {
         res.json({ message: error.sqlMessage });
       } else {
         res.json({ success: true, message: 'Department updated successfully' });
+      }
+    }
+  );
+});
+
+router.get('/addNewDegree/:newJob',verifyToken, (req, res) => {
+  console.log('/addNewDegree');
+const name=req.params.newJob;
+  mysql.query('insert into degrees (name) values (?);',[name],
+    (err, results) => {
+      if (err) {
+        console.log( err);
+        res.json({ message: "Error inserting New Degree",error:err, success: false });
+      } else {
+        res.json({ message: `${name} Degree added Successfully`, results,success: true });
+      }
+    }
+  );
+})
+// router.post("/addJobPosition",verifyToken,checkUserRole(1),(req,res)=>{
+//   console.log('/addJobPosition');
+//   mysql.query('insert into jobpositions (job_name) values(?)',[req.body.newJob],
+//     (err, results) => {
+//       if (err) {
+//         console.error("Error inserting job position", err);
+//         res.json({ message: "Error inserting job position", success: false });
+//       } else {
+//         res.json({ message: `${req.body.newJob} Job added Successfully`, success: true });
+//       }
+//     }
+//   );
+// })
+
+router.get("/attendanceRecord", verifyToken, checkUserRole(2), (req, res) => {
+  const { emp_id } = req.user;
+  console.log("/attendanceRecord");
+  mysql.query(
+    "SELECT * FROM attendance WHERE emp_id = ?  AND DATE_FORMAT(attendance_date, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m');", [emp_id],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching Your Attendance Record:", err);
+        res.json({ message: "Error fetching Your Attendance Record", success: false });
+      } else {
+        res.json(results);
       }
     }
   );
@@ -450,7 +493,7 @@ router.post('/callSelectedApplicantForInterview', (req, res) => {
   const { data, interviewDate, interviewTime } = req.body;
   console.log(data, interviewDate, interviewTime);
   data.forEach((employee) => {
-    const { application_id,email, applicant_name:applicantName,  job_id:applicantJobName } = employee;
+    const { application_id, email, applicant_name: applicantName, job_id: applicantJobName } = employee;
     mysql.query(
       'update applications set status="interview" where application_id=?;',
       [application_id],
@@ -1414,6 +1457,30 @@ router.post('/approveSalary', (req, res) => {
     }
   })
 })
+
+router.post('/ApproveAllSalaries', (req, res) => {
+  console.log("/ApproveAllSalaries");
+  const { unPaidEmployees } = req.body;
+  const insertValues = unPaidEmployees.map(employee => [
+    employee.emp_id,
+    employee.salary,
+    'Paid',
+    current_date,
+
+  ]);
+  mysql.query(
+    "INSERT INTO salary (emp_id, salary_amount, salary_status, salary_date) VALUES ?",
+    [insertValues],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.json({ message: 'An error occurred while approving salaries', success: false });
+      } else {
+        res.json({ message: 'Salaries Approved!', success: true });
+      }
+    }
+  );
+});
 
 router.post('/updateSalary', (req, res) => {
   console.log("/updateSalary");

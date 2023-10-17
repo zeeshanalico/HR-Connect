@@ -16,6 +16,7 @@ export default function EmployeeDashboard() {
   const fetchData = async () => {
     try {
       const response = await axios.post(BaseUrl + '/getEmpInfobyEmpId', {}, config);
+      console.log(response.data);
       setEmpStats(response.data);
     } catch (error) {
       console.log("Error : ", error);
@@ -79,10 +80,30 @@ export default function EmployeeDashboard() {
           </div>
         </div>
         <div className="col-xl-4 col-sm-6 py-2">
+          <div className="card text-white bg-warning h-100">
+            <div className="card-body bg-warning">
+              <div className="rotate">
+                <i class="fa fa-check-circle fa-4x"></i>
+              </div>
+              <h3>Performance Score : {((Number(empDashStats.present_count) / 21) * 100).toFixed(2)}</h3>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-sm-6 py-2">
+          <div className="card text-white bg-info h-100">
+            <div className="card-body bg-info">
+              <div className="rotate">
+                <i class="fa fa-check-circle fa-4x"></i>
+              </div>
+              <h3>Salary/month : {Number(empStats.salary)}</h3>
+            </div>
+          </div>
+        </div>  
+        <div className="col-xl-4 col-sm-6 py-2">
           <div className="card text-white bg-success h-100">
             <div className="card-body bg-success">
               <div className="rotate">
-              <i className="fa fa-check-circle fa-4x"></i>              </div>
+                <i className="fa fa-check-circle fa-4x"></i>              </div>
               <h3>This Month Presents : {empDashStats.present_count}</h3>
             </div>
           </div>
@@ -91,34 +112,24 @@ export default function EmployeeDashboard() {
           <div className="card text-white bg-danger h-100">
             <div className="card-body bg-danger">
               <div className="rotate">
-              <i className="fa fa-times-circle fa-4x"></i>
-                  </div>
+                <i className="fa fa-times-circle fa-4x"></i>
+              </div>
               <h3>This Month Absents : {empDashStats.absent_count}</h3>
             </div>
           </div>
         </div>
         <div className="col-xl-4 col-sm-6 py-2">
-          <div className="card text-white bg-danger h-100">
+          <div className="card text-white bg-secondary h-100">
             <div className="card-body bg-secondary">
               <div className="rotate">
-              <i class="fa fa-times-circle fa-4x"></i>                 
-               </div>
+                <i class="fa fa-times-circle fa-4x"></i>
+              </div>
               <h3>This Month Leaves : {empDashStats.leave_count}</h3>
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-sm-6 py-2">
-          <div className="card text-white bg-danger h-100">
-            <div className="card-body bg-warning">
-              <div className="rotate">
-              <i class="fa fa-times-circle fa-4x"></i>                 
-               </div>
-                <h3>Performance Score : {((Number(empDashStats.present_count)/21)*100).toFixed(2)}</h3>
-            </div>
-          </div>
-        </div>
+
       </div>
-      {/* You can add more cards for additional information */}
     </div>
   );
 }

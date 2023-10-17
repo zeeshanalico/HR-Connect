@@ -53,7 +53,6 @@ const PayRoll = () => {
 
     const handleSalaryApprove = async () => {
         console.log(empSal);
-        console.log(empDetail.emp_id);
         const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal }, config);
         if (response.data.success) {
             Toast(`${response.data.message}`)
@@ -103,7 +102,7 @@ const PayRoll = () => {
             const updatedSalary = employee.salary - (calculateTax(employee.salary)) + (employee.salary * 0.02);
             return `${updatedSalary.toString().slice(0, -3)} PKR`;
         } else {
-            return employee?.salary ? (Number(employee.salary)-(calculateTax(employee.salary)) ) : 'N/A';
+            return employee?.salary ? (Number(employee.salary) - (calculateTax(employee.salary))) : 'N/A';
         }
     };
 
@@ -137,14 +136,33 @@ const PayRoll = () => {
         setCurrentPage(0);
 
     };
+
+    const handleApproveAllClick = async () => {
+        const filteremp = filteredEmployees.filter(emp => { return emp?.salaryStatus === 'Not Paid' });
+        const unPaidEmployees = filteremp.map(({ emp_id, salary }) => ({ emp_id, salary }));
+        try {
+            const response = await axios.post(BaseUrl + '/ApproveAllSalaries', { unPaidEmployees });
+            if (response.data.success) {
+                Toast(`${response.data.message}`);
+            }
+            else {
+                Toast(`${response.data.message}`, 'error');
+            }
+        } catch (e) {
+            Toast(`${e}`, 'error')
+            console.log(e);
+
+        }
+        console.log(unPaidEmployees);
+        await fetchData();
+
+    }
     // ------------------------------------------------------------------------------------------------
 
     return (
         <div className="container mt-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <h2 className="mb-4">Payroll Management</h2>
-            {/* <button className="btn btn-primary mb-3" onClick={handleApproveAllClick}>
-        Approve All Salaries
-      </button> */}
+
             <div style={{ display: 'flex', flex: '1', gap: '20px', width: "100%", margin: '10px auto' }}>
                 <input
                     type="text"
@@ -185,6 +203,9 @@ const PayRoll = () => {
                     ))}
                 </select>
             </div>
+            <button className="btn btn-primary mb-3" style={{ alignSelf: 'end' }} onClick={handleApproveAllClick}>
+                Approve All Salaries
+            </button>
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -208,30 +229,18 @@ const PayRoll = () => {
                             <td>{employee?.job_name}</td>
                             <td>{employee?.salary ? `${employee.salary.toString().slice(0, -3)} PKR` : 'N/A'}</td>
                             <td>{employee?.performanceScore}</td>
-                            <td>
-                                {employee?.performanceScore === 100 ? `$${(employee.salary * 0.02)}` : 'N/A'}
-                            </td>
-                            <td>
-                                {employee?.salary ? calculateTax(employee.salary) : 'N/A'}
-                            </td>
+                            <td>{employee?.performanceScore === 100 ? `$${(employee.salary * 0.02)}` : 'N/A'}</td>
+                            <td>{employee?.salary ? calculateTax(employee.salary) : 'N/A'}</td>
                             <td>{calculateCellValue(employee)}</td>
-
-
-                            <td>
-                                {employee?.salaryStatus === 'Paid' ? (
-                                    <span className="badge bg-success">Paid</span>
-                                ) : (
-                                    <span className="badge bg-warning">Not Paid</span>
-                                )}
+                            <td>{employee?.salaryStatus === 'Paid'
+                                ? (<span className="badge bg-success">Paid</span>)
+                                : (<span className="badge bg-warning">Not Paid</span>)}
                             </td>
-
                             <td>
-                                <button
-                                    className="btn btn-primary btn-sm me-2"
-                                    onClick={() => {
-                                        setShowPromotionModal(true)
-                                        setEmpDetail({ ...employee });
-                                    }}
+                                <button className="btn btn-primary btn-sm me-2" onClick={() => {
+                                    setShowPromotionModal(true)
+                                    setEmpDetail({ ...employee });
+                                }}
                                     style={{ marginBottom: '5px' }}
                                 >
                                     Increase Salary

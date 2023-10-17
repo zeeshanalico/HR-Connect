@@ -9,6 +9,9 @@ const ViewDepartment = () => {
   const [departmentList, setDepartmentList] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddJob, setShowAddJob] = useState(false);
+  const [newJob, setNewJob] = useState('');
+
   const [depId, setDepId] = useState('');
   const [depName, setDepName] = useState('');
   const [newDepartmentName, setNewDepartmentName] = useState('');
@@ -16,7 +19,7 @@ const ViewDepartment = () => {
   const [degrees, setDegrees] = useState([]); // Array to store new degrees
   const [editingDepId, setEditingDepId] = useState(null); // Department ID being edited
   const [editedDepName, setEditedDepName] = useState(''); // Edited department name
-
+  const [allJobs, setAllJobs] = useState([])
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getDepInfo', config);
@@ -36,10 +39,21 @@ const ViewDepartment = () => {
       console.error('Error fetching deplist:', error);
     }
   };
+  // const fetchData2 = async () => {
+  //   try {
+  //     const response = await axios.get(BaseUrl + '/getJobPositions', config);
+  //     setAllJobs(response.data);
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     Toast('cache error', 'error');
+  //     console.error('Error fetching getJobPositions:', error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchData();
     fetchData1();
+    // fetchData2();
   }, []);
 
   const handleAddDepartment = (e) => {
@@ -62,7 +76,7 @@ const ViewDepartment = () => {
   };
 
   const handleSaveEditedDepartment = async () => {
-    console.log(depId,depName);
+    console.log(depId, depName);
     if (editedDepName.trim() === '') {
       Toast('Department name cannot be empty.', 'error');
       return;
@@ -137,6 +151,28 @@ const ViewDepartment = () => {
     setShowConfirmation(false);
   };
 
+
+  const handleAddNewDegree = async () => {
+    try {
+      console.log(newJob);
+      console.log(`${BaseUrl}/addNewDegree/${newJob}`);
+      const response = await axios.get(`${BaseUrl}/addNewDegree/${newJob}`)
+      console.log("Response : ", response);
+      if (response.data.success) {
+        Toast(`${response.data.message}`, 'success');
+      }
+      else {
+        Toast(`${response.data.message}`, 'error');
+
+      }
+    } catch (error) {
+      console.log(error);
+
+    }
+    setNewJob('')
+    await fetchData1();
+    setShowAddJob(false)
+  }
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">View Departments</h2>
@@ -162,7 +198,7 @@ const ViewDepartment = () => {
                       <input
                         type="text"
                         value={editedDepName}
-                        style={{background:' rgb(48, 164, 255)',width:'300px',border:'none',padding:'5px',marginRight:'5px',outline:'none'}}
+                        style={{ background: ' rgb(48, 164, 255)', width: '300px', border: 'none', padding: '5px', marginRight: '5px', outline: 'none' }}
                         onChange={(e) => setEditedDepName(e.target.value)}
                       />
                       <button
@@ -172,7 +208,7 @@ const ViewDepartment = () => {
                         Save
                       </button>
                       <button
-                      style={{marginLeft:'5px'}}
+                        style={{ marginLeft: '5px' }}
                         className="btn btn-secondary btn-sm"
                         onClick={handleCancelEdit}
                       >
@@ -192,7 +228,7 @@ const ViewDepartment = () => {
                   <button
                     type="button"
                     className="btn btn-info"
-                    style={{marginRight:'5px'}}
+                    style={{ marginRight: '5px' }}
                     onClick={() => {
                       handleEditDepartment(department.dep_id, department.dep_name)
                     }}
@@ -224,6 +260,15 @@ const ViewDepartment = () => {
           >
             Add New Department
           </button>
+          <button
+            style={{ marginLeft: '5px' }}
+            className="btn btn-secondary"
+            onClick={() => {
+              setShowAddJob(true);
+            }}
+          >
+            Add Degree
+          </button>
         </div>
 
         <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)}>
@@ -251,6 +296,34 @@ const ViewDepartment = () => {
           </Modal.Footer>
         </Modal>
 
+        <Modal show={showAddJob} onHide={() => setShowAddJob(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Degrees</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              <ol>
+                {degrees.map((deg, index) => (
+                  <li key={index}>{++index} . {deg.name}</li>
+                ))}
+              </ol>
+            <input
+              type="text"
+              placeholder='write degree name...'
+              value={newJob}
+              style={{ padding: '5px', marginRight: '5px', outline: 'none' }}
+              onChange={(e) => setNewJob(e.target.value)}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowAddJob(false)}>
+              Cancel
+            </Button>
+            <Button variant="danger" onClick={handleAddNewDegree}>
+              Add
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <Modal show={showAddForm} onHide={() => setShowAddForm(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Add New Department</Modal.Title>
@@ -272,12 +345,12 @@ const ViewDepartment = () => {
                 <div>
                   {newDegrees.map((degree, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    
+
                       <Form.Control
                         as="select"
                         name='degree'
                         required
-                        style={{padding:'0px 12px',height:'30px',marginRight:'5px'}}
+                        style={{ padding: '0px 12px', height: '30px', marginRight: '5px' }}
                         value={degree}
                         onChange={(e) => {
                           const updatedDegrees = [...newDegrees];
@@ -305,7 +378,7 @@ const ViewDepartment = () => {
                     className="btn btn-primary btn-sm"
                     onClick={() => handleAddDegree('')}
                   >
-                    Add Degree
+                     Degree's
                   </button>
                 </div>
               </Form.Group>

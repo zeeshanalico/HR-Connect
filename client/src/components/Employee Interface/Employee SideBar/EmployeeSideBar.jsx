@@ -44,9 +44,9 @@ export default function EmployeeSideBar() {
                 </Dropdown.Item>
               </RouterLink>
               <RouterLink to="/empdash/AttendanceRecord">
-                {/* <Dropdown.Item href="/">
+                <Dropdown.Item href="/">
                   <i className="far fa-calendar-alt"></i> Attendance Record
-                </Dropdown.Item> */}
+                </Dropdown.Item>
               </RouterLink>
             </Dropdown.Menu>
           </Dropdown>
