@@ -10,6 +10,7 @@ const AttendanceHistory = () => {
     date: '',
     name: '',
     emp_id: '',
+    month: ''
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -19,6 +20,8 @@ const AttendanceHistory = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getattendancehistory', config);
+      console.log(response);
+      console.log(response.data);
       setAttendanceHistory(response.data);
     } catch (error) {
       Toast('Error catch', 'error');
@@ -32,6 +35,7 @@ const AttendanceHistory = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setFilters({
       ...filters,
       [name]: value,
@@ -52,23 +56,26 @@ const AttendanceHistory = () => {
   // };
   const filteredAndSortedAttendanceHistory = attendanceHistory
     .filter((emp) => {
-      const { status, date, name, emp_id } = filters;
+      const { status, date, name, emp_id, month } = filters;
+      const dateObject = new Date(emp?.attendance_date.toString());
+      const empmonth = dateObject.getMonth() + 1;
       return (
-        (status === 'All' || emp.status?.toLowerCase() === status?.toLowerCase()) &&
+        (status === '' || emp.status?.toLowerCase() === status?.toLowerCase()) &&
         (date === '' || emp.attendance_date?.includes(date)) &&
         (emp_id === '' || emp.emp_id.toString().includes(emp_id)) &&
-        (name === '' || emp?.name?.toLowerCase().includes(name.toLowerCase()))
+        (name === '' || emp.name?.toLowerCase().includes(name.toLowerCase())) &&
+        (month === '' || empmonth === parseInt(month))
       );
     })
-    // .sort((a, b) => {
-    //   if (sortByDate === 'asc') {
-    //     return a.attendance_date?.localeCompare(b.attendance_date) || 0; // Add null/undefined check
-    //   } else if (sortByDate === 'desc') {
-    //     return b.attendance_date?.localeCompare(a.attendance_date) || 0; // Add null/undefined check
-    //   } else {
-    //     return 0; // No sorting by date
-    //   }
-    // });
+  // .sort((a, b) => {
+  //   if (sortByDate === 'asc') {
+  //     return a.attendance_date?.localeCompare(b.attendance_date) || 0; // Add null/undefined check
+  //   } else if (sortByDate === 'desc') {
+  //     return b.attendance_date?.localeCompare(a.attendance_date) || 0; // Add null/undefined check
+  //   } else {
+  //     return 0; // No sorting by date
+  //   }
+  // });
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredAndSortedAttendanceHistory.slice(indexOfFirstItem, indexOfLastItem);
@@ -80,18 +87,33 @@ const AttendanceHistory = () => {
       setCurrentPage(page);
     }
   };
+  const months = [
+    { name: "January", number: 1 },
+    { name: "February", number: 2 },
+    { name: "March", number: 3 },
+    { name: "April", number: 4 },
+    { name: "May", number: 5 },
+    { name: "June", number: 6 },
+    { name: "July", number: 7 },
+    { name: "August", number: 8 },
+    { name: "September", number: 9 },
+    { name: "October", number: 10 },
+    { name: "November", number: 11 },
+    { name: "December", number: 12 }
+  ];
+
 
   return (
     <div id="full-content" className="container mt-4">
       <h2 className="mb-4">Employee Attendance History</h2>
       <div id="content">
-        <div style={{display:'flex', gap:'10px',margin:'0px 10px'}}>
+        <div style={{ display: 'flex', gap: '10px', margin: '0px 10px' }}>
           <input
             type="text"
             placeholder="Search by Employee Name"
             name="name"
             value={filters.name}
-            style={{  ...inputStyle }}
+            style={{ ...inputStyle }}
             className="form-control"
 
             onChange={handleFilterChange}
@@ -106,18 +128,29 @@ const AttendanceHistory = () => {
             onChange={handleFilterChange}
           />
         </div>
-        <div style={{display:'flex', gap:'10px',margin:'10px'}}>
+        <div style={{ display: 'flex', gap: '10px', margin: '10px' }}>
           <select
             name="status"
             value={filters.status}
             onChange={handleFilterChange}
             className="form-control"
           >
-            <optgroup>Items/Page</optgroup>
-            <option value={'All'}>Search by Status</option>
+            <option value={''} style={{ display: 'none' }}>Search by Status</option>
+            <option value={''}>All</option>
             <option value={'Absent'}>Absent</option>
             <option value={'Leave'}>Leave</option>
             <option value={'Present'}>Present</option>
+          </select>
+          <select
+            name="month"
+            value={filters.month}
+            onChange={handleFilterChange}
+            className="form-control"
+          >
+            <option value={''} style={{ display: 'none' }}>Search by Status</option>
+            <option value={''}>All</option>
+            {months.map((m, index) => { return <option value={m.number} key={m.number}>{++index}. {m.name}</option> })}
+
           </select>
           <input
             type="date"

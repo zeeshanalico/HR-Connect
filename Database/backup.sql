@@ -82,7 +82,7 @@ CREATE TABLE `attendance` (
   PRIMARY KEY (`attendance_id`),
   UNIQUE KEY `emp_id` (`emp_id`,`attendance_date`),
   CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=252 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,9 +91,55 @@ CREATE TABLE `attendance` (
 
 LOCK TABLES `attendance` WRITE;
 /*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
-INSERT INTO `attendance` VALUES (9,2,'2023-09-18','Absent'),(10,2,'2023-09-25','Leave'),(11,2,'2023-09-19','Present'),(143,2,'2023-09-23','Absent'),(147,1,'2023-09-24','Absent'),(151,2,'2023-09-24','Absent'),(156,1,'2023-09-25','Absent'),(166,1,'2023-09-26','Absent'),(170,2,'2023-09-26','Absent'),(180,2,'2023-09-29','Absent'),(181,2,'2023-10-07','Leave'),(182,2,'2023-10-04','Leave'),(183,2,'2023-10-05','Leave'),(184,2,'2023-10-06','Leave'),(185,2,'2023-10-08','Leave'),(199,2,'2023-09-30','Absent'),(201,2,'2023-10-01','Present'),(203,2,'2023-11-09','Leave'),(205,2,'2023-10-02','Absent'),(206,2,'2023-10-03','Absent'),(209,1,'2023-10-03','Absent'),(212,1,'2023-10-04','Absent'),(213,25,'2023-10-05','Present'),(214,25,'2023-10-04','Absent'),(215,1,'2023-10-05','Absent'),(218,1,'2023-10-06','Absent'),(220,25,'2023-10-06','Absent'),(221,1,'2023-10-07','Absent'),(223,25,'2023-10-07','Absent'),(227,27,'2023-10-08','Present'),(228,997,'2023-10-08','Present'),(229,27,'2023-10-07','Absent'),(230,997,'2023-10-07','Absent'),(232,1,'2023-10-08','Absent'),(234,25,'2023-10-08','Absent'),(235,1,'2023-10-09','Absent'),(236,2,'2023-10-09','Absent'),(237,25,'2023-10-09','Absent'),(238,27,'2023-10-09','Absent'),(239,997,'2023-10-09','Absent'),(242,24,'2023-10-18','Present'),(243,24,'2023-10-09','Absent'),(245,1,'2023-10-10','Absent'),(246,2,'2023-10-10','Absent'),(247,24,'2023-10-10','Absent'),(248,25,'2023-10-10','Absent'),(249,27,'2023-10-10','Absent'),(250,997,'2023-10-10','Absent');
+INSERT INTO `attendance` VALUES (9,2,'2023-09-18','Absent'),(10,2,'2023-09-25','Leave'),(11,2,'2023-09-19','Present'),(143,2,'2023-09-23','Absent'),(147,1,'2023-09-24','Absent'),(151,2,'2023-09-24','Absent'),(156,1,'2023-09-25','Absent'),(166,1,'2023-09-26','Absent'),(170,2,'2023-09-26','Absent'),(180,2,'2023-09-29','Absent'),(181,2,'2023-10-07','Leave'),(182,2,'2023-10-04','Leave'),(183,2,'2023-10-05','Leave'),(184,2,'2023-10-06','Leave'),(185,2,'2023-10-08','Leave'),(199,2,'2023-09-30','Absent'),(201,2,'2023-10-01','Present'),(203,2,'2023-11-09','Leave'),(205,2,'2023-10-02','Absent'),(206,2,'2023-10-03','Absent'),(209,1,'2023-10-03','Absent'),(212,1,'2023-10-04','Absent'),(213,25,'2023-10-05','Present'),(214,25,'2023-10-04','Absent'),(215,1,'2023-10-05','Absent'),(218,1,'2023-10-06','Absent'),(220,25,'2023-10-06','Absent'),(221,1,'2023-10-07','Absent'),(223,25,'2023-10-07','Absent'),(227,27,'2023-10-08','Present'),(228,997,'2023-10-08','Present'),(229,27,'2023-10-07','Absent'),(230,997,'2023-10-07','Absent'),(232,1,'2023-10-08','Absent'),(234,25,'2023-10-08','Absent'),(235,1,'2023-10-09','Absent'),(236,2,'2023-10-09','Absent'),(237,25,'2023-10-09','Absent'),(238,27,'2023-10-09','Absent'),(239,997,'2023-10-09','Absent'),(242,24,'2023-10-18','Present'),(243,24,'2023-10-09','Absent'),(245,1,'2023-10-10','Absent'),(246,2,'2023-10-10','Absent'),(247,24,'2023-10-10','Absent'),(248,25,'2023-10-10','Absent'),(249,27,'2023-10-10','Absent'),(250,997,'2023-10-10','Absent'),(252,1,'2023-10-11','Absent'),(253,2,'2023-10-11','Absent'),(254,24,'2023-10-11','Absent'),(255,25,'2023-10-11','Absent'),(256,27,'2023-10-11','Absent'),(257,997,'2023-10-11','Absent'),(258,1,'2023-10-12','Absent'),(259,2,'2023-10-12','Absent'),(260,24,'2023-10-12','Absent'),(261,25,'2023-10-12','Absent'),(262,27,'2023-10-12','Absent'),(263,997,'2023-10-12','Absent'),(265,1,'2023-10-13','Absent'),(266,2,'2023-10-13','Absent'),(267,24,'2023-10-13','Absent'),(268,25,'2023-10-13','Absent'),(269,27,'2023-10-13','Absent'),(270,997,'2023-10-13','Absent'),(272,1,'2023-10-15','Absent'),(273,2,'2023-10-15','Absent'),(274,24,'2023-10-15','Absent'),(275,25,'2023-10-15','Absent'),(276,27,'2023-10-15','Absent'),(277,997,'2023-10-15','Absent'),(279,1,'2023-10-17','Absent'),(280,2,'2023-10-17','Absent'),(281,24,'2023-10-17','Absent'),(282,25,'2023-10-17','Absent'),(283,27,'2023-10-17','Absent'),(284,997,'2023-10-17','Absent'),(286,2,'2023-10-19','Present'),(287,1,'2023-10-19','Absent'),(288,24,'2023-10-19','Absent'),(289,25,'2023-10-19','Absent'),(290,27,'2023-10-19','Absent'),(291,997,'2023-10-19','Absent');
 /*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_performanceScore_on_insert` AFTER INSERT ON `attendance` FOR EACH ROW BEGIN
+    DECLARE empId INT;
+    SET empId = NEW.emp_id;
+
+    -- Call the function to calculate the performanceScore for the employee
+    UPDATE employee
+    SET performanceScore = CalculatePerformanceScore(empId)
+    WHERE emp_id = empId;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_performanceScore_on_update` AFTER UPDATE ON `attendance` FOR EACH ROW BEGIN
+    DECLARE empId INT;
+    SET empId = NEW.emp_id;
+
+    -- Call the function to calculate the performanceScore for the employee
+    UPDATE employee
+    SET performanceScore = CalculatePerformanceScore(empId)
+    WHERE emp_id = empId;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `degrees`
@@ -106,7 +152,7 @@ CREATE TABLE `degrees` (
   `deg_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`deg_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,6 +248,10 @@ CREATE TABLE `employee` (
   `university` varchar(255) DEFAULT NULL,
   `qualification` varchar(255) DEFAULT NULL,
   `job_id` int DEFAULT NULL,
+  `Tax` decimal(10,2) GENERATED ALWAYS AS ((case when (`salary` >= 300000) then (`salary` * 0.15) when ((`salary` >= 200000) and (`salary` < 300000)) then (`salary` * 0.12) when ((`salary` >= 100000) and (`salary` < 200000)) then (`salary` * 0.10) when ((`salary` >= 50000) and (`salary` < 100000)) then (`salary` * 0.08) else (`salary` * 0.05) end)) STORED,
+  `performanceScore` decimal(5,2) DEFAULT NULL,
+  `Bonus` decimal(10,2) GENERATED ALWAYS AS ((case when (`performanceScore` = 100) then (`salary` * 0.02) else 0.0 end)) STORED,
+  `netSalary` decimal(10,2) GENERATED ALWAYS AS (((`salary` + `Bonus`) - `Tax`)) STORED,
   PRIMARY KEY (`emp_id`),
   KEY `role_id` (`role_id`),
   KEY `dep_id` (`dep_id`),
@@ -218,9 +268,109 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'ihtishm ','muhammadihtisham269@gmail.com','03021055932','shakargarh','shakargarh narrowal','23443','2001-01-21','2351521391','Male','2021-01-21',23532.00,1,NULL,'3.8','CS','Computer Applications','www','www','GCU','Master\'s Degree',2),(2,'ali arshad','aliarshad@gmail.com','03021055932','lahore city',' Chattha Colony No.1 shrqpur road begum kot shahdara LHR','12343','2023-03-03','2342222323232','Male','2023-09-27',12355877.00,2,1,'3.4','CS','Computer Applications','www','www','ITU','Master\'s Degree',2),(24,'hafiz islam','hmic828@gmail.com','30232334244','Lahore','this is my address','23422','2023-10-01','2222222222222','Female','2023-10-18',1000.00,2,1,'2',NULL,'Computer Applications','https://github.com/','http://www.linkedin.com','UCP','Master\'s Degree',3),(25,'Zeeshan Ali','zeeshanalico24@gmail.com','30221055932','lahore city','Johar Town , Lahore C block','23223','2023-10-01','2222222222222','Male','2023-10-05',23532.00,2,3,'2.95','ss','Computer Applications','https://github.com','http://www.linkedin.com','ITU','Master\'s Degree',7),(27,'AbdurRafay Nasir','abdulrafaynasir@gmail.com','3021212123','lahore','Lahore','34343','2008-01-28','3454321312321','Male','2023-10-08',23532.00,2,1,'2.3',NULL,'Business Administration in Information Systems','https://github.com/ihtisham','https://linkedin.com/ihtis','COMSAT','Bachelor\'s Degree',3),(997,'Shahzaib Ghani','shahzaib@gmail.com','02123423423','lahore city','Johar Town , Lahore C block','23322','2023-10-02','2222222222222','Male','2023-10-08',23532.00,2,1,'3.2',NULL,'Computer Applications','https://github.com','http://www.linkedin.com','GCU','Master\'s Degree',7);
+INSERT INTO `employee` (`emp_id`, `name`, `email`, `phone_number`, `city`, `address`, `zipcode`, `DOB`, `cnic`, `gender`, `hire_date`, `salary`, `role_id`, `dep_id`, `cgpa`, `major`, `degree`, `github_profile_url`, `linkedin_profile_url`, `university`, `qualification`, `job_id`, `performanceScore`) VALUES (1,'ihtishm ','muhammadihtisham269@gmail.com','03021055932','shakargarh','shakargarh narrowal','23443','2001-01-21','2351521391','Male','2021-01-21',23532.00,1,NULL,'3.8','CS','Computer Applications','www','www','GCU','Master\'s Degree',2,0.00),(2,'ali arshad','aliarshad@gmail.com','03021055932','lahore city',' Chattha Colony No.1 shrqpur road begum kot shahdara LHR','12343','2023-03-03','2342222323232','Male','2023-09-27',92630.00,2,1,'3.4','CS','Computer Applications','www','www','ITU','Master\'s Degree',2,9.52),(24,'hafiz islam','hmic828@gmail.com','30232334244','Lahore','this is my address','23422','2023-10-01','2222222222222','Female','2023-10-18',10800.00,2,1,'2','SE','Computer Applications','https://github.com/','http://www.linkedin.com','UCP','Master\'s Degree',3,4.76),(25,'Zeeshan Ali','zeeshanalico24@gmail.com','30221055932','lahore city','Johar Town , Lahore C block','23223','2023-10-01','2222222222222','Male','2023-10-05',23532.00,2,3,'2.95','SE','Computer Applications','https://github.com','http://www.linkedin.com','ITU','Master\'s Degree',7,4.76),(27,'AbdurRafay Nasir','abdulrafaynasir@gmail.com','3021212123','lahore','Lahore','34343','2008-01-28','3454321312321','Male','2023-10-08',24000.00,2,1,'2.3','DS','Business Administration in Information Systems','https://github.com/ihtisham','https://linkedin.com/ihtis','COMSAT','Bachelor\'s Degree',3,4.76),(997,'Shahzaib Ghani','shahzaib@gmail.com','02123423423','lahore city','Johar Town , Lahore C block','23322','2023-10-02','2222222222222','Male','2023-10-08',47000.00,2,1,'3.2','AI','Computer Applications','https://github.com','http://www.linkedin.com','GCU','Master\'s Degree',7,4.76);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_tax_on_insert` BEFORE INSERT ON `employee` FOR EACH ROW BEGIN
+    SET NEW.tax = CASE
+        WHEN NEW.Salary >= 300000 THEN NEW.Salary * 0.15
+        WHEN NEW.Salary >= 200000 AND NEW.Salary < 300000 THEN NEW.Salary * 0.12
+        WHEN NEW.Salary >= 100000 AND NEW.Salary < 200000 THEN NEW.Salary * 0.10
+        WHEN NEW.Salary >= 50000 AND NEW.Salary < 100000 THEN NEW.Salary * 0.08
+        ELSE NEW.Salary * 0.05
+    END;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `calculate_netSalary_insert` BEFORE INSERT ON `employee` FOR EACH ROW BEGIN
+    SET NEW.netSalary = NEW.salary + NEW.bonus - NEW.tax;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_tax_on_update` BEFORE UPDATE ON `employee` FOR EACH ROW BEGIN
+    SET NEW.tax = CASE
+        WHEN NEW.Salary >= 300000 THEN NEW.Salary * 0.15
+        WHEN NEW.Salary >= 200000 AND NEW.Salary < 300000 THEN NEW.Salary * 0.12
+        WHEN NEW.Salary >= 100000 AND NEW.Salary < 200000 THEN NEW.Salary * 0.10
+        WHEN NEW.Salary >= 50000 AND NEW.Salary < 100000 THEN NEW.Salary * 0.08
+        ELSE NEW.Salary * 0.05
+    END;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_netSalary_after_update` BEFORE UPDATE ON `employee` FOR EACH ROW BEGIN
+    SET NEW.netSalary = NEW.salary + NEW.bonus - NEW.tax;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_netSalary_after_delete` AFTER DELETE ON `employee` FOR EACH ROW BEGIN
+    -- You might not need to update netSalary for deleted rows, but you can include it for consistency.
+    -- You can also set it to NULL if desired.
+    -- For example:
+    -- SET NEW.netSalary = NULL;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `experience`
@@ -355,7 +505,7 @@ CREATE TABLE `leaverequest` (
 
 LOCK TABLES `leaverequest` WRITE;
 /*!40000 ALTER TABLE `leaverequest` DISABLE KEYS */;
-INSERT INTO `leaverequest` VALUES (3,'Rejected','2023-09-27','232','2023-09-18',2,NULL),(21,'Approved','2023-10-04','Testing aliArshad 2','2023-09-30',2,'2023-10-06'),(22,'Approved','2023-10-07','oneDayLeave','2023-09-29',2,NULL),(23,'Approved','2023-10-08','8','2023-09-29',2,NULL),(24,'Approved','2023-11-09','no ','2023-10-01',2,'2023-11-11'),(25,'Rejected','2023-11-09','sick leave','2023-10-01',2,NULL),(26,'Pending','2023-11-11','sd','2023-10-03',2,'2023-11-15'),(27,'Pending','2023-10-12','sdasdsdas','2023-10-03',2,NULL),(28,'Pending','2023-10-08','we','2023-10-03',2,NULL),(29,'Pending','2023-10-05','nop','2023-10-03',2,'2023-10-16');
+INSERT INTO `leaverequest` VALUES (3,'Rejected','2023-09-27','232','2023-09-18',2,NULL),(21,'Approved','2023-10-04','Testing aliArshad 2','2023-09-30',2,'2023-10-06'),(22,'Approved','2023-10-07','oneDayLeave','2023-09-29',2,NULL),(23,'Approved','2023-10-08','8','2023-09-29',2,NULL),(24,'Approved','2023-11-09','no ','2023-10-01',2,'2023-11-11'),(25,'Rejected','2023-11-09','sick leave','2023-10-01',2,NULL),(26,'Rejected','2023-11-11','sd','2023-10-03',2,'2023-11-15'),(27,'Pending','2023-10-12','sdasdsdas','2023-10-03',2,NULL),(28,'Pending','2023-10-08','we','2023-10-03',2,NULL),(29,'Pending','2023-10-05','nop','2023-10-03',2,'2023-10-16');
 /*!40000 ALTER TABLE `leaverequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,7 +549,7 @@ CREATE TABLE `salary` (
   PRIMARY KEY (`salary_id`),
   KEY `emp_id` (`emp_id`),
   CONSTRAINT `salary_ibfk_1` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -408,7 +558,6 @@ CREATE TABLE `salary` (
 
 LOCK TABLES `salary` WRITE;
 /*!40000 ALTER TABLE `salary` DISABLE KEYS */;
-INSERT INTO `salary` VALUES (1,2,'23240.00','Paid','2023-10-08');
 /*!40000 ALTER TABLE `salary` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -450,6 +599,36 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'hr'
 --
+/*!50003 DROP FUNCTION IF EXISTS `CalculatePerformanceScore` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `CalculatePerformanceScore`(empId INT) RETURNS decimal(5,2)
+BEGIN
+    DECLARE totalPresent INT;
+    DECLARE score DECIMAL(5, 2);
+
+    -- Calculate the total number of 'Present' entries in attendance for the current month
+    SELECT SUM(CASE WHEN status = 'Present' AND MONTH(attendance_date) = MONTH(CURDATE()) THEN 1 ELSE 0 END) INTO totalPresent
+    FROM attendance
+    WHERE emp_id = empId;
+
+    -- Calculate the performanceScore based on the totalPresent
+    SET score = (totalPresent / 21) * 100;
+
+    RETURN score;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `attendanceApproval` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1054,4 +1233,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-10 13:12:55
+-- Dump completed on 2023-10-20  9:35:18

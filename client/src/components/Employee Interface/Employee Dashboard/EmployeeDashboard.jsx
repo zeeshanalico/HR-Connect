@@ -95,7 +95,7 @@ export default function EmployeeDashboard() {
               <div className="rotate">
                 <i class="fa fa-check-circle fa-4x"></i>
               </div>
-              <h3>Salary/month : {Number(empStats.salary)}</h3>
+              <h3>Salary/month : {empStats.netSalary}</h3>
             </div>
           </div>
         </div>  

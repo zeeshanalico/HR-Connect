@@ -7,25 +7,25 @@ import axios from 'axios';
 
 const PayRoll = () => {
 
-    const [employees, setEmployees] = useState([]);
+    // const [employees, setEmployees] = useState([]);
+    const [allEmployees, setAllEmployees] = useState([]);
     const [showApproveSalaryModal, setShowApproveSalaryModal] = useState(false);
     const [showPromotionModal, setShowPromotionModal] = useState(false);
     const [empDetail, setEmpDetail] = useState({})
-    const [empSal, setEmpSal] = useState('')
     const [incrementAmount, setIncrementAmount] = useState('');
     const [dep, setDep] = useState([])
     const [jobPositions, setJobPositions] = useState([])
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(BaseUrl + '/getEmployeesforPayRoll', config);
-            console.log(response.data);
-            setEmployees(response.data);
-        } catch (error) {
-            console.error('Error fetching roles :', error);
-            Toast('Error catch :', 'error');
-        }
-    };
+    // const fetchData = async () => {
+    //     try {
+    //         const response = await axios.get(BaseUrl + '/getEmployeesforPayRoll', config);
+    //         console.log(response.data);
+    //         setEmployees(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching roles :', error);
+    //         Toast('Error catch :', 'error');
+    //     }
+    // };
 
     const fetchData1 = async () => {
         try {
@@ -45,21 +45,34 @@ const PayRoll = () => {
 
         }
     };
+    const fetchData3 = async () => {
+        try {
+            const response = await axios.get(BaseUrl + '/getEmployees', config);
+            setAllEmployees(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching roles :', error);
+            Toast('Error catch :', 'error');
+        }
+    };
+
+
     useEffect(() => {
-        fetchData();
+        // fetchData();
         fetchData1();
         fetchData2();
+        fetchData3();
     }, [])
 
     const handleSalaryApprove = async () => {
-        console.log(empSal);
-        const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal }, config);
+        console.log(empDetail.emp_id, empDetail.netSalary);
+        const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal: empDetail.netSalary }, config);
         if (response.data.success) {
             Toast(`${response.data.message}`)
         } else {
             Toast(`${response.data.message}`, 'error')
         }
-        await fetchData();
+        await fetchData3();
         setShowApproveSalaryModal(false)
     }
 
@@ -71,42 +84,12 @@ const PayRoll = () => {
         } else {
             Toast(`${response.data.message}`, 'error')
         }
-        await fetchData();
+        await fetchData3();
         setIncrementAmount('')
         setShowPromotionModal(false);
     };
-
-    const calculateTax = (salary) => {
-        let tax = 0;
-
-        if (salary >= 300000) {
-            tax = salary * 0.15;
-        } else if (salary >= 200000 && salary < 300000) {
-            tax = salary * 0.12;
-        } else if (salary >= 100000 && salary < 200000) {
-            tax = salary * 0.10;
-        } else if (salary >= 50000 && salary < 100000) {
-            tax = salary * 0.08;
-        } else {
-            tax = salary * 0.05;
-        }
-        // Ensure tax is an integer (ignore decimal points)
-        // console.log(typeof tax)
-        tax = Math.floor(tax);
-        return tax;
-    };
-
-    const calculateCellValue = (employee) => {
-        console.log("calculated tax ", calculateTax(employee.salary));
-        if (employee?.performanceScore === 100) {
-            const updatedSalary = employee.salary - (calculateTax(employee.salary)) + (employee.salary * 0.02);
-            return `${updatedSalary.toString().slice(0, -3)} PKR`;
-        } else {
-            return employee?.salary ? (Number(employee.salary) - (calculateTax(employee.salary))) : 'N/A';
-        }
-    };
-
     // ------------------------------------------------------------------------------------------------
+
 
     const [filters, setFilters] = useState({
         employeeName: '',
@@ -117,7 +100,7 @@ const PayRoll = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
-    const filteredEmployees = employees
+    const filteredEmployees = allEmployees
         .filter((emp) => emp?.name?.toLowerCase()?.includes(filters.employeeName.toLowerCase()))
         .filter((emp) => emp?.job_name?.toLowerCase()?.includes(filters.jobPosition.toLowerCase()))
         .filter((emp) => emp?.dep_name?.toLowerCase()?.includes(filters.department.toLowerCase()))
@@ -137,9 +120,14 @@ const PayRoll = () => {
 
     };
 
+    const checker = () => {
+        return filteredEmployees.find(emp => { return emp?.salary_status == null });
+    }
     const handleApproveAllClick = async () => {
-        const filteremp = filteredEmployees.filter(emp => { return emp?.salaryStatus === 'Not Paid' });
-        const unPaidEmployees = filteremp.map(({ emp_id, salary }) => ({ emp_id, salary }));
+
+        const filteremp = filteredEmployees.filter(emp => { return emp?.salary_status == null });
+        const unPaidEmployees = filteremp.map(({ emp_id, netSalary }) => ({ emp_id, netSalary }));
+        console.log(unPaidEmployees);
         try {
             const response = await axios.post(BaseUrl + '/ApproveAllSalaries', { unPaidEmployees });
             if (response.data.success) {
@@ -154,11 +142,12 @@ const PayRoll = () => {
 
         }
         console.log(unPaidEmployees);
-        await fetchData();
+        await fetchData3();
 
     }
     // ------------------------------------------------------------------------------------------------
 
+    console.log('allEmployees : ', allEmployees);
     return (
         <div className="container mt-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <h2 className="mb-4">Payroll Management</h2>
@@ -203,9 +192,10 @@ const PayRoll = () => {
                     ))}
                 </select>
             </div>
-            <button className="btn btn-primary mb-3" style={{ alignSelf: 'end' }} onClick={handleApproveAllClick}>
-                Approve All Salaries
-            </button>
+            {checker() &&
+                <button className="btn btn-primary mb-3" style={{ alignSelf: 'end' }} onClick={handleApproveAllClick}>
+                    Approve All Salaries
+                </button>}
             <table className="table table-striped">
                 <thead>
                     <tr>
@@ -228,11 +218,18 @@ const PayRoll = () => {
                             <td>{employee?.dep_name}</td>
                             <td>{employee?.job_name}</td>
                             <td>{employee?.salary ? `${employee.salary.toString().slice(0, -3)} PKR` : 'N/A'}</td>
-                            <td>{employee?.performanceScore}</td>
+
+                            {/* <td>{employee?.performanceScore}</td>
                             <td>{employee?.performanceScore === 100 ? `$${(employee.salary * 0.02)}` : 'N/A'}</td>
                             <td>{employee?.salary ? calculateTax(employee.salary) : 'N/A'}</td>
-                            <td>{calculateCellValue(employee)}</td>
-                            <td>{employee?.salaryStatus === 'Paid'
+                            <td>{calculateCellValue(employee)}</td> */}
+
+                            <td>{employee.performanceScore}</td>
+                            <td>{employee.Bonus}</td>
+                            <td>{employee.Tax}</td>
+                            <td>{employee.netSalary}</td>
+
+                            <td>{employee.salary_status === 'Paid'
                                 ? (<span className="badge bg-success">Paid</span>)
                                 : (<span className="badge bg-warning">Not Paid</span>)}
                             </td>
@@ -245,15 +242,11 @@ const PayRoll = () => {
                                 >
                                     Increase Salary
                                 </button>
-                                {employee.salaryStatus === 'Not Paid' && <button
+                                {employee.salary_status == null && <button
                                     className="btn btn-success btn-sm"
-                                    //   disabled={employee.salaryStatus === 'Paid'}
                                     onClick={() => {
                                         setShowApproveSalaryModal(true);
                                         setEmpDetail({ ...employee });
-                                        setEmpSal(employee.performanceScore === 100
-                                            ? (employee.salary + (employee.salary * 0.02))
-                                            : (employee.salary))
                                     }}
                                 >
                                     Approve Salary
