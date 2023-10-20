@@ -170,16 +170,16 @@ router.post("/updateDepartment", (req, res) => {
   );
 });
 
-router.get('/addNewDegree/:newJob',verifyToken, (req, res) => {
+router.get('/addNewDegree/:newJob', verifyToken, (req, res) => {
   console.log('/addNewDegree');
-const name=req.params.newJob;
-  mysql.query('insert into degrees (name) values (?);',[name],
+  const name = req.params.newJob;
+  mysql.query('insert into degrees (name) values (?);', [name],
     (err, results) => {
       if (err) {
-        console.log( err);
-        res.json({ message: "Error inserting New Degree",error:err, success: false });
+        console.log(err);
+        res.json({ message: "Error inserting New Degree", error: err, success: false });
       } else {
-        res.json({ message: `${name} Degree added Successfully`, results,success: true });
+        res.json({ message: `${name} Degree added Successfully`, results, success: true });
       }
     }
   );
@@ -1002,7 +1002,27 @@ router.post("/getEmpInfobyEmpId", verifyToken, checkUserRole(2), (req, res) => {
   const { emp_id } = req.user;
   console.log("getEmpInfobyEmpId emp Id", emp_id);
   mysql.query(
-    "select ei.name,ei.emp_id,ei.email,ei.phone_number,ei.city,ei.address,ei.DOB,ei.cnic,ei.cgpa,ei.major,ei.degree,ei.github_profile_url,ei.linkedin_profile_url,ei.university,ei.qualification,j.job_id,ei.Tax,ei.Bonus,ei.performanceScore,ei.netSalary,d.dep_id,d.dep_name,j.job_name,s.salary_id,s.salary_amount,s.salary_status,s.salary_date,r.role_id,r.role_name,ei.gender,ei.hire_date,ei.salary from employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id left join salary s.emp_id=ei.emp_id where emp_id=? ;",
+    `
+    SELECT
+    ei.zipcode,ei.name, ei.emp_id, ei.email, ei.phone_number, ei.city, ei.address, ei.DOB,
+        ei.cnic, ei.cgpa, ei.major, ei.degree, ei.github_profile_url, ei.linkedin_profile_url,
+        ei.university, ei.qualification, j.job_id, ei.Tax, ei.Bonus, ei.performanceScore,
+        ei.netSalary, d.dep_id, d.dep_name, j.job_name, s.salary_id, s.salary_amount,
+        s.salary_status, s.salary_date, r.role_id, r.role_name, ei.gender,
+        ei.hire_date, ei.salary
+    FROM
+        employee ei
+    JOIN
+        roles r ON ei.role_id = r.role_id
+    JOIN
+        department d ON ei.dep_id = d.dep_id
+    JOIN
+        jobpositions j ON ei.job_id = j.job_id
+    LEFT JOIN
+        salary s ON ei.emp_id = s.emp_id
+    WHERE
+        ei.emp_id = ?;
+    `,
     [emp_id],
     (err, result) => {
       if (err) {
@@ -1468,7 +1488,7 @@ router.post('/ApproveAllSalaries', (req, res) => {
     employee.netSalary,
     'Paid',
     current_date,
-    
+
   ]);
   console.log(insertValues);
   mysql.query(
