@@ -33,6 +33,7 @@ export default function ViewJobApplications() {
   const [selectedTime, setSelectedTime] = useState('');
   const [dep, setDep] = useState([]);
   const [appTit,setAppTit]=useState('');
+  const [st,setS]=useState('');
   const [offerLetter, setOfferLetter] = useState(`
   Subject: Offer of Employment
  
@@ -203,11 +204,12 @@ muhammadihtisham269@gmail.com`);
 
 
   const handleRejectApplication = async () => {
+    console.log(st);
     try {
       console.log(app);
       console.log(app.applicant_name,app.title);
       const response = await axios.post(BaseUrl + "/rejectApplication", {
-        rejectedApplicationId: applicationId, email, applicantName:app.applicant_name, applicantJobName,appTitle:app.title
+        rejectedApplicationId: applicationId, email, applicantName:app.applicant_name, applicantJobName,appTitle:app.title,st:st
       }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`, 'success')
@@ -474,6 +476,7 @@ muhammadihtisham269@gmail.com`);
                             setApplicationId(application.application_id);
                             setShowRejectModal(true);
                             setApp(application)
+                            setS(application.status)
                           }}
                         >
                           Reject
@@ -513,6 +516,7 @@ muhammadihtisham269@gmail.com`);
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
                               setAppTit(application.title)
+                              setS(application.status)
                             }}
 
                           >Reject</Button>

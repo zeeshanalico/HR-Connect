@@ -125,7 +125,7 @@ router.get("/getJobsforApply", (req, res) => {
 router.get("/getOneJob/:id", (req, res) => {
   console.log("/getOneJob");
   mysql.query(
-    "select title from jobs where job_id=? limit 1;",[req.params.id],
+    "select title from jobs where job_id=? limit 1;", [req.params.id],
     (error, result) => {
       if (error) {
         res.json({ message: error.sqlMessage });
@@ -412,8 +412,8 @@ router.get("/getJobApplications", verifyToken, checkUserRole(1), (req, res) => {
 });
 router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/rejectApplication");
-  const { rejectedApplicationId, email, applicantName, applicantJobName, appTitle } = req.body;
-  // console.log(appTit);
+  const { rejectedApplicationId, email, applicantName, applicantJobName, appTitle, st } = req.body;
+  console.log(st);
   mysql.query(
     "delete from applications where application_id =?",
     [rejectedApplicationId],
@@ -425,24 +425,44 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
           from: process.env.EMAIL_USERNAME,
           // to: email,
           to: "zeeshanalico24@gmail.com",
-          subject: " Update on Your Application",
-          text: `Dear ${applicantName},  
+          subject: ` Update on Your ${st == 'Pending' ? 'Application' : st == 'Interview' ? "Interview" : ''}`,
+          text: `${st == 'pending' ? `Dear ${applicantName},  
+
           I hope this message finds you well. We appreciate your interest in the ${appTitle} position at HRConnect and the time you invested in your application. After careful consideration and a thorough review of all applicants, we regret to inform you that we have chosen to move forward with another candidate for this role. We understand that this may be disappointing news, and we want to assure you that our decision was not made lightly.
           
           We received a large number of applications from highly qualified individuals, which made the selection process quite competitive. While your qualifications and experience are impressive, we ultimately found another candidate whose skills and background more closely align with the specific needs of the role and our organization at this time. Please understand that this decision does not diminish the value of your skills and experience. We encourage you to continue exploring opportunities that match your career goals and expertise. We will keep your application on file for future openings, and we welcome you to apply for any positions that align with your qualifications in the future.
          
-      Thank you once again for your interest in HRConnect, and we wish you every success in your job search. 
-      We appreciate your understanding and hope you find the perfect opportunity that matches your career aspirations.
-          
-  Regards,
-  Muhammad Ihtisham
-  Senior HR
-  HRConnect, Lahore, Pakistan
-  +92 316 418 1458
-  muhammadihtisham269@gmail.com
-          `,
-        };
+          Thank you once again for your interest in HRConnect, and we wish you every success in your job search. We appreciate your understanding and hope you find the perfect opportunity that matches your career aspirations.
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com          
+` : st == 'Interview' ?
+            `Dear ${applicantName},
 
+          I hope this email finds you well. We sincerely appreciate your interest in the${appTitle} position at HRConnect and your participation in the interview process. After careful consideration, we regret to inform you that we have chosen to move forward with another candidate for this role.
+          
+          Please understand that this decision was not made lightly, and it in no way diminishes the effort and dedication you demonstrated throughout the interview process. We were genuinely impressed with your skills, experience, and enthusiasm, and your performance during the interview was commendable.
+          
+          We received a significant number of applications from highly qualified individuals, which made the selection process highly competitive. Ultimately, we decided to move forward with a candidate whose qualifications and experience more closely aligned with the specific needs of the role and our organization at this time.
+          
+          We understand that this news may be disappointing, but we want to emphasize that your candidacy was taken very seriously, and we appreciate the time and effort you invested in the application and interview process. We encourage you to continue your job search and explore opportunities that match your qualifications and career aspirations.
+          
+          If you would like feedback on your interview performance or have any questions about our decision, please do not hesitate to reach out us details mentioned below. We are more than willing to provide you with constructive feedback to help you in your future job pursuits.
+          
+          Once again, thank you for considering a career with HRConnect. We genuinely appreciate your interest and the opportunity to get to know you better. We wish you all the best in your professional endeavors and hope you find the perfect opportunity that aligns with your career goals.
+
+
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com
+          `: ''}`,
+        };
         transporter.sendMail(mailOptions, (emailError, info) => {
           if (emailError) {
             console.error("Error sending email:", emailError);
@@ -450,7 +470,7 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
               .status(500)
               .json({
                 success: false,
-                message: "Failed to send reject application letter via email",
+                message: "Failed to send reject application letter",
               });
           } else {
             console.log("Email sent:", info.response);
@@ -458,7 +478,7 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
               .status(200)
               .json({
                 success: true,
-                message: "application rejected successfully successfully",
+                message: "application rejected successfully",
               });
           }
         });
@@ -800,13 +820,13 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
               to: email,
               subject: "Welcome to HRConnect - Your Employee Dashboard Access",
               text: `Dear ${applicant_name},
-I hope this email finds you well. We are thrilled to officially welcome you to the HRConnect team as our newest [${JobName}]. Your acceptance of our offer is a significant milestone, and we are excited to have you on board.
+I hope this email finds you well. We are thrilled to officially welcome you to the HRConnect team as our newest ${JobName}. Your acceptance of our offer is a significant milestone, and we are excited to have you on board.
 As part of our onboarding process, we are delighted to provide you with access to our Employee Dashboard, a centralized platform where you can manage your employment-related information and access various resources.
 Employee Dashboard Access Details:
 
 Dashboard URL: http://localhost:3001/Login
 Email:${email}
-Temporary Password: [${cnic}]
+Temporary Password: ${cnic}
 
 Note: For security reasons, please reset your password immediately after your first login. We have set your initial password as your CNIC number.
 
@@ -860,7 +880,7 @@ router.post('/sendOfferLetter', (req, res) => {
       console.log(recipientEmail);
       const mailOptions = {
         from: process.env.EMAIL_USERNAME,
-        to: recipientEmail, 
+        to: recipientEmail,
         subject: "Offer of Employment",
         text: offerLetter,
       };
