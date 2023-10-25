@@ -26,18 +26,25 @@ export default function ViewJobApplications() {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [applicationId, setApplicationId] = useState("");
   const [email, setEmail] = useState('');
+  const [app,setApp]=useState({});
   const [applicantName, setApplicantName] = useState('');
   const [applicantJobName, setApplicantJobName] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [dep, setDep] = useState([])
+  const [dep, setDep] = useState([]);
+  const [appTit,setAppTit]=useState('');
   const [offerLetter, setOfferLetter] = useState(`
   Subject: Offer of Employment
  
 Dear [Applicant Name],
 I hope this message finds you well. We are delighted to extend an offer of employment for the [Job Title] position at HRConnect. Your performance during the interview process demonstrated that you are a highly qualified candidate who meets our hiring criteria, and we believe that you will be a valuable addition to our team.
 Below, you will find the details of your employment offer:
-Position: [Job Title] Start Date: [Start Date] Location: [Location] Salary: [Salary] Probation Period: [Probation Period, if applicable]
+Position: [Job Title] 
+Start Date: [Start Date] 
+Salary: [Salary] 
+Probation Period: 6 months
+Location: HRConnect, Lahore, Pakistan
+
 Next Steps:
 Please review this offer carefully to ensure that all details are accurate and meet your expectations.
 If you accept this offer, please sign and date the enclosed copy of this letter and return it to us by [Acceptance Deadline].
@@ -47,7 +54,12 @@ We are excited about the prospect of you joining our team and contributing to HR
 Once again, congratulations on this significant milestone, and we look forward to your positive response. We are confident that you will make a meaningful impact in your new role, and we are excited to have you on board.
 Thank you for choosing to be a part of HRConnect. We are excited to welcome you to our team.
   
-Signed By:_____________________`);
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com`);
 
   const [showOfferLetterModal, setShowOfferLetterModal] = useState(false)
   const handlePrint = () => {
@@ -170,7 +182,7 @@ Signed By:_____________________`);
     console.log(applicationId, selectedDate, selectedTime);
     try {
       const response = await axios.post(BaseUrl + "/callForInterview", {
-        callForInterviewId: applicationId, interviewDate: selectedDate, interviewTime: selectedTime, email, applicantName, applicantJobName
+        callForInterviewId: applicationId, interviewDate: selectedDate, interviewTime: selectedTime, email, applicantName:app.applicant_name, applicantJobName:app.title
       });
       if (response.data.success) {
         Toast("applicant Called for interview Successfully");
@@ -191,14 +203,14 @@ Signed By:_____________________`);
 
 
   const handleRejectApplication = async () => {
-    // console.log(applicationId);
     try {
+      console.log(app);
+      console.log(app.applicant_name,app.title);
       const response = await axios.post(BaseUrl + "/rejectApplication", {
-        rejectedApplicationId: applicationId, email, applicantName, applicantJobName
+        rejectedApplicationId: applicationId, email, applicantName:app.applicant_name, applicantJobName,appTitle:app.title
       }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`, 'success')
-        console.log(`${response.data.message}`, 'success')
 
         await fetchData();
       } else {
@@ -447,6 +459,7 @@ Signed By:_____________________`);
                             setEmail(application.email);
                             setApplicantName(application.applicant_name);
                             setApplicantJobName(application.title);
+                            setApp(application)
                           }}
                           style={{
                             marginRight: '5px', width: '150px'
@@ -460,6 +473,7 @@ Signed By:_____________________`);
                           onClick={() => {
                             setApplicationId(application.application_id);
                             setShowRejectModal(true);
+                            setApp(application)
                           }}
                         >
                           Reject
@@ -498,6 +512,7 @@ Signed By:_____________________`);
                             onClick={() => {
                               setApplicationId(application.application_id);
                               setShowRejectModal(true);
+                              setAppTit(application.title)
                             }}
 
                           >Reject</Button>
@@ -513,6 +528,7 @@ Signed By:_____________________`);
                                 return prevData.replace('[Applicant Name]', application.applicant_name).replace('[Job Title]', application.title).replace('[department name]', application.dep_name);
                               });
                               setShowOfferLetterModal(true);
+                              setApp(application)
                             }}
                           >Send Offer Letter</Button>
                         </div>
@@ -714,16 +730,17 @@ Signed By:_____________________`);
             <Button variant="danger" as={Link} to={`/hrdash/addEmployee/${applicationId}`} >
               Accept
             </Button>
+            
           </Modal.Footer>
         </Modal>
 
 
         <Modal show={showOfferLetterModal} onHide={() => setShowOfferLetterModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Offer Letter</Modal.Title>
+            <Modal.Title>Offer of Employment</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <textarea name="" className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} >
+            <textarea name="" className="printable-content" style={{ outline: 'none', borderRadius: '10px', }} value={offerLetter.replace('[Job Title]',app.title)} cols="56" rows="17" onChange={(e) => { setOfferLetter(e.target.value) }} >
               This is <strong>bold</strong> text.
               This is <em>italic</em> text.
             </textarea>

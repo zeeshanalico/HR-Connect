@@ -110,7 +110,7 @@ router.get("/getJobPositions", verifyToken, checkUserRole(1), (req, res) => {
   );
 });
 router.get("/getJobsforApply", (req, res) => {
-  console.log("/getJobs");
+  console.log("/getJobsforApply");
   mysql.query(
     "select * from jobs j inner join department d on d.dep_id=j.dep_id",
     (error, result) => {
@@ -118,6 +118,19 @@ router.get("/getJobsforApply", (req, res) => {
         res.json({ message: error.sqlMessage });
       } else {
         res.json(result);
+      }
+    }
+  );
+});
+router.get("/getOneJob/:id", (req, res) => {
+  console.log("/getOneJob");
+  mysql.query(
+    "select title from jobs where job_id=? limit 1;",[req.params.id],
+    (error, result) => {
+      if (error) {
+        res.json({ message: error.sqlMessage });
+      } else {
+        res.json(result[0]);
       }
     }
   );
@@ -399,8 +412,8 @@ router.get("/getJobApplications", verifyToken, checkUserRole(1), (req, res) => {
 });
 router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/rejectApplication");
-  const { rejectedApplicationId, email, applicantName, applicantJobName } = req.body;
-
+  const { rejectedApplicationId, email, applicantName, applicantJobName, appTitle } = req.body;
+  // console.log(appTit);
   mysql.query(
     "delete from applications where application_id =?",
     [rejectedApplicationId],
@@ -410,16 +423,24 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
       } else {
         const mailOptions = {
           from: process.env.EMAIL_USERNAME,
-          // to: 'muhammadihtisham60@gmail.com',
-          to: email,
+          // to: email,
+          to: "zeeshanalico24@gmail.com",
           subject: " Update on Your Application",
           text: `Dear ${applicantName},  
-          I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and the time you invested in your application. 
-          After careful consideration and a thorough review of all applicants, we regret to inform you that we have chosen to move forward with another candidate for this role. We understand that this may be disappointing news, and we want to assure you that our decision was not made lightly.
-          We received a large number of applications from highly qualified individuals, which made the selection process quite competitive. While your qualifications and experience are impressive, we ultimately found another candidate whose skills and background more closely align with the specific needs of the role and our organization at this time.
-          Please understand that this decision does not diminish the value of your skills and experience. We encourage you to continue exploring opportunities that match your career goals and expertise. We will keep your application on file for future openings, and we welcome you to apply for any positions that align with your qualifications in the future.
-          Thank you once again for your interest in HRConnect, and we wish you every success in your job search. 
-          We appreciate your understanding and hope you find the perfect opportunity that matches your career aspirations.`,
+          I hope this message finds you well. We appreciate your interest in the ${appTitle} position at HRConnect and the time you invested in your application. After careful consideration and a thorough review of all applicants, we regret to inform you that we have chosen to move forward with another candidate for this role. We understand that this may be disappointing news, and we want to assure you that our decision was not made lightly.
+          
+          We received a large number of applications from highly qualified individuals, which made the selection process quite competitive. While your qualifications and experience are impressive, we ultimately found another candidate whose skills and background more closely align with the specific needs of the role and our organization at this time. Please understand that this decision does not diminish the value of your skills and experience. We encourage you to continue exploring opportunities that match your career goals and expertise. We will keep your application on file for future openings, and we welcome you to apply for any positions that align with your qualifications in the future.
+         
+      Thank you once again for your interest in HRConnect, and we wish you every success in your job search. 
+      We appreciate your understanding and hope you find the perfect opportunity that matches your career aspirations.
+          
+  Regards,
+  Muhammad Ihtisham
+  Senior HR
+  HRConnect, Lahore, Pakistan
+  +92 316 418 1458
+  muhammadihtisham269@gmail.com
+          `,
         };
 
         transporter.sendMail(mailOptions, (emailError, info) => {
@@ -448,7 +469,7 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
 
 router.post("/callForInterview", (req, res) => {
   console.log("callForInterview");
-  const { callForInterviewId, interviewDate, interviewTime, email, applicantName, applicantJobName, location } = req.body;
+  const { callForInterviewId, interviewDate, interviewTime, email, applicantName, applicantJobName } = req.body;
 
   console.log(callForInterviewId);
   mysql.query(
@@ -460,18 +481,27 @@ router.post("/callForInterview", (req, res) => {
       } else {
         const mailOptions = {
           from: process.env.EMAIL_USERNAME,
-          // to: 'muhammadihtisham60@gmail.com',
           to: email,
-          // to: "hmic828@gmail.com",
-          subject: ": Invitation for Interview ",
+          subject: "Invitation for Interview",
           text: `Dear ${applicantName},
           I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and your recent application. After a thorough review of all applicants, we are pleased to inform you that you have been selected for an interview.
           We would like to invite you to interview for the  ${applicantJobName} position on:
-          Date:  ${interviewDate} Time:  ${interviewTime} Location: HRConnect, Lahore, Pakistan
+          Date:  ${interviewDate} 
+          Time:  ${interviewTime} 
+          Location: HRConnect, Lahore, Pakistan
+
           During the interview, you will have the opportunity to discuss your qualifications, learn more about our company, and meet with members of our team. Please be prepared to talk about your relevant experience and how it aligns with the requirements of the position.
           Prior to the interview, we kindly ask that you review our website and research our company to familiarize yourself with our values, mission, and goals. This will help facilitate a productive discussion during the interview.
           We look forward to meeting you in person and learning more about your qualifications and how you could contribute to [Company Name]. If you have any questions or need any further information, please don't hesitate to reach out.
           Thank you for considering a career with us, and congratulations once again on being selected for an interview. We wish you the best of luck and look forward to the opportunity to get to know you better.
+          
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com
+
           `,
         };
 
@@ -509,14 +539,20 @@ router.post('/callSelectedApplicantForInterview', (req, res) => {
             to: "zeeshanalico24@gmail.com",
             subject: ": Invitation for Interview ",
             text: `Dear ${applicantName},
-            I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and your recent application. After a thorough review of all applicants, we are pleased to inform you that you have been selected for an interview.
-            We would like to invite you to interview for the  ${applicantJobName} position on:
-            Date:  ${interviewDate} Time:  ${interviewTime} Location: HRConnect, Lahore, Pakistan
-            During the interview, you will have the opportunity to discuss your qualifications, learn more about our company, and meet with members of our team. Please be prepared to talk about your relevant experience and how it aligns with the requirements of the position.
-            Prior to the interview, we kindly ask that you review our website and research our company to familiarize yourself with our values, mission, and goals. This will help facilitate a productive discussion during the interview.
-            We look forward to meeting you in person and learning more about your qualifications and how you could contribute to HR Connect. If you have any questions or need any further information, please don't hesitate to reach out.
-            Thank you for considering a career with us, and congratulations once again on being selected for an interview. We wish you the best of luck and look forward to the opportunity to get to know you better.
-            `,
+I hope this message finds you well. We appreciate your interest in the ${applicantJobName} position at HRConnect and your recent application. After a thorough review of all applicants, we are pleased to inform you that you have been selected for an interview.
+We would like to invite you to interview for the  ${applicantJobName} position on:
+Date:  ${interviewDate} Time:  ${interviewTime} Location: HRConnect, Lahore, Pakistan
+During the interview, you will have the opportunity to discuss your qualifications, learn more about our company, and meet with members of our team. Please be prepared to talk about your relevant experience and how it aligns with the requirements of the position.
+Prior to the interview, we kindly ask that you review our website and research our company to familiarize yourself with our values, mission, and goals. This will help facilitate a productive discussion during the interview.
+We look forward to meeting you in person and learning more about your qualifications and how you could contribute to HR Connect. If you have any questions or need any further information, please don't hesitate to reach out.
+Thank you for considering a career with us, and congratulations once again on being selected for an interview. We wish you the best of luck and look forward to the opportunity to get to know you better.
+            
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com`,
           };
 
           transporter.sendMail(mailOptions, (emailError, info) => {
@@ -695,8 +731,11 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
       salary,
       university,
       zipcode,
-      qualification
+      qualification,
+
+      JobName
     } = req.body;
+    console.log(JobName);
     // const requiredFields = [address,
     //   applicant_name,
     //   cgpa,
@@ -759,22 +798,33 @@ router.post('/registerEmployee', verifyToken, checkUserRole(1), async (req, res)
             const mailOptions = {
               from: process.env.EMAIL_USERNAME,
               to: email,
-              subject: "Welcome to HRConnect",
+              subject: "Welcome to HRConnect - Your Employee Dashboard Access",
               text: `Dear ${applicant_name},
-              I hope this email finds you well. We are thrilled to officially welcome you to the HRConnect team as our newest [${job_id}]. Your acceptance of our offer is a significant milestone, and we are excited to have you on board.
-              As part of our onboarding process, we are delighted to provide you with access to our Employee Dashboard, a centralized platform where you can manage your employment-related information and access various resources.
-              Employee Dashboard Access Details:
-              Dashboard URL: http://localhost:3001/Login
-              Email:${email}
-              Temporary Password: [Your CNIC Number]
-              Note: For security reasons, please reset your password immediately after your first login. We have set your initial password as your CNIC number.
-              Steps to Access Your Employee Dashboard:
-              Visit the provided Dashboard URL.
-              Enter your email and the temporary password (your CNIC number).
-              Should you encounter any difficulties while logging in or if you have any questions about the Employee Dashboard, please do not hesitate to reach out to our HR department at below mention details. We are here to assist you and ensure a smooth transition into our organization.
-              Please remember that your initial password is your CNIC number, but we strongly recommend rest it to a more secure password as soon as possible after your first login.
-              Once again, welcome to the HRConnect family! We believe that your skills and expertise will make a positive impact, and we are looking forward to your contributions.
-              `,
+I hope this email finds you well. We are thrilled to officially welcome you to the HRConnect team as our newest [${JobName}]. Your acceptance of our offer is a significant milestone, and we are excited to have you on board.
+As part of our onboarding process, we are delighted to provide you with access to our Employee Dashboard, a centralized platform where you can manage your employment-related information and access various resources.
+Employee Dashboard Access Details:
+
+Dashboard URL: http://localhost:3001/Login
+Email:${email}
+Temporary Password: [${cnic}]
+
+Note: For security reasons, please reset your password immediately after your first login. We have set your initial password as your CNIC number.
+
+Steps to Access Your Employee Dashboard:
+1.Visit the provided Dashboard URL.
+2.Enter your email and the temporary password ${cnic}.
+
+Should you encounter any difficulties while logging in or if you have any questions about the Employee Dashboard, please do not hesitate to reach out to our HR department at below mention details. We are here to assist you and ensure a smooth transition into our organization.
+Please remember that your initial password is your CNIC number, but we strongly recommend rest it to a more secure password as soon as possible after your first login.
+Once again, welcome to the HRConnect family! We believe that your skills and expertise will make a positive impact, and we are looking forward to your contributions.
+
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com `,
+
             };
 
             transporter.sendMail(mailOptions, (emailError, info) => {
@@ -810,9 +860,8 @@ router.post('/sendOfferLetter', (req, res) => {
       console.log(recipientEmail);
       const mailOptions = {
         from: process.env.EMAIL_USERNAME,
-        // to: recipientEmail, 
-        to: 'hmic828@gmail.com',
-        subject: "Job Offer Letter",
+        to: recipientEmail, 
+        subject: "Offer of Employment",
         text: offerLetter,
       };
 
@@ -878,16 +927,17 @@ If you have any questions or require clarification regarding this termination, p
 
 We understand that this may be a challenging time, and we wish you the best in your future endeavors.
 
-Sincerely,
-Zeeshan Ali
-HR 
-TECHNOHUB
-03021055932`,
+Regards,
+Muhammad Ihtisham
+Senior HR
+HRConnect, Lahore, Pakistan
++92 316 418 1458
+muhammadihtisham269@gmail.com`,
           };
           transporter.sendMail(mailOptions, (emailError, info) => {
             if (emailError) {
               console.error("Error sending email:", emailError);
-              res.status(500).json({ success: false, message: "Failed to send offer letter via email", });
+              res.status(500).json({ success: false, message: "Failed to send termination letter via email", });
             } else {
               console.log("Email sent:", info.response);
               res.status(200).json({ success: true, message: "Employee removed and Experience sent successfully", });

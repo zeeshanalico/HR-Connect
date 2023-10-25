@@ -1,6 +1,6 @@
 import React from 'react'
 import HoverButton from './HoverButton.jsx'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BaseUrl, config, inputStyle } from './../../../../constants.js';
 // import '../../BasicStyle.css'
 import { Modal, Button, Form } from 'react-bootstrap';
@@ -10,8 +10,8 @@ import ReactPaginate from 'react-paginate';
 import { Table } from 'react-bootstrap';
 // import './ManageEmployee.css'
 import styles from './ManageEmployee.module.css'
-
-
+import ReactToPrint from 'react-to-print';
+import ExperienceLetter from './ExperienceLetter.jsx'
 const ManageEmployee = () => {
 
   const [employees, setEmployees] = useState([]);
@@ -20,17 +20,18 @@ const ManageEmployee = () => {
   const [jobPositions, setJobPositions] = useState([])
   const [empId, setEmpId] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
+  let componentRef = useRef();
   const [experienceConfirmation, setExperienceConfirmation] = useState(false)
   const [experienceData, setExperienceData] = useState(`
+Experience Letter
+Date: ${currentDate}
              This is to certify that Mr/Ms [employee name] has worked with our company as an [Job Title] in our [department name] department from [hiring date] to ${currentDate}.
 During the period he/she worked with the company we found him/her to be hardworking and sincere resource. We wish him all the best in his future professional endeavors.
 
-
 Muhammad Ihtisham
-Lead Talent Acquisition 
+Lead Talent Acquisition
 
-  Date:${currentDate}
-                                                 Signed By:_____________________`);
+Signed By:_____________________`);
 
   const handlePrint = () => {
     const printableContent = document.querySelector(".printable-content"); // Replace with an appropriate class or ID
@@ -47,6 +48,7 @@ Lead Talent Acquisition
           </body>
         </html>
       `);
+
       printWindow.document.close();
       printWindow.print();
       printWindow.close();
@@ -223,7 +225,7 @@ Lead Talent Acquisition
                 Job Position
               </th>
               <th>Department</th>
-                <th>Gender</th>
+              <th>Gender</th>
               <th style={{ lineHeight: '34px' }}>Actions</th>
               {isColumnOpen && <>
                 <th>Email Address</th>
@@ -355,6 +357,18 @@ Lead Talent Acquisition
               This is <em>italic</em> text.
             </textarea>
 
+
+            {/* <ExperienceLetter experienceData={experienceData} /> */}
+            {/* <div ref={componentRef}>
+              <textarea
+                className="printable-content"
+                style={{ outline: 'none', borderRadius: '10px' }}
+                cols="56"
+                rows="17"
+                value={experienceData}
+              />
+            </div> */}
+
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -369,6 +383,12 @@ Lead Talent Acquisition
             <Button variant="primary" onClick={handlePrint}>
               Print
             </Button>
+            {/* <ReactToPrint
+              trigger={() => (
+                <button className="btn btn-primary">Print Experience Letter</button>
+              )}
+              content={() => componentRef.current} // Reference to the ExperienceLetter component
+            /> */}
           </Modal.Footer>
         </Modal>
 

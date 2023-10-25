@@ -114,9 +114,9 @@ export default function EmployeeInfo({ id }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // Add a loading state
   const [degrees, setDegrees] = useState([]);
+  const [oneJob, setOneJob] = useState({})
 
-
-
+console.log(oneJob.title);
   const fetchData = async () => {
     try {
       const response = await axios.get(BaseUrl + '/getJobPositions', config);
@@ -146,6 +146,7 @@ export default function EmployeeInfo({ id }) {
       try {
         const response = await axios.get(BaseUrl + `/getApplicant/${id}`, config)
         console.log(response.data[0]);
+        OneJobHandle(response.data[0].job_id)
         console.log(response.data);
         setEmployeeInformation(response.data[0])
       }
@@ -180,19 +181,31 @@ export default function EmployeeInfo({ id }) {
     });
   }
 
+  const OneJobHandle = async (e) => {
+    try {
+      const response = await axios.get(BaseUrl + `/getOneJob/${e}`);
+      setOneJob(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+ 
     console.log(employeeInformation);
     setLoading(true);
     try {
       let postData = {
         ...employeeInformation,
+        JobName:oneJob.title,
         cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
       };
       await validationSchema.validate(postData, { abortEarly: false });
       if (id) {
         console.log(postData, id);
-        const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id, }, config);
+        const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id}, config);
         if (response.data.success) {
           Toast("Employee Registered Successfully!", 'info');
           navigate('/hrdash/manageEmployee');
@@ -210,12 +223,6 @@ export default function EmployeeInfo({ id }) {
       }
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
-        // const validationErrors = {};
-        // error.inner.forEach((e) => {
-        //   validationErrors[e.path] = e.message;
-        //   Toast(`${e.message}`, 'error');
-        // });
-        // console.log(validationErrors);
         const firstValidationError = error.inner[0];
         Toast(`${firstValidationError.message}`, 'error');
         console.log(firstValidationError);
@@ -226,17 +233,6 @@ export default function EmployeeInfo({ id }) {
       setLoading(false);
     }
   };
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log(employeeInformation);
-    
-  //     let postData = {
-  //       ...employeeInformation,
-  //       cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
-  //     };
-     
-  //     console.log(postData);
-  // };
 
   return (
     <div className="col main pt-3 mt-3">
@@ -401,14 +397,14 @@ export default function EmployeeInfo({ id }) {
                   </select>
                 </div>
                 {id ? (<div className="mb-3 rounded-input">
-                <label htmlFor="degree" required className="form-label">Degree:</label>
+                  <label htmlFor="degree" required className="form-label">Degree:</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="degree"
                     name='degree'
                     value={employeeInformation?.degree}
-                    // onChange={handleChange}
+                  // onChange={handleChange}
                   />
                 </div>) : (<div className="mb-3 rounded-input">
                   <label htmlFor="degree" required className="form-label">Degree:</label>
@@ -423,7 +419,12 @@ export default function EmployeeInfo({ id }) {
                 </div>)}
                 <div className="mb-3 rounded-input">
                   <label htmlFor="job_id" required className="form-label">Job Positions:</label>
-                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={handleChange}  >
+                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={(e) => {
+                    handleChange(e);
+                    OneJobHandle(e.target.value);
+                  }
+
+                  }  >
                     <option value="" style={{ display: 'none' }} label="Select Job" />
                     {jobPositions.map((option) => (
                       <option key={option.job_id} value={option.job_id}>
