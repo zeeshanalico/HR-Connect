@@ -922,30 +922,24 @@ router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) =
           const mailOptions = {
             from: process.env.EMAIL_USERNAME,
             to: employee.email,
-            subject: "Offer Letter",
-            text: `Subject: Job Offer - HR Connect
-
-          [Date]
+            subject: "Termination Letter",
+            text: `
+          ${current_date}
           
           Dear ${employee.name},          
           Position:${employee.job_name}
           Start Date: ${employee.hire_date}
          
-I am writing to inform you that your employment with HrConnect is terminated, effective [Termination Date]. This decision has been made after a careful review of your performance and other relevant factors.
+I am writing to inform you that your employment with HrConnect is terminated, effective ${current_date}. This decision has been made after a careful review of your performance and other relevant factors.
 
 Summary of Prior Discussions:
 Your final paycheck, including any accrued but unused vacation or leave days, will be issued on ${current_date}.
 You will receive information regarding your benefits continuation and any other relevant details separately.
-Please return all company-owned property, including [List specific items such as keys, access cards, equipment, etc.], to the HR department by [Date]. Failure to return company property may result in deductions from your final paycheck.
+Please return all company-owned property to the HR department by [Date]. Failure to return company property may result in deductions from your final paycheck.
 
 Access to Company Premises:
 Effective immediately, your access to company premises and systems will be revoked. Please return any company access cards or keys promptly.
 include details about it here. You are expected to maintain confidentiality regarding any company information, clients, and colleagues, even after your employment ends.
-
-Questions and Clarifications:
-If you have any questions or require clarification regarding this termination, please do not hesitate to reach out to [HR Contact Name] at [HR Contact Email] or [HR Contact Phone Number].
-
-We understand that this may be a challenging time, and we wish you the best in your future endeavors.
 
 Regards,
 Muhammad Ihtisham
