@@ -88,6 +88,8 @@ export default function MarkAttendance() {
     }
     setAttendanceMarked(true);
     setShowConfirmationModal(false);
+    await fetchData()
+
   };
   const handleLeave = async (att_status) => {
     console.log(att_status);

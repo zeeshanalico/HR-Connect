@@ -56,11 +56,12 @@ useEffect(() => {
 const [record, setRecord] = useState()
 
 useEffect(() => {
-  const time = new Date()
-  console.log("Current : " + record);
+  const time = new Date();
+  console.log(time);
   console.log("End : " + end_time)
+  console.log(`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` );
 
-  // Getting current time when Dashboard Render
+  // Getting current time when Dashboard Ren  der
   if (`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` >= end_time) {
   console.log('markab1');
   markAbsent()
