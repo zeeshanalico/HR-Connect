@@ -12,6 +12,7 @@ export default function EmployeeDashboard() {
 
   const [empStats, setEmpStats] = useState({})
   const [empDashStats, setEmpDashStats] = useState({})
+  const [salDet, setSalDet] = useState({})
   const navigate = useNavigate();
   const fetchData = async () => {
     try {
@@ -31,11 +32,21 @@ export default function EmployeeDashboard() {
       console.log("Error : ", error);
     }
   };
+  const fetchData3 = async () => {
+    try {
+      const response = await axios.get(BaseUrl + '/getSalaryDetailforEmp', config);
+      setSalDet(response.data[0]);
+      console.log(response.data[0]);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
 
 
   useEffect(() => {
     fetchData();
     fetchData2();
+    fetchData3();
   }, [])
 
 
@@ -98,7 +109,7 @@ export default function EmployeeDashboard() {
               <h3>Salary/month : {empStats.netSalary}</h3>
             </div>
           </div>
-        </div>  
+        </div>
         <div className="col-xl-4 col-sm-6 py-2">
           <div className="card text-white bg-success h-100">
             <div className="card-body bg-success">
@@ -126,6 +137,16 @@ export default function EmployeeDashboard() {
               </div>
               <h3>This Month Leaves : {empDashStats.leave_count}</h3>
             </div>
+          </div>
+        </div>
+        <div className="col-xl-8 col-sm-8 py-3" style={{margin:'auto'}}>
+          <div className="card text-white  h-100" style={{ backgroundColor: '#F6B887', borderRadius: '10px', height: '400px' }}>
+            <div className="card-body" style={{ backgroundColor: '#F6B887', borderRadius: '10px', margin:'auto' }}>
+
+              {salDet.salary_status == "Paid" ? <> <h3 style={{display:'inline'}}>Current Month Salary Status : </h3><span style={{fontSize:'25px'}} className='badge bg-success'>{salDet.salary_status}</span>
+                <h3>Salary Approval Date : {salDet?.salary_date?.slice(0, 10)}</h3>
+                <h3>Amount Paid : {salDet.salary_amount}</h3></>
+                : <><h3 style={{display:'inline'}}>Current Month Salary Status : </h3><span style={{fontSize:'25px'}} className='badge bg-danger'>{salDet.salary_status}</span></>}</div>
           </div>
         </div>
 

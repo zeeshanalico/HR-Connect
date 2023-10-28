@@ -6,7 +6,7 @@ import Toast from '../../../../UIModules/Toast/Toast';
 const AttendanceHistory = () => {
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [filters, setFilters] = useState({
-    status: 'All',
+    status: '',
     date: '',
     name: '',
     emp_id: '',
@@ -15,7 +15,6 @@ const AttendanceHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const itemsPerPageOptions = [5, 20, 50, 100];
-  const [sortByDate, setSortByDate] = useState(''); // State for sorting by date
 
   const fetchData = async () => {
     try {
@@ -49,18 +48,14 @@ const AttendanceHistory = () => {
     setCurrentPage(1);
   };
 
-  // const handleSortByDateChange = (e) => {
-  //   const selectedSortByDate = e.target.value;
-  //   setSortByDate(selectedSortByDate);
-  //   setCurrentPage(1);
-  // };
-  const filteredAndSortedAttendanceHistory = attendanceHistory
+    const filteredAndSortedAttendanceHistory = attendanceHistory
     .filter((emp) => {
       const { status, date, name, emp_id, month } = filters;
       const dateObject = new Date(emp?.attendance_date.toString());
       const empmonth = dateObject.getMonth() + 1;
+      
       return (
-        (status === '' || emp.status?.toLowerCase() === status?.toLowerCase()) &&
+        (status === '' || emp.status === status) &&
         (date === '' || emp.attendance_date?.includes(date)) &&
         (emp_id === '' || emp.emp_id.toString().includes(emp_id)) &&
         (name === '' || emp.name?.toLowerCase().includes(name.toLowerCase())) &&

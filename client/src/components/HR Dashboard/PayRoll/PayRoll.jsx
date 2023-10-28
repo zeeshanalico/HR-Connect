@@ -15,6 +15,7 @@ const PayRoll = () => {
     const [incrementAmount, setIncrementAmount] = useState('');
     const [dep, setDep] = useState([])
     const [jobPositions, setJobPositions] = useState([])
+    const [AttforPayRoll, setAttforPayroll] = useState([])
 
     // const fetchData = async () => {
     //     try {
@@ -55,6 +56,16 @@ const PayRoll = () => {
             Toast('Error catch :', 'error');
         }
     };
+    const fetchData4 = async () => {
+        try {
+            const response = await axios.get(BaseUrl + '/AttforPayRoll');
+            setAttforPayroll(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching payroll Attendance :', error);
+            Toast('Error catch :', 'error');
+        }
+    };
 
 
     useEffect(() => {
@@ -62,11 +73,28 @@ const PayRoll = () => {
         fetchData1();
         fetchData2();
         fetchData3();
+        fetchData4();
     }, [])
 
-    const handleSalaryApprove = async () => {
+    const handleSalaryApprove = async (calculated) => {
         console.log(empDetail.emp_id, empDetail.netSalary);
         const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal: empDetail.netSalary }, config);
+        if (response.data.success) {
+            Toast(`${response.data.message}`)
+        } else {
+            Toast(`${response.data.message}`, 'error')
+        }
+        await fetchData3();
+        setShowApproveSalaryModal(false)
+    }
+
+    const handleCalculatedSalaryApprove = async () => {
+        console.log(empDetail.emp_id, empDetail.netSalary);
+
+       const filteredEmp=AttforPayRoll.find((emp) => emp.emp_id === empDetail.emp_id);
+       const calculatedSalary=(((empDetail.netSalary)/21)*filteredEmp.present_days).toFixed(2);
+        console.log(calculatedSalary);
+        const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal: calculatedSalary }, config);
         if (response.data.success) {
             Toast(`${response.data.message}`)
         } else {
@@ -194,7 +222,7 @@ const PayRoll = () => {
             </div>
             {checker() &&
                 <button className="btn btn-primary mb-3" style={{ alignSelf: 'end' }} onClick={handleApproveAllClick}>
-                    Approve All Salaries
+                    Approve All Net Salaries
                 </button>}
             <table className="table table-striped">
                 <thead>
@@ -346,20 +374,36 @@ const PayRoll = () => {
                 </Modal.Footer>
             </Modal>
 
-            {/* Approve All Modal */}
+            {/* Approve Modal */}
             <Modal show={showApproveSalaryModal} onHide={() => setShowApproveSalaryModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Approve All Salaries</Modal.Title>
+                    <Modal.Title>Approve Salary</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     Are you sure you want to approve the salary of {empDetail.name}?
+                    <br />
+                    Net Salary = {empDetail.netSalary}/month
+                    {AttforPayRoll.filter((emp) => emp.emp_id === empDetail.emp_id).map((filteredEmp) => (
+                        <div key={filteredEmp.emp_id}>
+                            Current Month Presents: {filteredEmp.present_days}
+                            <br />
+                            Current Month Absents: {filteredEmp.absent_days}
+                            <br />
+                            Current Month Leaves: {filteredEmp.leave_days}
+                            <br />
+                            Calculated Salary on the base of Working Days: {((empDetail.netSalary/21)*filteredEmp.present_days).toFixed(2)} 
+                        </div>
+                    ))}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowApproveSalaryModal(false)}>
                         No
                     </Button>
-                    <Button variant="primary" onClick={handleSalaryApprove}>
-                        Yes
+                    <Button variant="primary" onClick={()=>{handleSalaryApprove()}}>
+                        Approve Net Salary
+                    </Button>
+                    <Button variant="primary" onClick={()=>{handleCalculatedSalaryApprove()}}>
+                        Approve Calculated Salary
                     </Button>
                 </Modal.Footer>
             </Modal>

@@ -35,26 +35,27 @@ export default function ViewJobApplications() {
   const [appTit,setAppTit]=useState('');
   const [st,setS]=useState('');
   const [offerLetter, setOfferLetter] = useState(`
-  Subject: Offer of Employment
- 
 Dear [Applicant Name],
 I hope this message finds you well. We are delighted to extend an offer of employment for the [Job Title] position at HRConnect. Your performance during the interview process demonstrated that you are a highly qualified candidate who meets our hiring criteria, and we believe that you will be a valuable addition to our team.
 Below, you will find the details of your employment offer:
 Position: [Job Title] 
 Start Date: [Start Date] 
 Salary: [Salary] 
-Probation Period: 6 months
 Location: HRConnect, Lahore, Pakistan
 
 Next Steps:
-Please review this offer carefully to ensure that all details are accurate and meet your expectations.
-If you accept this offer, please sign and date the enclosed copy of this letter and return it to us by [Acceptance Deadline].
-If you have any questions or require further clarification, do not hesitate to reach out to our HR department details mentioned below.
-Acceptance Deadline: [Acceptance Deadline]
-We are excited about the prospect of you joining our team and contributing to HRConnect. Our organization values talent, dedication, and a commitment to excellence, and we believe that you embody these qualities.
-Once again, congratulations on this significant milestone, and we look forward to your positive response. We are confident that you will make a meaningful impact in your new role, and we are excited to have you on board.
-Thank you for choosing to be a part of HRConnect. We are excited to welcome you to our team.
-  
+Please review this offer carefully to ensure that all details are accurate and meet your expectations as 
+discussed and also confirm us by acknowledge on this email. Please join us on [Date] (July 19, 2023), at 
+sharp [Time].
+If you have any questions or require further clarification, do not hesitate to reach out to our HR 
+department details mentioned below.
+We are excited about the prospect of you joining our team and contributing to HRConnect. Our 
+organization values talent, dedication, and a commitment to excellence, and we believe that you embody 
+these qualities.
+Once again, congratulations on this significant milestone, and we look forward to your positive response. 
+We are confident that you will make a meaningful impact in your new role, and we are excited to have you 
+on board.
+Thank you for choosing to be a part of HRConnect. We are excited to welcome you to our team  
 Regards,
 Muhammad Ihtisham
 Senior HR

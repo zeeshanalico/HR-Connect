@@ -96,6 +96,7 @@ router.get("/getJobs", verifyToken, checkUserRole(1), (req, res) => {
     }
   );
 });
+
 router.get("/getJobPositions", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getJobpositions");
   mysql.query(
@@ -149,13 +150,32 @@ router.get("/getDepInfo", verifyToken, checkUserRole(1), (req, res) => {
   });
 });
 
+router.get("/AttforPayRoll",  (req, res) => {
+  console.log("/AttforPayRoll");
+  mysql.query(`SELECT
+  emp_id,
+  COUNT(CASE WHEN status = 'Present' THEN 1 ELSE NULL END) AS present_days,
+  COUNT(CASE WHEN status = 'Leave' THEN 1 ELSE NULL END) AS leave_days,
+  COUNT(CASE WHEN status = 'Absent' THEN 1 ELSE NULL END) AS absent_days
+FROM attendance
+WHERE YEAR(attendance_date) = YEAR(CURRENT_DATE())
+  AND MONTH(attendance_date) = MONTH(CURRENT_DATE())
+GROUP BY emp_id;`, (err, results) => {
+    if (err) {
+      console.error("Error fetching Attendance for Payroll", err);
+      res.json({ success: false, message: error.sqlMessage });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 ///////------------------------hr-----------------------------
 
 router.get("/getEmployees", verifyToken, checkUserRole(1), (req, res) => {
   console.log("/getEmployees");
   mysql.query(
     "SELECT ei.name,ei.emp_id,ei.email,ei.phone_number,ei.city,ei.address,ei.DOB,ei.cnic,ei.cgpa,ei.major,ei.degree,ei.github_profile_url,ei.linkedin_profile_url,ei.university,ei.qualification,j.job_id,ei.Tax,ei.Bonus,ei.performanceScore,ei.netSalary,d.dep_id,d.dep_name,j.job_name,s.salary_id,s.salary_amount,s.salary_status,s.salary_date,r.role_id,r.role_name,ei.gender,ei.hire_date,ei.salary FROM employee ei JOIN roles r ON ei.role_id = r.role_id JOIN department d ON ei.dep_id = d.dep_id JOIN jobpositions j ON ei.job_id = j.job_id LEFT JOIN salary s ON ei.emp_id = s.emp_id;",
-    // "SELECT * FROM employee ei join roles r on ei.role_id=r.role_id join department d on ei.dep_id=d.dep_id join jobpositions jp on ei.job_id=jp.job_id;",
     (err, results) => {
       if (err) {
         console.error("Error fetching job emp info:", err);
@@ -423,8 +443,7 @@ router.post("/rejectApplication", verifyToken, checkUserRole(1), (req, res) => {
       } else {
         const mailOptions = {
           from: process.env.EMAIL_USERNAME,
-          // to: email,
-          to: "zeeshanalico24@gmail.com",
+          to: email,
           subject: ` Update on Your ${st == 'Pending' ? 'Application' : st == 'Interview' ? "Interview" : ''}`,
           text: `${st == 'pending' ? `Dear ${applicantName},  
 
@@ -932,14 +951,12 @@ router.post("/removeEmployee", verifyToken, checkUserRole(1), async (req, res) =
          
 I am writing to inform you that your employment with HrConnect is terminated, effective ${current_date}. This decision has been made after a careful review of your performance and other relevant factors.
 
-Summary of Prior Discussions:
-Your final paycheck, including any accrued but unused vacation or leave days, will be issued on ${current_date}.
-You will receive information regarding your benefits continuation and any other relevant details separately.
-Please return all company-owned property to the HR department by [Date]. Failure to return company property may result in deductions from your final paycheck.
+Effective immediately, your access to company premises and systems will be revoked.
+You are expected to maintain confidentiality regarding any company information, clients, and colleagues, even after your employment ends.
 
-Access to Company Premises:
-Effective immediately, your access to company premises and systems will be revoked. Please return any company access cards or keys promptly.
-include details about it here. You are expected to maintain confidentiality regarding any company information, clients, and colleagues, even after your employment ends.
+Questions & clarification:
+If you have any question regarding the termination, please do not hesitate to ask.
+We understand that this may be a challenging time, and we wish you the best in the future endeavour.
 
 Regards,
 Muhammad Ihtisham
@@ -1199,6 +1216,42 @@ router.get("/empLeaveHistory", verifyToken, checkUserRole(2), (req, res) => {
       res.json({ success: false, message: "An error occurred" });
     } else {
       res.json(result[0]);
+    }
+  });
+});
+
+router.get("/getSalaryDetailforEmp", verifyToken, checkUserRole(2), (req, res) => {
+  console.log("/getSalaryDetailforEmp");
+  const { emp_id } = req.user;
+
+  mysql.query(`SELECT
+  CASE
+      WHEN EXISTS (
+          SELECT 1
+          FROM salary
+          WHERE emp_id = ?
+            AND YEAR(salary_date) = YEAR(CURRENT_DATE())
+            AND MONTH(salary_date) = MONTH(CURRENT_DATE())
+            AND salary_status = 'Paid'
+      ) THEN 'Paid'
+      WHEN EXISTS (
+          SELECT 1
+          FROM salary
+          WHERE emp_id = ?
+            AND YEAR(salary_date) = YEAR(CURRENT_DATE())
+            AND MONTH(salary_date) = MONTH(CURRENT_DATE())
+            AND salary_status = 'Not Paid'
+      ) THEN 'Not Paid'
+      ELSE 'Not Paid'
+  END AS salary_status,
+  (SELECT salary_amount FROM salary WHERE emp_id = ? AND YEAR(salary_date) = YEAR(CURRENT_DATE()) AND MONTH(salary_date) = MONTH(CURRENT_DATE())) AS salary_amount,
+  (SELECT MAX(salary_date) FROM salary WHERE emp_id = ?) AS salary_date;
+`,[emp_id,emp_id,emp_id,emp_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.json({ success: false, message: "An error occurred" });
+    } else {
+      res.json(result);
     }
   });
 });

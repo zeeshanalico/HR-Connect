@@ -30,8 +30,7 @@ During the period he/she worked with the company we found him/her to be hardwork
 
 Muhammad Ihtisham
 Lead Talent Acquisition
-
-Signed By:_____________________`);
+`);
 
   const handlePrint = () => {
     const printableContent = document.querySelector(".printable-content"); // Replace with an appropriate class or ID
