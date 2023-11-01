@@ -400,10 +400,9 @@ router.post("/submitJobApplication", upload.single("cv_file"), (req, res) => {
 });
 
 router.post("/getResume", (req, res) => {
-  const { applicationId } = req.body;
-  const job_id = req.query.job_id; // Assuming job_id is available in the request
-  const applicant_name = req.query.applicant_name; // Assuming applicant_name is available in the request
-
+  const { application_id,applicant_name,job_id } = req.body;
+  console.log(application_id,applicant_name,job_id);
+  
   const fileName = `${job_id}_${applicant_name}.pdf`;
   const filePath = `${uploadDirectory}/${fileName}`; // Full path to the file
 
@@ -1337,7 +1336,8 @@ router.put("/leaveApproved", verifyToken, checkUserRole(1), (req, res) => {
 
   const { emp_id, attendance_date, toDate } = req.body;
   console.log(emp_id, attendance_date, toDate);
-  if (toDate == null || toDate === 'NaN-NaN-NaN' || toDate === "") {
+  if (toDate == null || toDate === 'NaN-NaN-NaN' || toDate === "" ||toDate==undefined) {
+    console.log("--singleAttendanceapproval---",emp_id, attendance_date,toDate);
     const status = "Leave";
     mysql.query(
       `call attendanceApproval(${emp_id}, '${status}', '${attendance_date}')`,
@@ -1346,11 +1346,12 @@ router.put("/leaveApproved", verifyToken, checkUserRole(1), (req, res) => {
           console.error(error);
           res.json({ success: false, message: "An error occurred" });
         } else {
-          res.json({ success: true, message: "Attendence Approved" });
+          res.json({ success: true, message: "Single Attendence Approved" });
         }
       }
     );
   } else {
+    console.log("--multipleAttendanceapproval---",emp_id, attendance_date,toDate);
     const status = "Leave";
     mysql.query(
       `call multipleAttendanceApproval(${emp_id}, '${status}', '${attendance_date}','${toDate}')`,
@@ -1359,7 +1360,7 @@ router.put("/leaveApproved", verifyToken, checkUserRole(1), (req, res) => {
           console.error(error);
           res.json({ success: false, message: "An error occurred" });
         } else {
-          res.json({ success: true, message: "Attendence Approved" });
+          res.json({ success: true, message: "Multiple Attendence Approved" });
         }
       }
     );

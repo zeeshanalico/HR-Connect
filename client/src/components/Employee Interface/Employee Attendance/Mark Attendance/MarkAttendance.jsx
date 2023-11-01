@@ -8,12 +8,11 @@ import { BaseUrl, start_time, end_time } from "../../../../constants";
 import axios from "axios";
 import { config } from "../../../../constants";
 import Clock from './Clock.jsx'
-
 export default function MarkAttendance() {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [attendanceMarked, setAttendanceMarked] = useState(false);
-  const [statOfAtt,setStatOfAtt]=useState('')
+  const [statOfAtt, setStatOfAtt] = useState('')
   const [todayDate] = useState(new Date().toISOString().split("T")[0]);
   const [day] = useState(
     new Date().toLocaleDateString("en-US", { weekday: "long" })
@@ -43,7 +42,7 @@ export default function MarkAttendance() {
         setAttendanceMarked(false);
       }
     } catch (error) {
-      Toast('catch error','error')
+      Toast('catch error', 'error')
       console.error("Error fetching attendence :", error);
     }
   };
@@ -96,7 +95,7 @@ export default function MarkAttendance() {
     if (leaveInfo.leave_date && leaveInfo.reason) {
       if (leaveInfo.leave_date > todayDate) {
         try {
-          const response = await axios.put(BaseUrl + "/leaverequest", {...leaveInfo}, config);
+          const response = await axios.put(BaseUrl + "/leaverequest", { ...leaveInfo }, config);
           if (response.data.success) {
             Toast(`${response.data.message}`);
           } else {
@@ -128,35 +127,40 @@ export default function MarkAttendance() {
   return (
     <div className="full-content" id="full-content">
       {/* {<h2>{currentTime}</h2>} */}
-    
+
       <div id="content">
-      <Clock/>
-        <h2 className="mb-4" style={{margin:'auto'}}>Mark Attendance</h2>
+        <Clock />
+        {day == 'Sunday' || day == 'Saturday' ?
+          (<h4 style={{margin:'auto',backgroundColor:'green',padding:'20px',color:'white'}}>Today is a holiday, Enjoy your day.</h4>) :
+          <div>
+        <h2 className="mb-4" style={{ margin: 'auto' }}>Mark Attendance</h2>
         <p>Date: {todayDate}</p>
         <p>Day: {day}</p>
-      {<p className="alert-primary">You can mark your attendance in between {start_time} AM to {end_time} AM</p>}
-        {
-          attendanceMarked ? (
-            <div className="alert alert-success" role="alert">
-              You Attendance for {todayDate} ({day}) is Marked as {statOfAtt}.
-            </div>
-          ) : (
-            <>
-              {currentTime >= start_time && currentTime <= end_time ? (
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    setShowConfirmationModal(true);
-                  }}
-                >
-                  Mark Attendance
-                </Button>
-              ) : currentTime > end_time && currentTime <= '23:00:00' ? (
-                callAbsentFunc()
-              ) : null}
-            </>
-          )
-        }
+
+            {<p className="alert-primary">You can mark your attendance in between {start_time} AM to {end_time} AM</p>}
+            {
+              attendanceMarked ? (
+                <div className="alert alert-success" role="alert">
+                  You Attendance for {todayDate} ({day}) is Marked as {statOfAtt}.
+                </div>
+              ) : (
+                <>
+                  {currentTime >= start_time && currentTime <= end_time ? (
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        setShowConfirmationModal(true);
+                      }}
+                    >
+                      Mark Attendance
+                    </Button>
+                  ) : currentTime > end_time && currentTime <= '23:00:00' ? (
+                    callAbsentFunc()
+                  ) : null}
+                </>
+              )
+            }
+          </div>}
         {/* <Button
           variant="primary"
           className="mt-3"

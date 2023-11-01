@@ -92,7 +92,7 @@ const PayRoll = () => {
         console.log(empDetail.emp_id, empDetail.netSalary);
 
        const filteredEmp=AttforPayRoll.find((emp) => emp.emp_id === empDetail.emp_id);
-       const calculatedSalary=(((empDetail.netSalary)/21)*filteredEmp.present_days).toFixed(2);
+       const calculatedSalary=(((empDetail.netSalary)/22)*(filteredEmp.present_days+filteredEmp.leave_days)).toFixed(2);
         console.log(calculatedSalary);
         const response = await axios.post(BaseUrl + '/approveSalary', { empId: empDetail.emp_id, empSal: calculatedSalary }, config);
         if (response.data.success) {
@@ -391,7 +391,7 @@ const PayRoll = () => {
                             <br />
                             Current Month Leaves: {filteredEmp.leave_days}
                             <br />
-                            Calculated Salary on the base of Working Days: {((empDetail.netSalary/21)*filteredEmp.present_days).toFixed(2)} 
+                            Calculated Salary on the base of Working Days: {((empDetail.netSalary/22)*(filteredEmp.present_days+filteredEmp.leave_days)).toFixed(2)} 
                         </div>
                     ))}
                 </Modal.Body>

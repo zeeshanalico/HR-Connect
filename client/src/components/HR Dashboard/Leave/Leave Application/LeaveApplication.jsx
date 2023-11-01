@@ -91,7 +91,7 @@ export default function LeaveApplication() {
       console.log('handleApprove', empId, leaveDate, toDate);
       const response = await axios.put(BaseUrl + '/leaveApproved', {
         emp_id: empId,
-        attendance_date: leaveDate, toDate: toDate === 'NaN-NaN-NaN' ? '' : ''
+        attendance_date: leaveDate, toDate: toDate === 'NaN-NaN-NaN' ? '' : toDate
       }, config);
       if (response.data.success) {
         Toast(`${response.data.message}`);
@@ -104,6 +104,9 @@ export default function LeaveApplication() {
 
     await fetchData();
     setShowModal(false);
+    setLeaveDate('');
+    setToDate('');
+
   };
 
   const handleReject = async () => {
@@ -228,7 +231,7 @@ export default function LeaveApplication() {
               currentApplications
               .map((application) => {
 
-                  return <tr key={application.emp_id}>
+                  return<> {(currentDate<=application.leave_date ||currentDate<=application.toDate) && <tr key={application.emp_id}>
                     <td><div style={{ width: '60px' }}>{application.emp_id}</div></td>
                     <td><div style={{ width: '150px' }}>{application.emp_name}</div></td>
                     <td><div style={{ width: '220px' }}>{application.dep_name}</div></td>
@@ -236,7 +239,7 @@ export default function LeaveApplication() {
                     <td>{application.att_status}</td>
                     <td>
                       <div style={{ width: '130px' }}>{application.att_status === 'Pending' && (
-                        <>
+                       <>
                           <Button
                             variant="success"
                             size="sm"
@@ -278,7 +281,8 @@ export default function LeaveApplication() {
                       </>}
                    
 
-                  </tr>
+                  </tr>}
+                  </>
                 })
             }
           </tbody>

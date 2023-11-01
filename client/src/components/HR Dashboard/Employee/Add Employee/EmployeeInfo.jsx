@@ -75,9 +75,9 @@ const validationSchema = Yup.object().shape({
   linkedin_profile_url: Yup.string()
     .matches(/(linkedin\.com)/, 'Invalid LinkedIn URL format, it must contain ".com"')
     .url('Invalid LinkedIn URL format'),
-  hire_date: Yup.date()
-    .min(new Date(), 'Hire date must be tomorrow or in the future')
-    .required('Hire date is required'),
+  // hire_date: Yup.date()
+  //   .min(new Date(), 'Hire date must be tomorrow or in the future')
+  //   .required('Hire date is required'),
   github_profile_url: Yup.string()
     .matches(/(github\.com)/, 'Invalid GitHub URL format, it must contain ".com"')
     .url('Invalid GitHub URL format')
@@ -115,6 +115,7 @@ export default function EmployeeInfo({ id }) {
   const [loading, setLoading] = useState(false); // Add a loading state
   const [degrees, setDegrees] = useState([]);
   const [oneJob, setOneJob] = useState({})
+    const currentDate = new Date().toISOString().split('T')[0];
 
 console.log(oneJob.title);
   const fetchData = async () => {
@@ -201,13 +202,14 @@ console.log(oneJob.title);
         ...employeeInformation,
         JobName:oneJob.title,
         cnic: parseInt(employeeInformation.cnic.replace(/-/g, ''), 10),
+        hire_date:currentDate
       };
       await validationSchema.validate(postData, { abortEarly: false });
       if (id) {
         console.log(postData, id);
         const response = await axios.post(BaseUrl + '/registerEmployee', { ...postData, emp_id: id}, config);
         if (response.data.success) {
-          Toast("Employee Registered Successfully!", 'info');
+          Toast("Employee Registered Successfully!", 'success');
           navigate('/hrdash/manageEmployee');
         } else {
           Toast(`${response.data.message}`, 'error');
@@ -215,7 +217,7 @@ console.log(oneJob.title);
       } else {
         const response = await axios.post(BaseUrl + '/registerEmployee', postData, config);
         if (response.data.success) {
-          Toast("Employee Registered Successfully!", 'info');
+          Toast("Employee Registered Successfully!", 'success');
           navigate('/hrdash/manageEmployee');
         } else {
           Toast(`${response.data.message}`, 'error');
@@ -450,11 +452,13 @@ console.log(oneJob.title);
                 <div className="mb-3 rounded-input">
                   <label htmlFor="HireDate" required className="form-label">Hire Date:</label>
                   <input
-                    type={(!employeeInformation?.hire_date || employeeInformation?.hire_date.trim() === '' || employeeInformation?.hire_date == null) ? 'date' : 'text'}
+                    // type={(!employeeInformation?.hire_date || employeeInformation?.hire_date.trim() === '' || employeeInformation?.hire_date == null) ? 'date' : 'text'}
+                    type='text'
                     className="form-control round"
                     id="HireDate"
                     name='hire_date'
-                    value={employeeInformation?.hire_date}
+                    // value={employeeInformation?.hire_date}
+                    value={currentDate}
                     onChange={handleChange}
 
                   />
