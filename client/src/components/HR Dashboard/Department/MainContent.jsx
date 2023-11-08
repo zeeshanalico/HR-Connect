@@ -60,9 +60,11 @@ useEffect(() => {
   console.log(time);
   console.log("End : " + end_time)
   console.log(`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` );
+  
+  // DELETE FROM attendance WHERE attendance_date = DATE(NOW()) AND status = 'Absent';
 
-  // Getting current time when Dashboard Ren  der
-  if (`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` >= end_time) {
+  // Getting current time when Dashboard Render
+  if (`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}` >= end_time && `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}` <= '18:0:0'  ) {
   console.log('markab1');
   markAbsent()
   console.log('markab2');
