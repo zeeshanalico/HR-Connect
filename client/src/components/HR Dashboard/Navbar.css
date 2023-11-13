@@ -8,3 +8,14 @@ top: 0;
 * {
   scroll-behavior: smooth;
 }
+
+.logout{
+
+  transition: transform 0.5s ease;
+
+}
+
+
+.logout:hover {
+  transform: scale(1.03);
+}

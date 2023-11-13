@@ -32,7 +32,7 @@ export default function Navbar(props) {
 
     <li className="breadcrumb-item ml-auto">
       {/* <RouterLink to="/Login"> */}
-        <button className="btn btn-danger" onClick={handleLogout}>
+        <button className="btn btn-danger logout" onClick={handleLogout}>
           Logout
         </button>
         {/* </RouterLink> */}

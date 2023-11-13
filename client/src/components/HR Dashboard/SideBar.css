@@ -15,3 +15,27 @@
  background-color: white;
 
 }
+
+span {
+  color: black;
+  font-size: 15px;
+  transition: color 0.2s ease, font-size 0.2s ease;
+
+}
+
+span:hover{
+  color: blue;
+  font-size: 16px;
+
+}
+/*
+.link{
+
+  transition: transform 0.2s ease;
+
+}*/
+
+/*
+.link:hover {
+  transform: scale(1.05);
+}*/

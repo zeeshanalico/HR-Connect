@@ -4,6 +4,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import SideBar from '../../SideBar';
 import EmployeeProfile from './EmployeeProfile';
 import { useLocation } from 'react-router';
+import employeeAvatar from '../../../../assets/img/male_employee.png';
+
 
 export default function EmployeeProfilePage() {
  // const { employee } = props.location.state;
@@ -29,8 +31,23 @@ export default function EmployeeProfilePage() {
               <MDBRow className="g-0">
                 <MDBCol md="4" className="gradient-custom text-center text-white"
                   style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
-                  <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                    alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
+                    {location.state.employee.gender === "male" ? (
+  <MDBCardImage
+    src={employeeAvatar}  // Path to male avatar image
+    alt="Male Avatar"
+    className="my-5"
+    style={{ width: '80px' }}
+    fluid
+  />
+) : (
+  <MDBCardImage
+    src={employeeAvatar}  // Path to female avatar image
+    alt="Female Avatar"
+    className="my-5"
+    style={{ width: '90px', height:"30%" , borderRadius:"35px" }}    fluid
+  />
+)}
+
                   <MDBTypography tag="h5" style={{fontSize:"22px", color: "black", textTransform: "capitalize"}}>{location.state.employee.name}</MDBTypography>
                   <hr style={{width: "80%"}} className="mt-0 mb-2" />
                <MDBCardText style={{fontSize: "18px", color: "black", textTransform: "capitalize"}}>{location.state.employee.job_name}</MDBCardText>

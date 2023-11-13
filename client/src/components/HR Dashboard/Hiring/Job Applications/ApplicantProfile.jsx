@@ -5,7 +5,7 @@ import { MDBBreadcrumb, MDBBreadcrumbItem } from 'mdb-react-ui-kit';
 import SideBar from '../../SideBar';
 import { useLocation } from 'react-router';
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
-
+import employeeAvatar from '../../../../assets/img/male_employee.png';
 
 export default function ApplicantProfile() {
 
@@ -34,8 +34,24 @@ export default function ApplicantProfile() {
               <MDBRow className="g-0">
                 <MDBCol md="4" className="gradient-custom text-center text-white"
                   style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
-                  <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                    alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
+                  {location.state.application.gender === "male" ? (
+  <MDBCardImage
+    src={employeeAvatar}  // Path to male avatar image
+    alt="Male Avatar"
+    className="my-5"
+    style={{ width: '85px' }}
+    fluid
+  />
+) : (
+  <MDBCardImage
+    src={employeeAvatar}  // Path to female avatar image
+    alt="Female Avatar"
+    className="my-5"
+    style={{ width: '90px', height:"20%" , borderRadius:"35px" }}
+    fluid
+  />
+)}
+
                   <MDBTypography tag="h5" style={{fontSize:"22px", color: "black", textTransform: "capitalize"}}>{location.state.application.applicant_name}</MDBTypography>
                   <hr style={{width: "80%"}} className="mt-0 mb-2" />
                   <div style={{display:"flex", justifyContent:"space-around", width:"25%", marginLeft:"7rem"}}>
