@@ -1,0 +1,16 @@
+.ellipsis {
+  padding: 5px;
+  font-size: 14px;
+  color: rgb(53, 89, 232);
+  height: 20px;
+  font-weight: 700;
+  /* font-size: x-large; */
+  padding-top: 4px;
+  padding-bottom: 18px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.ellipsis:hover {
+  background-color: #eee;
+}

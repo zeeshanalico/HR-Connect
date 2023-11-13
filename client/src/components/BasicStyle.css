@@ -1,0 +1,28 @@
+#full-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  padding: 35px;
+  font-family: 'Cabin', sans-serif;
+  
+  /* background: linear-gradient(to bottom, #f7f7f7, #e3e3e3, #d1d1d1, #c0c0c0, #b0b0b0); */
+  
+}
+
+
+#content{
+background: linear-gradient(to bottom, #00D2FF, #2EDAFF, #50E0FF, #9BEDFF);
+
+font-size: 15px;
+display: flex;
+justify-content: center;
+flex-direction: column;
+border: 1px solid black;
+padding: 10px;
+width: 100%;
+background-color: white;
+border-radius: 12px;
+box-shadow: 10px 10px 15px black;
+}
+

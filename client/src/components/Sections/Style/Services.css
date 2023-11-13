@@ -1,0 +1,13 @@
+.secondary-text{
+
+  color: #428bca !important; /* White text color for better contrast */
+  font-size: 0.8rem !important;
+  margin-bottom: 50px !important;
+font-weight: bold !important;
+
+}
+
+.align-center{
+
+text-align: center;
+}

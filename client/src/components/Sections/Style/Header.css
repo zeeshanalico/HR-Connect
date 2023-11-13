@@ -1,0 +1,50 @@
+.submit-btn{
+
+  background-color: #428bca !important;
+  border: 1.5px solid white !important;
+  padding: 12px 70px;
+  border-radius: 20px;
+  border: 1.5px solid #428bca;
+  color: white;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  
+  }
+  
+  .submit-btn:hover{
+  
+    background-color: #1290fd !important;
+    border: 1.5px solid black;
+  
+  
+  }
+  
+  
+  
+  .flexCenter .extraBold{
+  
+  font-size: 5.3rem !important;
+  }
+  
+  .drop-from-above {
+    opacity: 0; /* Start with the element hidden */
+    transform: translateY(-50px); /* Start position above the element */
+    animation: dropAnimation 1s ease-in-out forwards;
+  }
+  
+  .blue-color{
+  
+    color: black !important; /* White text color for better contrast */
+    font-size: 0.85rem !important;
+    font-weight: bold !important;
+  }
+  
+  
+
+  @keyframes dropAnimation {
+    to {
+      opacity: 1; /* End with full opacity */
+      transform: translateY(0); /* End position at the element's original position */
+    }
+  }
+  

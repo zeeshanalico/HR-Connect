@@ -1,0 +1,53 @@
+/*#info_block {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  }
+  */
+
+  #full-content{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+margin: auto;
+
+  }
+
+  .rounded-input .round {
+    padding:10px;
+    border-radius:12px;
+    border: 1px solid black;
+    width: 380px !important;
+  }
+
+  #info-card{
+  
+    display: flex;
+   flex-direction: row;
+   justify-content: space-around;
+  width: 100%;
+  }
+
+
+.emp-content{
+
+width: 110% !important;
+
+}
+
+#gender-input{
+
+font-size: large;
+
+}
+
+button[type="submit"]{
+
+  border-radius: 25px;
+
+}
+
+

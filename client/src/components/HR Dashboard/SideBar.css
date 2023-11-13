@@ -1,0 +1,17 @@
+#sidebar {
+
+  min-height: 100vh;
+  width: 220px;
+  max-height: fit-content;
+  /* background: linear-gradient(to bottom,  #b5fbfb 80%,#d6ebff 20%,); */
+  /*background: linear-gradient(to bottom, #ffffff 20%,  #6eb6ff 60%, #6eb6ff 80%);*/
+  background-color: white;
+
+}
+
+#sidebar-content {
+
+ /* background: linear-gradient(to bottom, #ffffff 40%,  #cfe4f8 60%, #6eb6ff 80%);*/
+ background-color: white;
+
+}

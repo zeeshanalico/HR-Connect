@@ -1,0 +1,122 @@
+#back-arrow {
+
+  position: absolute;
+  top: 35px;
+  left: 40px;
+  font-size: large;
+  
+
+}
+
+#back-arrow:hover{
+  color: #0056b3 !important;
+  transition: 0.3s ease !important;
+}
+
+#wrapper {
+
+  height: 200px;
+  background-color: white;
+  /* For browsers that do not support gradients */
+  
+  
+}
+
+.login-container{
+
+  background-color: #e8e8e8;
+}
+
+.form-text-y{
+  font-size: 18px;
+}
+
+/* LoginForm.css */
+
+.login-form {
+  /* background-color: #f0f0f0; */
+  padding: 30px;
+  border-radius: 22px;
+  /* background: repeating-linear-gradient(45deg, #3399ff, #3399ff 10px, transparent 10px, transparent 20px); */
+  
+ /* background: linear-gradient(to bottom right, #ffffff, #e8e8e8);*/
+  background: white !important;
+  /*box-shadow: 0 15px 33px rgba(0, 0, 0, 0.6);*/
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 25px !important;
+  box-shadow: 0 0 20px rgba(31, 185, 219, 0.6);
+  border: 1px solid rgb(31, 185, 219);
+  transition: transform 0.4s ease, box-shadow 0.5s ease;
+    transform: scale(1);
+    backface-visibility: hidden !important; /* Prevent blurring */
+  /* Increase the size by 10% */
+}
+
+.login-form:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 22px rgba(0, 0, 0, 0.5);
+  backface-visibility: hidden !important; /* Prevent blurring */
+}
+
+.login-form h2 {
+  margin-bottom: 20px;
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+  color: #333; /* Set the text color */
+  text-align: center; /* Center-align the text */
+  text-transform: uppercase; /* Convert text to uppercase */
+}
+
+.loginbg{
+  width: 100dvh;
+  height: 100vh;
+  background-color: #e8e8e8;
+}
+
+.login-form input[type="email"],
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  /* border-radius: 4px; */
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+
+  border-radius:50px;
+  outline: none;
+  
+}
+
+.login-form button[type="submit"]:hover {
+  
+    background-color: #0056b3;
+}
+/* ----------------------------------*/
+
+
+.password-input {
+  position: relative;
+}
+
+.password-input input {
+  padding-right: 30px; /* Space for the eye icon */
+}
+
+.spanPass {
+  position: absolute;
+  top: 70%;
+  right: 10px;
+  cursor: pointer;
+}

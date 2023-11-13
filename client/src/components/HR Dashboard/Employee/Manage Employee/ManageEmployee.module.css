@@ -1,0 +1,84 @@
+/* Table styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Table header and cell styles */
+  .table th,
+  .table td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  /* Header row styles */
+  .table thead th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  /* Alternating row colors */
+  .table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Hover effect on rows */
+  .table tbody tr:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+  }
+  
+  /* Action column styles */
+  .table tbody td:last-child {
+    text-align: center;
+  }
+  
+  /* Button styles in table */
+  .table .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* Hover effect on the danger button */
+  .table .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  /* Pagination styles */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    list-style: none;
+  }
+  
+  /* Style for each pagination item */
+  .pagination li {
+    margin: 0 5px;
+  }
+  
+  /* Pagination link styles */
+  .pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  /* Hover effect on pagination links */
+  .pagination a:hover {
+    background-color: #0056b3;
+  }
+  

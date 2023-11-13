@@ -1,0 +1,10 @@
+#Navbar{
+
+position: sticky;
+top: 0;
+
+}
+
+* {
+  scroll-behavior: smooth;
+}
