@@ -21,6 +21,6 @@ app.listen(port, (error) => {
     if (error) {
       console.error('Error starting the server:', error);
     } else {
-      console.log(`Server is restarting at (${new Date().toString().slice(0,25)}) and running on port ${port}`);
+      console.log(`Server is restarting at (${new Date({}).toString().slice(0,25)}) and running on port ${port}`);
     }
   });
