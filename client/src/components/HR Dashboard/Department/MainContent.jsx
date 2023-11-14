@@ -1,6 +1,5 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import $ from 'jquery';
 import Navbar from '../Navbar';
 import './MainContent.css';
 import axios from 'axios';
@@ -21,8 +20,6 @@ export default function MainContent() {
       console.log("Error : ", error);
     }
   }
-
-  
 
 const markAbsent = async () => {
   const response = await axios.post(BaseUrl + '/markAbsent',{},config)
@@ -59,11 +56,15 @@ useEffect(() => {
 const [record, setRecord] = useState()
 
 useEffect(() => {
-  const time = new Date()
-  console.log("Current : " + record);
+  const time = new Date();
+  console.log(time);
   console.log("End : " + end_time)
+  console.log(`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` );
+  
+  // DELETE FROM attendance WHERE attendance_date = DATE(NOW()) AND status = 'Absent';
+
   // Getting current time when Dashboard Render
-  if (`${ time.getHours() }:${ time.getMinutes() }:${ time.getSeconds() }` >= end_time) {
+  if (`${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}` >= end_time && `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}` <= '18:0:0'  ) {
   console.log('markab1');
   markAbsent()
   console.log('markab2');
@@ -74,11 +75,11 @@ fetchData()
   return (
     <div class="col main pt-3 mt-3" id="dashboard">
       <Navbar type={"dashboard"} />
-      <p class="lead d-none d-sm-block mb-2"><h2>HR Dashboard</h2></p>
-      <div className="container mt-3">
-        <div style={{display: "flex", flexDirection:"row"}} className="row mb-2">
+      <p class="lead d-none d-sm-block mb-4"><h2>Dashboard</h2></p>
+      <div className="container mt-4">
+        <div className="row mb-3">
           <Link className="col-xl-3 col-sm-6 py-2 link"  to="/hrdash/manageEmployee">
-            <div className="card bg-primary text-white h-80" style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card bg-primary text-white h-100" style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-primary"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate" >
                   <i className="fa fa-users fa-4x"></i>
@@ -90,7 +91,7 @@ fetchData()
             </div>
           </Link>
           <Link  to="/hrdash/viewDepartment" className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-success h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-success h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-warning" style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-check-circle fa-4x"></i>
@@ -101,7 +102,7 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/postJob'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-secondary h-80" style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-secondary h-100" style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-secondary"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-check-circle fa-4x"></i>
@@ -112,18 +113,18 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/viewApplications'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-dark"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-calendar-alt fa-4x"></i>
                 </div>
-                <h6 className="text-uppercase">Job Applications</h6>
+                <h6 className="text-uppercase">Total Applications Recieved</h6>
                 <h1 className="display-4">{stat.totalApplications}</h1>
               </div>
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-light bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-light bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-success"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-check-circle fa-4x"></i>
@@ -134,7 +135,7 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-danger"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-times-circle fa-4x"></i>
@@ -145,14 +146,14 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-info"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-times-circle fa-4x"></i>
                 </div>
                 <h6 className="text-uppercase">Today Leave</h6>
                 <h1 className="display-4">{stat.totalLeave}</h1>
-              </div> 
+              </div>
             </div>
           </Link>
         </div>
