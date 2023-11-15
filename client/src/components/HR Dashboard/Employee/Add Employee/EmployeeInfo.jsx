@@ -241,17 +241,18 @@ console.log(oneJob.title);
         <div id="full-content" className="main pt-3 mt-3">
           <div id="basic-information"></div>
           <h2 className="mb-4">Basic Information</h2>
-          <div className="content" id="content">
+          <div className="emp-content" id="content">
 
             <div id="info-card">
               <div id="first-half">
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="name" className="form-label">Name:</label>
+                  <label htmlFor="name" className="form-label">Name</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="name"
                     name="applicant_name"
+                    placeholder="Employee's name"
                     value={employeeInformation?.applicant_name}
                     onChange={handleChange}
                     required
@@ -259,25 +260,28 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="email" className="form-label">Email:</label>
+                  <label htmlFor="email" className="form-label">Email Address</label>
                   <input
                     type="email"
                     className="form-control round"
                     id="email"
                     name="email"
+                    placeholder="Employee's email address"
                     value={employeeInformation?.email}
                     onChange={handleChange}
+                    required
 
                   />
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="phoneNumber" className="form-label">Phone Number:</label>
+                  <label htmlFor="phoneNumber" className="form-label">Phone Number</label>
                   <input
                     type="number"
                     className="form-control round"
                     id="phoneNumber"
                     name='phone_number'
+                    placeholder="Employee's phone number"
                     value={employeeInformation?.phone_number}
                     onChange={handleChange}
 
@@ -285,27 +289,36 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="city" className="form-label">City:</label>
+                  <label htmlFor="city" className="form-label">City</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="city"
                     name="city"
+                    placeholder="Employee's city"
                     value={employeeInformation?.city}
                     onChange={handleChange}
 
                   />
                 </div>
+                <div id="gender-input">
+                <p>Gender</p>
+                  <input style={{marginRight:"6px"}}type="radio" id="male" name="gender" value="Male" checked={employeeInformation?.gender === "Male"} onChange={handleChange} />
+                  <label for="male">Male</label>
+                  <input style={{marginLeft:"18px", marginRight:"6px"}} type="radio" id="female" name="gender" value='Female' checked={employeeInformation?.gender === "Female"} onChange={handleChange} />
+                  <label for="female">Female</label>
+                </div>
               </div>
 
               <div id="second-half">
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="address" className="form-label">Address:</label>
+                  <label htmlFor="address" className="form-label">Address</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="address"
                     name="address"
+                    placeholder="Employee's address"
                     value={employeeInformation?.address}
                     onChange={handleChange}
 
@@ -313,12 +326,13 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="zipcode" className="form-label">Zipcode:</label>
+                  <label htmlFor="zipcode" className="form-label">Zipcode</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="zipcode"
                     name="zipcode"
+                    placeholder="Zip code"
                     value={employeeInformation?.zipcode}
                     onChange={handleChange}
 
@@ -326,7 +340,7 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="DateofBirth" className="form-label">Date of Birth:</label>
+                  <label htmlFor="DateofBirth" className="form-label">Date of Birth</label>
                   <input
                     type={(!employeeInformation?.dob || employeeInformation?.dob.trim() === '' || employeeInformation?.dob == null) ? 'date' : 'text'}
                     className="form-control round"
@@ -338,7 +352,7 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="CNIC" className="form-label">CNIC:</label>
+                  <label htmlFor="CNIC" className="form-label">CNIC</label>
                   <input
                     type="text"
                     className="form-control round"
@@ -350,34 +364,27 @@ console.log(oneJob.title);
 
                   />
                 </div>
-                <div id="gender-input">
-                  <p>Gender:</p>
-                  <input type="radio" id="male" name="gender" value="Male" checked={employeeInformation?.gender === "Male"} onChange={handleChange} />
-                  <label for="male">Male</label>
-                  <input type="radio" id="female" name="gender" value='Female' checked={employeeInformation?.gender === "Female"} onChange={handleChange} />
-                  <label for="female">Female</label>
-                </div>
 
               </div>
             </div>
 
           </div>
         </div>
-        {/* ------------------------------------------------------------------------------------------------------------------------------------------------ */}
         <div id="full-content" className="main pt-3 mt-3">
           <div id="professional-information"></div>
           <h2 className="mb-4">Professional Information</h2>
-          <div className="content mb-3" id="content">
+          <div className="emp-content mb-3" id="content">
 
-            <div id="info-card">
+            <div id="info-card" style={{display: 'flex', flexDirection:'row'}}>
               <div id="first-half">
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="EmployeeID" required className="form-label">Employee ID:</label>
+                  <label htmlFor="EmployeeID" required className="form-label">Employee ID</label>
                   <input
                     type="number"
                     className="form-control round"
                     id="EmployeeID"
                     name='emp_id'
+                    placeholder="Employee's ID"
                     value={id}
                     onChange={handleChange}
                     required
@@ -386,7 +393,7 @@ console.log(oneJob.title);
 
                 <div className="mb-3 rounded-input">
 
-                  <label htmlFor="DepartmentName" required className="form-label">Department Name:</label>
+                  <label htmlFor="DepartmentName" required className="form-label">Department Name</label>
                   <select name="dep_id" className="form-control round" value={employeeInformation?.dep_id} onChange={handleChange} >
                     <option style={{ display: 'none' }} label="Select Department" />
                     {dep.map((dep) => (
@@ -397,17 +404,18 @@ console.log(oneJob.title);
                   </select>
                 </div>
                 {id ? (<div className="mb-3 rounded-input">
-                  <label htmlFor="degree" required className="form-label">Degree:</label>
+                <label htmlFor="degree" required className="form-label">Degree</label>
                   <input
                     type="text"
                     className="form-control round"
                     id="degree"
                     name='degree'
+                    placeholder="Employee's latest degree"
                     value={employeeInformation?.degree}
-                  // onChange={handleChange}
+                    // onChange={handleChange}
                   />
                 </div>) : (<div className="mb-3 rounded-input">
-                  <label htmlFor="degree" required className="form-label">Degree:</label>
+                  <label htmlFor="degree" required className="form-label">Degree</label>
                   <select name="degree" className="form-control round" value={employeeInformation?.degree} onChange={handleChange}  >
                     <option style={{ display: 'none' }} label="Select Degree" />
                     {degrees?.map((option) => (
@@ -418,13 +426,8 @@ console.log(oneJob.title);
                   </select>
                 </div>)}
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="job_id" required className="form-label">Job Positions:</label>
-                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={(e) => {
-                    handleChange(e);
-                    OneJobHandle(e.target.value);
-                  }
-
-                  }  >
+                  <label htmlFor="job_id" required className="form-label">Job Positions</label>
+                  <select name="job_id" className="form-control round" value={employeeInformation?.job_id} onChange={handleChange}  >
                     <option value="" style={{ display: 'none' }} label="Select Job" />
                     {jobPositions.map((option) => (
                       <option key={option.job_id} value={option.job_id}>
@@ -435,12 +438,13 @@ console.log(oneJob.title);
                   </select>
                 </div>
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="Salary" required className="form-label">Salary(PKR):</label>
+                  <label htmlFor="Salary" required className="form-label">Salary(PKR)</label>
                   <input
                     type="number"
                     className="form-control round"
                     id="Salary"
                     name='salary'
+                    placeholder="Employee's salary"
                     value={employeeInformation?.salary}
                     onChange={handleChange}
 
@@ -448,7 +452,7 @@ console.log(oneJob.title);
                 </div>
 
                 <div className="mb-3 rounded-input">
-                  <label htmlFor="HireDate" required className="form-label">Hire Date:</label>
+                  <label htmlFor="HireDate" required className="form-label">Hire Date</label>
                   <input
                     type={(!employeeInformation?.hire_date || employeeInformation?.hire_date.trim() === '' || employeeInformation?.hire_date == null) ? 'date' : 'text'}
                     className="form-control round"
@@ -459,14 +463,14 @@ console.log(oneJob.title);
 
                   />
                 </div>
-              </div>
+              
 
             </div>
 
             <div id="second-half"><div className="mb-3 rounded-input">
-              <label htmlFor="emprole" className="form-label">Employee Role:</label>
+              <label htmlFor="emprole" className="form-label">Employee Role</label>
               <select name="role_id" className="form-control round" required value={employeeInformation?.role_id} onChange={handleChange}>
-                <option value="">--select</option>
+                <option value="">select</option>
                 {roles.map((role) => (
                   <option key={role.role_id} value={role.role_id}>
                     {role.role_name}
@@ -475,7 +479,7 @@ console.log(oneJob.title);
               </select>
             </div>
               <div className="mb-3 rounded-input">
-                <label htmlFor="emp_role" required className="form-label">Qualification:</label>
+                <label htmlFor="emp_role" required className="form-label">Qualification</label>
                 <select name="qualification" className="form-control round" value={employeeInformation?.qualification} onChange={handleChange}  >
                   <option style={{ display: 'none' }}>Qualification</option>
                   {qualificationOptions.map((job) => (
@@ -492,46 +496,51 @@ console.log(oneJob.title);
                   className="form-control round"
                   id="university"
                   name='university'
+                  placeholder="Employee's university"
                   value={employeeInformation?.university}
                   onChange={handleChange}
 
                 />
               </div>
               <div className="mb-3 rounded-input">
-                <label htmlFor="cgpa" className="form-label">CGPA:</label>
+                <label htmlFor="cgpa" className="form-label">CGPA</label>
                 <input
                   type="text"
                   className="form-control round"
                   id="cgpa"
                   name='cgpa'
+                  placeholder="Employee's cgpa"
                   value={employeeInformation?.cgpa}
                   onChange={handleChange}
                 />
               </div>
               <div className="mb-3 rounded-input">
-                <label htmlFor="Salary" className="form-label">LinkedIn Profile URL:</label>
+                <label htmlFor="Salary" className="form-label">LinkedIn Profile URL</label>
                 <input
                   type="text"
                   className="form-control round"
                   id="linkedin_profile_url"
                   name='linkedin_profile_url'
+                  placeholder="Employee's linkedin"
                   value={employeeInformation?.linkedin_profile_url}
                   onChange={handleChange}
 
                 />
               </div>
               <div className="mb-3 rounded-input">
-                <label htmlFor="Salary" className="form-label">GitHub Profile URL:</label>
+                <label htmlFor="Salary" className="form-label">GitHub Profile URL</label>
                 <input
                   type="text"
                   className="form-control round"
                   id="github_profile_url"
                   name='github_profile_url'
+                  placeholder="Employee's github"
                   value={employeeInformation?.github_profile_url}
                   onChange={handleChange}
                 />
               </div>
             </div>
+           </div>         
           </div>
           {loading ? (
             <Loader />

@@ -167,7 +167,7 @@ export default function PostJob() {
                   required
                   onChange={changeHandler}
                 />
-                <Form.Label className='mt-3'>Job Title</Form.Label>
+                <Form.Label className='mt-3'>Job Summary</Form.Label>
                 <Form.Control
                   type="text"
                   name='summary'
@@ -291,7 +291,7 @@ export default function PostJob() {
         </Modal>
 
         {/* Display the list of posted jobs */}
-        <Button className="float-right" style={{ width: '130px', alignSelf: 'left' }} variant="primary" onClick={() => setShowModal(true)}>
+        <Button className="float-right" style={{ marginLeft: '7px', width: '155px', alignSelf: 'left' }} variant="primary" onClick={() => setShowModal(true)}>
           Post a New Job
         </Button>
 
@@ -300,12 +300,12 @@ export default function PostJob() {
             <InputGroup className="filter-inputs">
               <select
                 name="department"
-                style={{padding:'0 10px', margin: '7px 7px 7px 0', borderRadius: '0px', width: '20%', outline: "none" ,WebkitAppearance:'none',...inputStyle}}
+                style={{padding:'0 10px', margin: '7px 7px 7px 0', borderRadius: '0px', width: '30%', outline: "none" ,WebkitAppearance:'none',...inputStyle}}
                 className="formcont"
                 value={filters.department}
                 onChange={handleFilterChange}
               >
-                <option value={''} style={{ display: 'none' }}>Search by Department</option>
+                <option value={''} style={{ display: 'none'}}>Search by Department</option>
                 <option value={''}>All</option>
                 {dep.map((department, index) => (
                   <option value={department.dep_name} key={index}>

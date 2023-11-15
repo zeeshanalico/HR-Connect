@@ -297,7 +297,7 @@ export default function ViewProfile() {
                         </tr>
                         <tr>
                           <td className="text-secondary"><strong>Full Name </strong></td>
-                          <td>{empInfo.name}</td>
+                          <td style={{textTransform: "capitalize"}}>{empInfo.name}</td>
                           <td className="text-secondary"><strong>Hire Date</strong></td>
                           <td>{empInfo.hire_date?.toString().slice(0, 10)}</td>
                         </tr>

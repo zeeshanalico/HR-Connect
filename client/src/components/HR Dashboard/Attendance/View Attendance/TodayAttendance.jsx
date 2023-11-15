@@ -107,7 +107,7 @@ const TodayAttendance = () => {
             id="empId"
             placeholder="Search by Employee ID"
             className="form-control round"
-            style={{ width: '300px',marginBottom: '10px',...inputStyle, WebkitAppearance: 'none' }}
+            style={{ width: '296px',marginBottom: '10px',...inputStyle, WebkitAppearance: 'none' }}
             value={filters.empId}
             onChange={(e) => handleFilter('empId', e.target.value)}
           />
@@ -116,7 +116,7 @@ const TodayAttendance = () => {
             id="employeeNameFilter"
             placeholder="Search by Employee Name"
             className="form-control round"
-            style={{ width: '300px', marginBottom: '10px' ,...inputStyle, WebkitAppearance: 'none'}}
+            style={{ width: '296px', marginBottom: '10px' ,...inputStyle, WebkitAppearance: 'none'}}
             value={filters.employeeName}
             onChange={(e) => handleFilter('employeeName', e.target.value)}
           />

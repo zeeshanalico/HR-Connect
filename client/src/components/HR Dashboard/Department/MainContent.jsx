@@ -75,23 +75,23 @@ fetchData()
   return (
     <div class="col main pt-3 mt-3" id="dashboard">
       <Navbar type={"dashboard"} />
-      <p class="lead d-none d-sm-block mb-4"><h2>Dashboard</h2></p>
-      <div className="container mt-4">
+      <p class="lead d-none d-sm-block mb-2 "><h1 className="dashboard-title">HR Dashboard</h1></p>
+      <div className="container mt-2">
         <div className="row mb-3">
           <Link className="col-xl-3 col-sm-6 py-2 link"  to="/hrdash/manageEmployee">
-            <div className="card bg-primary text-white h-100" style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card bg-primary text-white h-80" style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-primary"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate" >
                   <i className="fa fa-users fa-4x"></i>
                 </div>
                 <h6 className="text-uppercase">Total Employees</h6>
-                <h1 className="display-4">{stat.totalEmployees}</h1>
+                <h4 className="display-4">{stat.totalEmployees}</h4>
                 {/* <h1 className="display-4">{parseInt(stat.totalEmployees,10)-1}</h1> */}
               </div>
             </div>
           </Link>
           <Link  to="/hrdash/viewDepartment" className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-success h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-success h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-warning" style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-check-circle fa-4x"></i>
@@ -102,7 +102,7 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/postJob'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-secondary h-100" style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-secondary h-80" style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-secondary"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-check-circle fa-4x"></i>
@@ -113,18 +113,18 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/viewApplications'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-dark"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                   <i className="fa fa-calendar-alt fa-4x"></i>
                 </div>
-                <h6 className="text-uppercase">Total Applications Recieved</h6>
+                <h6 className="text-uppercase">Applications Recieved</h6>
                 <h1 className="display-4">{stat.totalApplications}</h1>
               </div>
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-light bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-light bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-success"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-check-circle fa-4x"></i>
@@ -135,7 +135,7 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-danger"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-times-circle fa-4x"></i>
@@ -146,7 +146,7 @@ fetchData()
             </div>
           </Link>
           <Link to={'/hrdash/todayAttendance'} className="col-xl-3 col-sm-6 py-2 link">
-            <div className="card text-white bg-warning h-100"  style={{border:'white 1px solid',borderRadius:'20px'}}>
+            <div className="card text-white bg-warning h-80"  style={{border:'white 1px solid',borderRadius:'20px'}}>
               <div className="card-body bg-info"  style={{border:'white 1px solid',borderRadius:'20px', backgroundColor: "#428bca" }}>
                 <div className="rotate">
                 <i className="fa fa-times-circle fa-4x"></i>

@@ -460,7 +460,7 @@ muhammadihtisham269@gmail.com`);
                     </div>
                     </td>
                   <td>
-                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center" , width: "115px", height: "85px"}}>
+                    <div style={{display:"flex", flexDirection:"column", justifyContent:"center" , width: "130px", height: "85px"}}>
                     {application.status === "Pending" ? (
                       <div style={{}}>
                         <Button
@@ -475,7 +475,7 @@ muhammadihtisham269@gmail.com`);
                             setApp(application)
                           }}
                           style={{
-                            marginBottom: '2px' , width: '130px'
+                            marginBottom: '2px' , width: '140px'
                           }}
                         >
                           Call for Interview
@@ -483,7 +483,7 @@ muhammadihtisham269@gmail.com`);
                         <Button
                           variant="danger"
                           size="sm"
-                          style={{width: '130px'}}
+                          style={{width: '140px'}}
                           onClick={() => {
                             setApplicationId(application.application_id);
                             setShowRejectModal(true);
@@ -512,7 +512,7 @@ muhammadihtisham269@gmail.com`);
                             style={{
                               color: "black",
                               backgroundColor: 'yellow',
-                              width: '130px',
+                              width: '140px',
                               marginBottom: '2px',
                               fontWeight: 'bold',
                               marginRight: '5px'
@@ -523,7 +523,7 @@ muhammadihtisham269@gmail.com`);
                           </Button>
                           <Button
                             variant="danger"
-                            style={{width: '130px', marginBottom: '2px' }}
+                            style={{width: '140px', marginBottom: '2px' }}
                             size="sm"
                             onClick={() => {
                               setApplicationId(application.application_id);
@@ -537,7 +537,7 @@ muhammadihtisham269@gmail.com`);
                             variant="info"
                             size="sm"
                             style={{
-                              width: '130px',
+                              width: '140px',
                             }}
                             onClick={() => {
                               setApplicationId(application.application_id);

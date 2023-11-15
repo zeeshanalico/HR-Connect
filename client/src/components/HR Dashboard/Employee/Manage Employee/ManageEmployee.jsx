@@ -269,15 +269,15 @@ Lead Talent Acquisition
       <>
         <tr key={employee.emp_id}>
           <td>{employee.emp_id}</td>
-          <td>{employee.name}</td>
+          <td style={{textTransform: "capitalize"}}>{employee.name}</td>
           <td>{employee.dep_name}</td>
           <td>{employee.job_name}</td>
-          <td>
-            <div>
+          <td style={{width: "20%"}}>
+            <div >
               <button
                 type="button"
                 className="btn btn-secondary"
-                style={{ width: '150px', marginRight: '10px' }}
+                style={{ width: '170px', marginBottom:"2px"}}
                 onClick={() => {
                   setEmpId(employee.emp_id);
                   setExperienceData((prevData) => {
@@ -294,7 +294,7 @@ Lead Talent Acquisition
               <button
                 type="button"
                 className="btn btn-danger"
-                style={{ width: '100px' }}
+                style={{ width: '170px' }}
                 onClick={() => {
                   setEmpId(employee.emp_id);
                   setShowConfirmation(true);
