@@ -3,9 +3,9 @@ import styles from './ApplyNow.module.css';
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import './ApplyNow.css'; // Import your CSS file
-// import '../BasicStyle.css';
 import axios from 'axios'
 import './ApplyNow.css';
+import hrconnect from "../../assets/img/HR_Connect.jpg.jpg";
 import { BaseUrl } from './../../constants.js';
 import Toast from '../../UIModules/Toast/Toast';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -84,82 +84,98 @@ export default function ApplyNow() {
 
   return (
     <div className='outerbox'>
-    <div className={styles.container}>
       <RouterLink to="/applyPage">
         <i id="back-arrow" style={{ position: 'absolute', top: '35px', left: '40px', }} className="fa fa-arrow-left" aria-hidden="true" />
       </RouterLink>
-
+      
       <Formik
         initialValues={{ ...initialValues, job_id: jobId, dep_id: depId, job_title: jobTitle, cv_file: null }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}    >
         {({ errors, touched, values, setFieldValue }) => (
-          <Form className={styles.form} method="post" enctype="multipart/form-data">
-            <h3 style={{margin:'auto'}}>Personal Information</h3>
-            <hr style={{ backgroundColor: 'white', height: '2px', border: 'none', width: '100%' }} />
-
-            <label htmlFor="applicant_name">Applicant Name</label>
+          <Form /*className={styles.form}*/ className="apply-form" method="post" enctype="multipart/form-data">
+            <div style={{color:'black', textAlign:'center'}}><img src={hrconnect} alt="logo" height={80} width={80} className="font20 mb-4 extraBold" /></div>
+            <div className="apply-box">
+            <div className="info-box">
+            <h3 style={{color:'black', textAlign:'center', marginBottom:'-1px'}}>Personal Information</h3>
+            <hr style={{ backgroundColor: 'rgb(31, 185, 219)', height: '2px', border: 'none', width: '100%' }} />
+            <label htmlFor="applicant_name">Full Name</label>
             <Field
               id='applicant_name'
               name="applicant_name"
               // className={styles.fieldGroup}
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              placeholder="Applicant Full Name"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              placeholder="Enter your Full Name"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="applicant_name" component="span" className="error-message" />
 
 
-            <label htmlFor="applicant_name">Email</label>
-            <Field name="email" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              placeholder="Enter your email" />
+            <label htmlFor="applicant_name">Email Address</label>
+            <Field name="email" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              placeholder="Enter your Email Address" />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="email" component="span" className="error-message" />
 
             <label htmlFor="phone_number">Phone Number</label>
-            <Field style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              name="phone_number" type="number" />
+            <Field style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              name="phone_number" type="number" placeholder="Enter your Phone Number"/>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="phone_number" component="span" className={styles.error} />
-
-
             <label htmlFor="cnic">CNIC</label>
             <Field
               id='cnic'
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
               name="cnic"
               placeholder="XXXXX-XXXXXXX-X"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cnic" component="span" className="error-message" />
 
+            <label htmlFor="address">Address</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              id='address'
+              name="address"
+              placeholder="Enter your Full Address"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="address" component="span" className="error-message" />
+
+
             <label htmlFor="city">City</label>
             <Field
               id='city'
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
               name="city"
-              placeholder="Enter City Name"
+              placeholder="Enter your City Name"
             />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="city" component="span" className="error-message" />
-
-            <label htmlFor="github_profile_url">Github Link</label>
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="city" component="span" className="error-message" />           
+            <label htmlFor="dob">Date-of-Birth</label>
             <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              id='github_profile_url'
-              name="github_profile_url"
-              placeholder="Paste here GitHub Profile Link"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="github_profile_url" component="span" className="error-message" />
+              id='dob'
+              type='date'
+              name="dob"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
 
-            <label htmlFor="linkedin_profile_url">LinkedIn Link</label>
-            <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              id='linkedin_profile_url'
-              name="linkedin_profile_url"
-              placeholder="Enter LinkeIn Profile Link"
             />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
-            <h3 style={{margin:'auto' ,marginTop:'30px'}}>Professional Information</h3>
-            <hr style={{ backgroundColor: 'white', height: '2px', border: 'none', width: '100%' }} />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="dob" component="span" className="error-message" />
+
+            <div className={styles.radioGroup} style={{ marginTop: '10px' }} role="group" aria-labelledby="gender">
+            <label>Gender</label>
+              <label>
+                <Field type="radio" id="male" name="gender" value="Male" />
+                Male
+              </label>
+              <label>
+                <Field type="radio" id="female" name="gender" value="Female" />
+                Female
+              </label>
+            </div>
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="gender" component="span" className="error-message" />
+
+            </div>
+            <div className="info-box">
+            <h3 style={{color:'black', textAlign:'center', marginBottom:'-1px'}}>Professional Information</h3>
+            <hr style={{ backgroundColor: 'rgb(31, 185, 219)', height: '2px', border: 'none', width: '100%' }} />
 
             <label htmlFor="experience" >Experience</label>
-            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', }}
+            <Field as="select" id="experience" name="experience" style={{ borderRadius: '5px', padding: '2px', border: '1px solid grey',height: '40px' }}
               onChange={(e) => {
                 setFieldValue('experience', e.target.value);
                 expChange(e);
@@ -176,57 +192,61 @@ export default function ApplyNow() {
             </Field>
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="experience" component="span" className="error-message" />
             {expLimit && <div style={{ color: 'red' }}>Sorry! You are not eligible for this job based on your selected experience</div>}
-            <label htmlFor="cgpa">CGPA</label>
-            <Field
-              id='cgpa'
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-
-              name="cgpa"
-              placeholder="CGPA"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cgpa" component="span" className="error-message" />
-
-            <label htmlFor="address">Address</label>
-            <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              id='address'
-              name="address"
-              placeholder="Enter your Full Address here!"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="address" component="span" className="error-message" />
-
+           
+           
             <label htmlFor="zipcode">Zip-Code</label>
             <Field
               id='zipcode'
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
               name="zipcode"
-              placeholder="Zip Code"
+              placeholder="Enter your Zip Code"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="zipcode" component="span" className="error-message" />
 
-            <label htmlFor="university">University</label>
+            <label htmlFor="zipcode">Applying For</label>
             <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-              id='university'
-              name="university"
-              placeholder="Enter you Univery Name"
-            />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
-            <label htmlFor="zipcode">Job Position</label>
-            <Field
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              style={{ color: 'black', borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
               id='job_id'
               disabled
               name="job_title"
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="job_title" component="span" className="error-message" />
+           
+            <label htmlFor="desired_salary">Desired Salary</label>
+            <Field
+              id='desired_salary'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
 
+              name="desired_salary"
+              placeholder="Enter your Desired Salary"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="desired_salary" component="span" className="error-message" />
 
+            <label htmlFor="github_profile_url">Github Link</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              id='github_profile_url'
+              name="github_profile_url"
+              placeholder="Paste your GitHub Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="github_profile_url" component="span" className="error-message" />
 
-            <h3 style={{margin:'auto',marginTop:'30px'}}>Educational Information</h3>
-            <hr style={{ backgroundColor: 'white', height: '1px', border: 'none', width: '100%' }} />
-            <label htmlFor="qualification" >Qualification</label>
-            <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', }}
+            <label htmlFor="linkedin_profile_url">LinkedIn Link</label>
+            <Field
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              id='linkedin_profile_url'
+              name="linkedin_profile_url"
+              placeholder="Paste your LinkedIn Profile Link"
+            />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="linkedin_profile_url" component="span" className="error-message" />
+            
+
+            </div>
+            <div className="info-box">
+            <h3 style={{color:'black', textAlign:'center', marginBottom:'-1px'}}>Educational Information</h3>
+            <hr style={{backgroundColor: 'rgb(31, 185, 219)', height: '2px', border: 'none', width: '100%' }} />
+            <label htmlFor="qualification" >Latest Qualification</label>
+            <Field as="select" id="qualification" name="qualification" style={{ borderRadius: '5px', padding: '2px', border: '1px solid grey', outline: 'none', height: '40px' }}
               onChange={(e) => setFieldValue('qualification', e.target.value)}
               value={values.qualification}
             >
@@ -244,7 +264,7 @@ export default function ApplyNow() {
               as="select"
               id="degree"
               name="degree"
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              style={{ borderRadius: '5px', padding: '2px', border: '1px solid grey', outline: 'none', height: '40px' }}
               onChange={(e) => setFieldValue('degree', e.target.value)}
               value={values.degree}
             >
@@ -279,51 +299,37 @@ export default function ApplyNow() {
             />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="major" component="span" className="error-message" /> */}
 
-            <label htmlFor="desired_salary">Desired Salary</label>
+<label htmlFor="cgpa">CGPA</label>
             <Field
-              id='desired_salary'
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
+              id='cgpa'
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
 
-              name="desired_salary"
-              placeholder="Write here your Expected Salary"
+              name="cgpa"
+              placeholder="Enter your CGPA"
             />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="desired_salary" component="span" className="error-message" />
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cgpa" component="span" className="error-message" />
 
-
-            <label htmlFor="dob">Date-of-Birth</label>
+            <label htmlFor="university">University</label>
             <Field
-              id='dob'
-              type='date'
-              name="dob"
-              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none' }}
-
-              placeholder="Enter LinkeIn Profile Link"
+              style={{ borderRadius: '5px', padding: '10px', border: '1px solid grey', outline: 'none', height: '40px' }}
+              id='university'
+              name="university"
+              placeholder="Enter you Univery Name"
             />
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="dob" component="span" className="error-message" />
-
-            <div className={styles.radioGroup} style={{ marginTop: '10px' }} role="group" aria-labelledby="gender">
-              <label>
-                <Field type="radio" id="male" name="gender" value="Male" />
-                Male
-              </label>
-              <label>
-                <Field type="radio" id="female" name="gender" value="Female" />
-                Female
-              </label>
-            </div>
-            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="gender" component="span" className="error-message" />
-
+            <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="university" component="span" className="error-message" />
+            
             <label htmlFor="cv_file">Upload Resume</label>
-            <input id="file" name="cv_file" type="file" accept=".pdf" onChange={(event) => {
+            <input id="file" style={{color: 'black'}} name="cv_file" type="file" accept=".pdf" onChange={(event) => {
               setFieldValue("cv_file", event.target.files[0]);
             }} />
             <ErrorMessage style={{ color: 'red', fontSize: '13px' }} name="cv_file" component="div" className="error-message" />
+            </div>
+            </div>
+            <button className={styles.submitButton} style={{ alignSelf:'center', width:'250px', marginBottom: '12px'}} type="submit">Submit</button>
 
-            <button className={styles.submitButton} style={{ marginTop: '10px' }} type="submit">Submit</button>
           </Form>
         )}
       </Formik>
     </div>
-    </div>
-  );
+  ); 
 }

@@ -136,13 +136,13 @@ export default function ApplyPage() {
   return (
     <div className="apply-page">
       <RouterLink to="/">
-        <i id="back-arrow" style={{ position: 'absolute', color: 'white', top: '35px', left: '40px', }} className="fa fa-arrow-left" aria-hidden="true" />
+        <i id="back-arrow" style={{ position: 'absolute', color: 'white', top: '35px', left: '31px', }} className="fa fa-arrow-left" aria-hidden="true" />
       </RouterLink>
       <div className="page-header">
 
-        <h2 className='titleof' style={{ margin: '50px 0 -40px 30px' ,fontWeight:'bold',fontSize:'36px'}} >Jobs Available</h2>
+        <h2 className='titleof' style={{ margin: '5px 0 0px 80px' , fontWeight:'bold', fontSize:'35px', textAlign:'center'}} >Jobs Available</h2>
         <hr />
-        <InputGroup className="filter-inputs" style={{ marginBottom: '2px' }}>
+        <InputGroup className="filter-inputs">
           <FormControl
             className='formcont'
             name="jobTitle"
@@ -162,21 +162,22 @@ export default function ApplyPage() {
             onChange={handleFilterChange}
             autoComplete="off"
           />
-          <select
+          
+        <select
             name="experience"
+            className='formcont'
             id="experience"
             onChange={handleFilterChange}
             value={filters.experience}
-            style={{margin: '30px auto 0 0', padding: '8px', outline: 'none', width: '30%' }}
-
-          >
-            <option value="" style={{ display: 'none' }}>Search by Experience</option>
+            >
+            <option value="" >Search by Experience</option>
             <option value="">All</option>
             {getExperience.map((exp, index) => { return <option key={index} value={exp.experience}>{exp.experience}</option> })}
 
-          </select>
+        </select>
         </InputGroup>
-        <InputGroup className="filter-inputs">
+        
+        <InputGroup style={{width:'74.3%'}} className="filter-inputs">
           <FormControl
             className='formcont'
             type={inputType}
@@ -184,7 +185,6 @@ export default function ApplyPage() {
             onFocus={handleFocus}
             onBlur={handleBlur}
             name="datePosted"
-            style={inputStyle}
             value={filters.datePosted}
             onChange={handleFilterChange}
             autoComplete="off"
@@ -200,9 +200,9 @@ export default function ApplyPage() {
           />
         </InputGroup>
       </div>
-      <span style={{ position: 'fixed', top: '300px', left: '600px', width: '400px' }}>
+      <span style={{ position: 'fixed', top: '22em', left: '28em', width: '400px' }}>
         <span className="page-header">
-          <span style={{ width: '420px' }} class="animated-text">"At HRConnect, every job opening is an opportunity to be part of something bigger. Join us, and let's redefine success together."</span>
+          <span style={{ width: '400px' }} class="animated-text">"At HRConnect, every job opening is an opportunity to be part of something bigger. Join us, and let's redefine success together."</span>
         </span>
 
       </span>
@@ -210,22 +210,24 @@ export default function ApplyPage() {
         <p className="no-jobs-message">Currently, There are no Jobs available.</p>
       ) : (
         currentJobs.map((job) => (
+          
           <Card key={job.job_id} className="job-card">
             <Card.Header>
-              <Card.Title style={{ fontFamily: 'Arial', fontWeight: 'bolder', fontSize: '32px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}>{job.title}</Card.Title>
-              <Card.Subtitle style={{ color: '#F7F7F7' }}>Experience Required: {job.experience}</Card.Subtitle>
-              <Card.Subtitle style={{ marginTop: '7px', color: '#F7F7F7' }}>Location: {job.location}</Card.Subtitle>
-              <Card.Subtitle style={{ marginTop: '7px', color: '#F7F7F7' }}>Summary: {job.summary}</Card.Subtitle>
+              <Card.Title style={{ fontFamily: 'Arial', fontWeight: 'bold', fontSize: '30px'}}>{job.title}</Card.Title>
+              <hr />
+              <Card.Subtitle style={{ color: 'black', fontSize:"16px" }}>Experience Required : {job.experience}</Card.Subtitle>
+              <Card.Subtitle style={{ marginTop: '7px', color: 'black', fontSize:"16px"}}><i style={{color:"black", fontSize:"16px"}}class="fa fa-map-marker" aria-hidden="true"></i>  {job.location}</Card.Subtitle>
+              <Card.Subtitle style={{ marginTop: '7px', fontSize:"15px", color: 'black' }}>{job.summary}</Card.Subtitle>
             </Card.Header>
             <div style={{padding:'0 10px 0 10px'}}>
               {expandedJobs[job.job_id] ? (
                 <div>
-                  <p style={{fontSize:'20px',fontWeight:'bold',textAlign:'center'}}>---Description---</p>
-                  <p>{job.description}</p>
+                  <p style={{fontSize:'20px',fontWeight:'bold', textAlign:'center', marginTop:'14px'}}>Description</p>
+                  <p style={{fontSize:'15px', marginTop:'14px'}}>{job.description}</p>
                   <hr className='hr1' />
-                  <p>Date Posted: {job.date_posted.slice(0, 10)}</p>
-                  <p>Salary: {job.salary}</p>
-                  <p>Last Date to Apply: {job.expiry_date.slice(0, 10)}</p>
+                  <p style={{marginTop:'14px'}}>Date Posted: {job.date_posted.slice(0, 10)}</p>
+                  <p style={{marginTop:'14px'}}>Salary: {job.salary}</p>
+                  <p style={{marginTop:'14px'}}>Last Date to Apply: {job.expiry_date.slice(0, 10)}</p>
                   <RouterLink
                     to={{
                       pathname: '/applyPage/applyNow',
@@ -239,7 +241,7 @@ export default function ApplyPage() {
               ) : null}
             </div>
             <Card.Footer>
-              <Button variant="link" onClick={() => toggleExpand(job.job_id)}>
+              <Button style={{marginLeft:'-15px'}}variant="link" onClick={() => toggleExpand(job.job_id)}>
                 {expandedJobs[job.job_id] ? 'show less' : 'show details'}
               </Button>
             </Card.Footer>
@@ -283,3 +285,21 @@ export default function ApplyPage() {
   );
 }
 
+
+const DatePickerInput = ` display: none;
+  position: absolute;
+  left: 100%;
+  top: 10%;
+  margin-left: 12px;
+  width: 0%;
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+`;

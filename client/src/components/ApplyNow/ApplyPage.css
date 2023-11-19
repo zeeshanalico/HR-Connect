@@ -1,6 +1,12 @@
   /* ApplyPage.css */
 
   /* Container */
+.page-header{
+
+ 
+}
+
+
   .apply-page {
     background-color: #f5f5f5;
     padding: 20px;
@@ -9,6 +15,7 @@
     /* margin: 2em; */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
+    
   }
 
   .titleof,.pageLabel{
@@ -34,18 +41,22 @@
   /* Filter Input Group */
   .filter-inputs {
     display: flex;
+    flex-direction: row;
+    margin-bottom: 0px !important;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
     transition: margin 0.3s ease;
+   
+    width: auto;
+    height: auto; 
   }
 
   /* Filter Inputs */
   .filter-inputs .formcont {
-    height: 40px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    height: 35px;
+    width: 30% !important;
+    margin: 5px 5px !important;
     transition: all 0.3s ease;
+    
   }
 
   /* Filter Inputs Focus Effect */
@@ -85,10 +96,11 @@
   }
   /* Card Styling */
   .job-card {
-    width: 50%;
-    margin: 2em;
-    margin-bottom: 20px;
-    border-radius: 10px;
+    width: 54%;
+    height: 10%;
+    margin: 1em 0.5em;
+    margin-bottom: 12px;
+    border-radius: 15px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     position: relative; /* Added for stacking effect */
@@ -118,9 +130,8 @@
 
   /* Card Header Styling */
   .job-card .card-header {
-    background: linear-gradient(to bottom, #4399f6, #007bff); /* Gradient background */
+    background: linear-gradient(to bottom, #4399f6, #007bff);/* Gradient background */
     color: white; /* Text color for better readability */
-    border-radius: 5px 5px 0 0;
     padding: 10px;
     transition: background 0.3s ease;
   }
@@ -135,7 +146,7 @@
     transition: all 0.3s ease;
   }
   .formcont{
-    margin: 2em;
+    margin: 1em;
     width: 30%!important;
   }
 
@@ -166,12 +177,12 @@
 .animated-text {
   margin-left: 200px;
   margin-right: 100px;
-  animation: textAnimation 3s infinite; /* Adjust the duration as needed */
+  animation: textAnimation 4.5s infinite; /* Adjust the duration as needed */
   position: absolute;
   top: 50%; /* Adjust the top position */
   left: 50%; /* Adjust the left position */
   transform: translate(-50%, -50%); /* Center the text horizontally and vertically */
-  font-size: 24px; /* Adjust the font size */
+  font-size: 20px; /* Adjust the font size */
   color: white; /* Text color */
   background-color: rgba(0, 0, 0, 0.5); /* Background color with transparency */
   padding: 10px;
