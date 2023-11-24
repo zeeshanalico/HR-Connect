@@ -1,9 +1,9 @@
-FROM node:14-alpine
-        WORKDIR /app
-    COPY package.json ./
-    RUN npm install
-    COPY . .
-    EXPOSE 3001
-    CMD ["npm", "start"]
+FROM node:18-alpine
+
+COPY . /app1
+WORKDIR /app1
+RUN npm install
+EXPOSE 3002
+CMD ["npm", "start"]
 
 

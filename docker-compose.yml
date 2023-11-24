@@ -1,0 +1,10 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=value
+      - MONGO_INITDB_ROOT_PASSWORD=value
+    volumes:
+      -./data:/data/db
